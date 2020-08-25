@@ -1,5 +1,8 @@
 package com.wilson;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Charmander extends Pokemon{
     private final Scratch scratch;
     private final Ember ember;
@@ -40,77 +43,107 @@ public class Charmander extends Pokemon{
     }
 }
 
+
 class Scratch extends Attack{
     // Initializes Scratch
     public Scratch(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap containing damage and status
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
         }
+        return moveResult;
     }
 }
 
 class Ember extends Attack{
     // Initializes ember
+    int pokemonStatus = new PokemonStatus().BurnChance();
     public Ember(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. If type Grass, damage is doubled. If type Water or Rock, damage is halved. Subtracts 1
-        // from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        /*
+        / Carries out attack. If type Grass, damage is doubled. If type Water or Rock, damage is halved. Subtracts 1
+        / from remaining unless remaining is 0 then returns 0. Returns hashmap containing damage and status. Has a 1/5
+        / chance of burning enemy.
+         */
+        Map<Integer, String> moveResult = new HashMap<>();
+        String status = "Normal";
+        if(pokemonStatus == 3){
+            status = "Burned";
+        }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's super Effective");
-            return this.getDamage() * 2;
+            moveResult.put(this.getDamage() * 2, status);
+            return moveResult;
         } else if (type.equals("Water") || type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
             System.out.println("It's not very Effective");
-            return this.getDamage() / 2;
+            moveResult.put(this.getDamage() / 2, status);
+            return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), status);
+            return moveResult;
         }
     }
 }
 
 class Flamethrower extends Attack{
     // initializes Flamethrower attack
+    int pokemonStatus = new PokemonStatus().BurnChance();
+
     public Flamethrower(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
 
+    public Map<Integer, String> attack(String type){
+        /*
+        / Carries out attack. If type Grass, damage is doubled. If type Water or Rock, damage is halved. Subtracts 1
+        / from remaining unless remaining is 0 then returns 0. Returns hashmap containing damage and status. Has a 1/5
+        / chance of burning enemy.
+         */
 
-    public int attack(String type){
-        // Carries out attack. If type Grass, then damage is doubled. If type Water or Rock, damage is halved. Subtracts
-        // 1 from remaining unless remaining is 0 then returns 0.
+        Map<Integer, String> moveResult = new HashMap<>();
+        String status = "Normal";
+        if(pokemonStatus == 3){
+            status = "Burned";
+        }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's super Effective");
-            return this.getDamage() * 2;
+            moveResult.put(this.getDamage() * 2, status);
+            return moveResult;
         } else if (type.equals("Water") || type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
             System.out.println("It's not very Effective");
-            return this.getDamage() / 2;
+            moveResult.put(this.getDamage() / 2, status);
+            return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), status);
+            return moveResult;
         }
     }
 }
@@ -119,20 +152,19 @@ class Tailwhip extends Attack{
     // Initializes Tailwhip attack
     public Tailwhip(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
-//        this.setDamage(15);
-//        this.setPp(15);
-//        this.setMaxRemains(15);
     }
 
-
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap with
+        // damage and status
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
         }
+        return moveResult;
     }
 }

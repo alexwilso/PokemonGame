@@ -1,5 +1,8 @@
 package com.wilson;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Tangela extends Pokemon {
     private final PoisionPowder poisionPowder;
     private final Megadrain megadrain;
@@ -39,21 +42,28 @@ public class Tangela extends Pokemon {
 
 class PoisionPowder extends Attack{
     // initializes PoisonPowder attack
+    int pokemonStatus = new PokemonStatus().PoisonChance();
     public PoisionPowder(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Has 20% chance of
+        // poisoning opponent. Returns hashmap with damage and status.
+
+        Map<Integer, String> moveResult = new HashMap<>();
+        String status = "Normal";
+        if(pokemonStatus == 3){
+            status = "Poisoned";
+        }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            // Chance to stun opponent
-            return this.getDamage();
-
+            moveResult.put(this.getDamage(), status);
         }
+        return moveResult;
     }
 }
 
@@ -67,15 +77,20 @@ class Megadrain extends Attack {
     }
 
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap of damage
+        // and status
+
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
             this.setHeal(this.getDamage());
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
+            return moveResult;
         }
 
     }
@@ -96,17 +111,19 @@ class Slam extends Attack {
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap with
+        // integer damage and string status
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
         }
+        return moveResult;
     }
-
 }
 
 class Constrict extends Attack {
@@ -116,14 +133,17 @@ class Constrict extends Attack {
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap with
+        // integer damage and string status
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
         }
+        return moveResult;
     }
 }

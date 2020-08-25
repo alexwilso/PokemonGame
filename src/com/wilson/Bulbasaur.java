@@ -1,5 +1,6 @@
 package com.wilson;
 
+import javax.xml.stream.FactoryConfigurationError;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,26 +59,26 @@ class VineWhip extends Attack{
         // Carries out attack. If type Ground or Water, damage is doubled. If type Flying or Fire, damage halved. Subtracts 1
         // from remaining unless remaining is 0 then returns 0.
 
-        Map<Integer, String> move = new HashMap<>();
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            move.put(0, "Normal");
-            return move
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else if (type.equals("Ground") || (type.equals("Water"))){
             this.setPp(this.getPp() - 1);
             System.out.println("It's super effective");
-            move.put(this.getDamage() * 2, "Normal")
-            return move;
+            moveResult.put(this.getDamage() * 2, "Normal");
+            return moveResult;
         } else if (type.equals("Flying") || type.equals("Fire")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's not very effective");
-            move.put(this.getDamage() / 2, "Normal");
-            return move;
+            moveResult.put(this.getDamage() / 2, "Normal");
+            return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
-            move.put()
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
+            return moveResult;
         }
     }
 }
@@ -88,14 +89,17 @@ class SludgeBomb extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
+    public Map<Integer, String> attack(String type){
         // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
+            return moveResult;
         }
     }
 }
@@ -106,24 +110,29 @@ class RazorLeaf extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
+    public Map<Integer, String> attack(String type){
         // Carries out attack. If type Ground or Water, damage is doubled. If type Flying or Fire, damage halved.
         // Subtracts 1 from remaining unless remaining is 0 then returns 0.
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else if (type.equals("Ground") || (type.equals("Water"))){
             this.setPp(this.getPp() - 1);
             System.out.println("It's super effective");
-            return this.getDamage() * 2;
+            moveResult.put(this.getDamage() * 2, "Normal");
+            return moveResult;
         } else if (type.equals("Flying") || type.equals("Fire")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's not very effective");
-            return this.getDamage() / 2;
+            moveResult.put(this.getDamage() / 2, "Normal");
+            return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
+            return moveResult;
         }
     }
 }
@@ -137,17 +146,19 @@ class LeechSeed extends Attack{
         this.heal = heal;
     }
 
-    public int attack(String type){
+    public Map<Integer, String> attack(String type){
         // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Bulbasaur is health is
         // restored by the amount of damage done to the enemy
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
             this.setHeal(this.getDamage());
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
         }
+        return moveResult;
     }
 
     public int getHeal() {

@@ -1,9 +1,5 @@
 package com.wilson;
 
-import jdk.swing.interop.SwingInterOpUtils;
-
-import javax.swing.*;
-import java.sql.Driver;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -21,7 +17,7 @@ public class Main {
                 new Flamethrower(30, 5, 5), new Tailwhip(15,25,25));
 
         Gengar gengar = new Gengar("Gengar", "Ghost", 50, 120, 120, "Normal",
-                new PoisionJab(30, 5,5), new ConfusionRay(20,20,20),
+                new PoisonJab(30, 5,5), new ConfusionRay(20,20,20),
                 new Lick(10,20,20), new ShadowBall(30, 5,5));
 
         Onix onix = new Onix("Onix", "Rock", 50, 140, 140, "Normal",

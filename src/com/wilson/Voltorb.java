@@ -1,5 +1,8 @@
 package com.wilson;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Voltorb extends Pokemon{
     private final Spark spark;
     private final Tackle tackle;
@@ -33,28 +36,38 @@ public class Voltorb extends Pokemon{
 }
 
 class Spark extends Attack{
+    int pokemonStatus = new PokemonStatus().ParalyzeChance();
     public Spark(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. If type water, then damage is doubled. If type Rock, damage halved. Subtracts 1
-        // from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type) {
+        // Carries out attack. If type Water, then damage is doubled. If type Rock, damage halved. Subtracts 1
+        // from remaining unless remaining is 0 then returns 0. Returns hashmap with damage and status.
+        Map<Integer, String> moveResult = new HashMap<>();
+        String status = "Normal";
+        if (pokemonStatus == 1) {
+            status = "Paralyzed";
+        }
+
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
-        } else if (type.equals("Water")){
+            moveResult.put(0, "Normal");
+            return moveResult;
+        } else if (type.equals("Water")) {
             this.setPp(this.getPp() - 1);
             System.out.println("It's super effective");
-            return this.getDamage() * 2;
-        } else if (type.equals("Rock")){
+            moveResult.put(this.getDamage() * 2, status);
+            return moveResult;
+        } else if (type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
             System.out.println("It's not very effective");
-            return this.getDamage() / 2;
-        }
-        else {
+            moveResult.put(this.getDamage() / 2, status);
+            return moveResult;
+        } else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), status);
+            return moveResult;
         }
     }
 }
@@ -64,16 +77,18 @@ class SonicBoom extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap with
+        // integer damage and string status
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
         }
-
+        return moveResult;
     }
 }
 
@@ -82,15 +97,17 @@ class SelfDestruct extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap of damage
+        // and status
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
         }
-
+        return moveResult;
     }
 }

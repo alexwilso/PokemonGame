@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 
 public class CeladonCityGym {
+    ErikaAI erikaAI = new ErikaAI();
 
     public void Welcome(Player user, Object[] pokemon){
         Vileplume vileplume = new Vileplume("Vileplume", "Grass", 50, 120,120,"Normal",
@@ -41,20 +42,15 @@ public class CeladonCityGym {
 
 
     public void Battle(LeaderErika leaderErika, Vileplume vileplume, Victreebel victreebel, Tangela tangela){
-        BinaryTree binaryTree = new BinaryTree();
-        ErikaAI erikaAI = new ErikaAI();
-        String turn = "player";
-        boolean battle = true;
-        while (battle) {
-            if (turn.equals("player")){
-            }
-        }
+        System.out.println(victreebel.getHealth());
+        System.out.println(leaderErika.getBag());
+        System.out.println(erikaAI.CreateTreeVictreebel(leaderErika, victreebel, 10, "Ground", "Normal"));
+        System.out.println(erikaAI.getOpponentStatus());
+        System.out.println(leaderErika.getBag());
+        System.out.println(victreebel.getHealth());
+
     }
 }
-//       System.out.println(victreebel.getHealth());
-//        System.out.println(leaderErika.getBag());
-//        System.out.println(erikaAI.CreateTreeVictreebel(leaderErika, victreebel, 90, "Ground", "Normal"));
-//        System.out.println(leaderErika.getBag());
-//        System.out.println(victreebel.getHealth());
+
 
 

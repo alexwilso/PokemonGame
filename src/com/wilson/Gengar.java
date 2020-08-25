@@ -1,22 +1,25 @@
 package com.wilson;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Gengar extends Pokemon {
-    private final PoisionJab poisionJab;
+    private final PoisonJab poisonJab;
     private final ConfusionRay confusionRay;
     private final Lick lick;
     private final ShadowBall shadowBall;
 
-    public Gengar(String name, String type, int level, int health, int maxHealth, String status,  PoisionJab poisionJab,
+    public Gengar(String name, String type, int level, int health, int maxHealth, String status,  PoisonJab poisonJab,
                   ConfusionRay confusionRay, Lick lick, ShadowBall shadowBall) {
         super(name, type, level, health, maxHealth, status);
-        this.poisionJab = poisionJab;
+        this.poisonJab = poisonJab;
         this.confusionRay = confusionRay;
         this.lick = lick;
         this.shadowBall = shadowBall;
     }
 
-    public PoisionJab getPoisionJab() {
-        return poisionJab;
+    public PoisonJab getPoisonJab() {
+        return poisonJab;
     }
 
     public ConfusionRay getConfusionRay() {
@@ -32,52 +35,71 @@ public class Gengar extends Pokemon {
     }
 
     public String[] DisplayGengar(Gengar gengar){
-        return new String[]{"Type: " + gengar.getType(),"Poison jab damage: " + String.valueOf(gengar.getPoisionJab().getDamage()) + " PP: " + String.valueOf(gengar.getPoisionJab().getPp()),
+        return new String[]{"Type: " + gengar.getType(),"Poison jab damage: " + String.valueOf(gengar.getPoisonJab().getDamage()) + " PP: " + String.valueOf(gengar.getPoisonJab().getPp()),
                 "Shadowball damage: " + String.valueOf(gengar.getShadowBall().getDamage()) + " PP: " + String.valueOf(gengar.getShadowBall().getPp()),
                 "Confusion Ray damage: " + String.valueOf(gengar.getConfusionRay().getDamage()) + " PP: " + String.valueOf(gengar.getConfusionRay().getPp()),
                 "Lick damage: " + String.valueOf(gengar.getLick().getDamage()) + " PP: " + String.valueOf(gengar.getLick().getPp())};
     }
 }
 
-
-class PoisionJab extends Attack{
-    // Initializes PoisionJab used by Gengar
-    public PoisionJab(int damage, int remaining, int maxRemains) {
+class PoisonJab extends Attack{
+    // Initializes PoisonJab
+    int pokemonStatus = new PokemonStatus().PoisonChance();
+    public PoisonJab(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
+    public Map<Integer, String> attack(String type){
         // Carries out attack. If type Rock or Ghost, then damage is doubled. Subtract 1 from remaining unless remaining
-        // is 0 then returns 0.
+        // is 0 then returns 0. Has 20% chance of poisoning opponent. Returns hashmap of damage and status.
+
+        Map<Integer, String> moveResult = new HashMap<>();
+        String status = "Normal";
+        if(pokemonStatus == 3){
+            status = "Poisoned";
+        }
         if (this.getPp() == 0){
             System.out.println("No attack remaining");
-            return 0;
+            System.out.println("No attack remaining");
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else if(type.equals("Rock") || type.equals("Ghost")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's super effective");
-            return this.getDamage() * 2;
+            moveResult.put(this.getDamage() * 2, status);
+            return moveResult;
         } else {
             this.setPp(this.getPp() -1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), status);
+            return moveResult;
         }
     }
 }
 
 class ConfusionRay extends Attack{
-    //  Initializes ConfusionRay attack for Gengar
+    //  Initializes ConfusionRay attack
+    int pokemonStatus = new PokemonStatus().ConfusionChance();
     public ConfusionRay(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
-        if (this.getPp() == 0){
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Has a 20% chance of
+        // confusing enemy. Returns hashmap with damage and status
+
+        Map<Integer, String> moveResult = new HashMap<>();
+        String status = "Normal";
+        if(pokemonStatus == 2){
+            status = "Confused";
+        }
+        if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getPp();
+            moveResult.put(this.getDamage(), status);
         }
+        return moveResult;
     }
 }
 
@@ -86,15 +108,18 @@ class Lick extends Attack{
     public Lick(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
-    public int attack(String type){
+    public Map<Integer, String> attack(String type){
         // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
-        if (this.getPp() == 0){
+
+        Map<Integer, String> moveResult = new HashMap<>();
+        if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getPp();
+            moveResult.put(this.getDamage(), "Normal");
         }
+        return moveResult;
     }
 }
 
@@ -104,19 +129,25 @@ class ShadowBall extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
+    public Map<Integer, String> attack(String type){
         // Carries out attack. If type == Rock or Ghost, then damage is doubled. Subtracts 1
         // from remaining unless remaining is 0 then returns 0.
+
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0){
             System.out.println("No attack remaining");
-            return 0;
+            System.out.println("No attack remaining");
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else if(type.equals("Rock") || type.equals("Ghost")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's super effective");
-            return this.getDamage() * 2;
+            moveResult.put(this.getDamage() * 2, "Normal");
+            return moveResult;
         } else {
             this.setPp(this.getPp() -1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
+            return moveResult;
         }
     }
 }

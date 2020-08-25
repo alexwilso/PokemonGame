@@ -1,5 +1,8 @@
 package com.wilson;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Vileplume extends Pokemon {
     private final Absorb absorb;
     private final StunSpore stunSpore;
@@ -51,34 +54,48 @@ class Absorb extends Attack {
         return heal;
     }
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap of
+        // damage and status
+
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
             this.setHeal(this.getDamage());
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
         }
+        return moveResult;
 
     }
 }
 
 class StunSpore extends Attack{
-
+    int pokemonStatus = new PokemonStatus().ParalyzeChance();
     public StunSpore(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap with
+        // damage and status.
+
+        Map<Integer, String> moveResult = new HashMap<>();
+        String status = "Normal";
+        if(pokemonStatus == 1){
+            status = "Paralyzed";
+        }
+
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
-            // Chance to stun opponent
-            return this.getDamage();
+            moveResult.put(this.getDamage(), status);
+            return moveResult;
 
         }
     }
@@ -90,43 +107,56 @@ class HyperBeam extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
+    public Map<Integer, String> attack(String type){
         // Carries out attack. If type Grass, then damage is doubled. If type Rock, damage is halved. Subtracts 1
-        // from remaining unless remaining is 0 then returns 0.
+        // from remaining unless remaining is 0 then returns 0. Returns hashmap of damage and status.
+
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else if (type.equals("Ground") || type.equals("Water")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's super effective");
-            return this.getDamage() * 2;
+            moveResult.put(this.getDamage() * 2, "Normal");
+            return moveResult;
         } else if (type.equals("Flying") || type.equals("Fire")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's not very effective");
-            return this.getDamage() * 2;
+            moveResult.put(this.getDamage() / 2, "Normal");
+            return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
+            return moveResult;
         }
     }
 }
 
 class Sleep extends Attack{
-
+    int pokemonStatus = new PokemonStatus().SleepChance();
     public Sleep(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap with
+        // damage and status
+
+        Map<Integer, String> moveResult = new HashMap<>();
+        String status = "Normal";
+        if(pokemonStatus == 1){
+            status = "Asleep";
+        }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            // Chance to sleep opponent
-            return this.getDamage();
-
+            moveResult.put(this.getDamage(), status);
         }
+        return moveResult;
     }
 }

@@ -1,5 +1,8 @@
 package com.wilson;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Dugtrio extends Pokemon{
     private final TriAttack triAttack;
     private final MudSlap mudslap;
@@ -48,14 +51,18 @@ class TriAttack extends Attack {
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap of integer
+        // damage and string status
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
+            return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
+            return moveResult;
         }
     }
 }
@@ -66,15 +73,18 @@ class MudSlap extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
+    public Map<Integer, String> attack(String type){
+        // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap of integer
+        // damage and string status
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            return 0;
+            moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
         }
+        return moveResult;
     }
 }
 
@@ -84,25 +94,32 @@ class Dig extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
-        // Carries out attack. If type Rock or Fire, then damage is doubled. If type flying, damage is halved. Subtracts
-        // 1. from remaining unless remaining is 0 then returns 0. Will set visibility to underground making opponents
-        // attack miss
+    public Map<Integer, String> attack(String type){
+        /*
+        / Carries out attack. If type Rock or Fire, then damage is doubled. If type flying, damage is halved. Subtracts
+        / 1. from remaining unless remaining is 0 then returns 0. Will set visibility to underground making opponents
+        / attack miss
+         */
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack Remaining");
-            return 0;
+            moveResult.put(0, "Normal");
+            return moveResult;
         }else if (type.equals("Rock") || type.equals("Fire")) {
             this.setPp(this.getPp() - 1);
             System.out.println("It's super effective ");
-            return this.getDamage() * 2;
+            moveResult.put(this.getDamage() * 2, "Normal");
+            return moveResult;
         } else if (type.equals("Flying")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's not very effective");
-            return this.getDamage() / 2;
+            moveResult.put(this.getDamage() / 2, "Normal");
+            return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
+            return moveResult;
         }
     }
 }
@@ -113,24 +130,29 @@ class EarthQuake extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public int attack(String type){
+    public Map<Integer, String> attack(String type){
         // Carries out attack. If type Rock or Fire, then damage is doubled. If type flying, damage is halved. Subtracts
-        // 1. from remaining unless remaining is 0 then returns 0.
+        // 1. from remaining unless remaining is 0 then returns 0. Returns hashmap with integer damage and string status.
+        Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack Remaining");
-            return 0;
+            moveResult.put(0, "Normal");
+            return moveResult;
         }else if (type.equals("Rock") || type.equals("Fire")) {
             this.setPp(this.getPp() - 1);
             System.out.println("It's super effective ");
-            return this.getDamage() * 2;
+            moveResult.put(this.getDamage() * 2, "Normal");
+            return moveResult;
         } else if (type.equals("Flying")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's not very effective");
-            return this.getDamage() / 2;
+            moveResult.put(this.getDamage() / 2, "Normal");
+            return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
-            return this.getDamage();
+            moveResult.put(this.getDamage(), "Normal");
+            return moveResult;
         }
     }
 }
