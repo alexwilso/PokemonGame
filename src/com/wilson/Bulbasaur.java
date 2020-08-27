@@ -1,6 +1,5 @@
 package com.wilson;
 
-import javax.xml.stream.FactoryConfigurationError;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -10,6 +9,8 @@ public class Bulbasaur extends Pokemon {
     private final SludgeBomb sludgeBomb;
     private final RazorLeaf razorLeaf;
     private final LeechSeed leechSeed;
+    private String attackName;
+    Battlemenu battlemenu = new Battlemenu();
     Scanner scanner = new Scanner(System.in);
 
     public Bulbasaur(String name, String type, int level, int health, int maxHealth, String status, VineWhip vineWhip,
@@ -33,9 +34,17 @@ public class Bulbasaur extends Pokemon {
         return razorLeaf;
     }
 
+    public String getAttackName() {
+        return attackName;
+    }
+
+    public void setAttackName(String attackName) {
+        this.attackName = attackName;
+    }
+
     public LeechSeed getLeechSeed() {
-        this.restoreHealth();
         return leechSeed;
+
     }
 
     public void restoreHealth(){
@@ -43,49 +52,71 @@ public class Bulbasaur extends Pokemon {
     }
 
     public String[] DisplayBulbasaur(Bulbasaur bulbasaur){
-        return new String[]{"Type: " + bulbasaur.getType(),"Leech Seed damage: " + String.valueOf(bulbasaur.getLeechSeed().getDamage()) + " PP: " + String.valueOf(bulbasaur.getLeechSeed().getPp()),
-                "Razor Leaf damage: " + String.valueOf(bulbasaur.getRazorLeaf().getDamage()) + " PP: " + String.valueOf(bulbasaur.getRazorLeaf().getPp()),
-                "Sludge Bomb damage: " + String.valueOf(bulbasaur.getSludgeBomb().getDamage()) + " PP: " + String.valueOf(bulbasaur.getSludgeBomb().getPp()),
-                "Vine Whip damage: " + String.valueOf(bulbasaur.getVineWhip().getDamage()) + " PP: " + String.valueOf(bulbasaur.getVineWhip().getPp())};
+        return new String[]{"Type: " + bulbasaur.getType(),"Leech Seed damage: " + bulbasaur.getLeechSeed().getDamage() + " PP: " + bulbasaur.getLeechSeed().getPp(),
+                "Razor Leaf damage: " + bulbasaur.getRazorLeaf().getDamage() + " PP: " + bulbasaur.getRazorLeaf().getPp(),
+                "Sludge Bomb damage: " + bulbasaur.getSludgeBomb().getDamage() + " PP: " + bulbasaur.getSludgeBomb().getPp(),
+                "Vine Whip damage: " + bulbasaur.getVineWhip().getDamage() + " PP: " + bulbasaur.getVineWhip().getPp()};
 
     }
 
-    public int BulbasuarBattle(Player user, Object[] userPokemon){
-        Battlemenu battlemenu = new Battlemenu();
+    public Map<Integer, String> BulbasuarBattle(Player user, Object[] userPokemon, String cpuType){
+        Map<Integer, String> move = new HashMap<>();
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
-            BulbasuarAttacks();;
+            return BulbasuarAttacks(cpuType);
         } else if (selection == 2){
             battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
             BulbasuarItems(battlemenu.UseItem(user));
         }
-        return 1;
+        return move;
     }
 
-    public void BulbasuarAttacks(){
+    public Map<Integer, String> BulbasuarAttacks(String cpuType){
+        Map<Integer, String> move = new HashMap<>();
+        System.out.println("Enter number of attack...");
         System.out.println("1. Razor Leaf PP: " + getRazorLeaf().getPp() + "/" +getRazorLeaf().getMaxRemains() +
                 "\n2. Leech Seed PP: " + getLeechSeed().getPp() + "/" + getLeechSeed().getMaxRemains() +
                 "\n3. Sludge bomb PP: " + getSludgeBomb().getPp() + "/" + getSludgeBomb().getMaxRemains() +
                 "\n4. Vine whip PP: " + getVineWhip().getPp() + "/" + getVineWhip().getMaxRemains());
+        int attack = Integer.parseInt(scanner.nextLine());
+        switch (attack){
+            case 1:
+                setAttackName("Razor Leaf");
+                return getRazorLeaf().attack(cpuType);
+            case 2:
+                setAttackName("Leech Seed");
+                return getLeechSeed().attack();
+            case 3:
+                setAttackName("Sludge Bomb");
+                return getSludgeBomb().attack();
+            case 4:
+                setAttackName("Vine whip");
+                return getVineWhip().attack(cpuType);
+        }
+        return move;
     }
 
-    public String BulbasuarItems(String item){
+    public void BulbasuarItems(String item){
         if (item.equals("Elixer")) {
             System.out.println("Which attack would you like to user elixer on?");
             System.out.println("Enter number: 1. Razor Leaf\n 2. Leech Seed\n3. Sludge bomb\n4. Vine whip");
             int restore = Integer.parseInt(scanner.nextLine());
             if (restore == 1){
-                return getLeechSeed().useElixer("Elixer");
+                getLeechSeed().useElixer("Elixer");
+                return;
             }else if (restore == 2){
-                return getLeechSeed().useElixer("ELixer");
+                getLeechSeed().useElixer("Eixer");
+                return;
             } else if (restore == 3){
-                return getSludgeBomb().useElixer("Elixer");
+                getSludgeBomb().useElixer("Elixer");
+                return;
             } else if (restore == 4){
-                return getVineWhip().useElixer("Elixer");
+                getVineWhip().useElixer("Elixer");
+                return;
             }
         }
-        return use_item(item);
+        use_item(item);
     }
 }
 
@@ -102,7 +133,7 @@ class VineWhip extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
+            moveResult.put(0, "False");
             return moveResult;
         } else if (type.equals("Rock") || (type.equals("Water"))){
             this.setPp(this.getPp() - 1);
@@ -129,18 +160,17 @@ class SludgeBomb extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public Map<Integer, String> attack(String type){
+    public Map<Integer, String> attack(){
         // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-            return moveResult;
+            moveResult.put(0, "Sludge bomb");
         } else {
             this.setPp(this.getPp() - 1);
             moveResult.put(this.getDamage(), "Normal");
-            return moveResult;
         }
+        return moveResult;
     }
 }
 
@@ -156,17 +186,19 @@ class RazorLeaf extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
+            moveResult.put(0, "Razor leaf");
             return moveResult;
         } else if (type.equals("Rock") || (type.equals("Water"))){
             this.setPp(this.getPp() - 1);
             System.out.println("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
+            this.setStatus("Normal");
             return moveResult;
         } else if (type.equals("Flying") || type.equals("Fire")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
+
             return moveResult;
         }
         else {
@@ -186,13 +218,13 @@ class LeechSeed extends Attack{
         this.heal = heal;
     }
 
-    public Map<Integer, String> attack(String type){
+    public Map<Integer, String> attack(){
         // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Bulbasaur is health is
         // restored by the amount of damage done to the enemy
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
+            moveResult.put(0, "False");
         } else {
             this.setPp(this.getPp() - 1);
             this.setHeal(this.getDamage());

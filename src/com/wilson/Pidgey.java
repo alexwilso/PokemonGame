@@ -9,6 +9,8 @@ public class Pidgey extends Pokemon{
     private Gust gust;
     private WingAttack wingAttack;
     private Peck peck;
+    private String attackName;
+    Battlemenu battlemenu = new Battlemenu();
     Scanner scanner = new Scanner(System.in);
 
     public Pidgey(String name, String type, int level, int health, int maxHealth, String status, Fly fly, Gust gust, WingAttack wingAttack,
@@ -37,6 +39,14 @@ public class Pidgey extends Pokemon{
         return peck;
     }
 
+    public String getAttackName() {
+        return attackName;
+    }
+
+    public void setAttackName(String attackName) {
+        this.attackName = attackName;
+    }
+
     public String[] DisplayPidgey(Pidgey pidgey){
         return new String[]{"Type: " + pidgey.getType(),"Fly damage: " + String.valueOf(pidgey.getFly().getDamage()) + " PP: " + String.valueOf(pidgey.getFly().getPp()),
                 "Gust damage: " + String.valueOf(pidgey.getGust().getDamage()) + " PP: " + String.valueOf(pidgey.getGust().getPp()),
@@ -44,42 +54,64 @@ public class Pidgey extends Pokemon{
                 "Wing Attack Throw: " + String.valueOf(pidgey.getWingAttack().getDamage()) + " PP: " + String.valueOf(pidgey.getWingAttack().getPp())};
     }
 
-    public int PidgeyBattle(Player user, Object[] userPokemon){
-        Battlemenu battlemenu = new Battlemenu();
+    public Map<Integer, String> PidgeyBattle(Player user, Object[] userPokemon, String cpuType){
+        Map<Integer, String> move = new HashMap<>();
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
-            PidgeyAttacks();;
+            return PidgeyAttacks(cpuType);
         } else if (selection == 2){
             battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
             PidgeyItems(battlemenu.UseItem(user));
         }
-        return 1;
+        return move;
     }
 
-    public void PidgeyAttacks(){
+    public Map<Integer, String> PidgeyAttacks(String cpuType){
+        Map<Integer, String> move = new HashMap<>();
+        System.out.println("Enter number of attack...");
         System.out.println("1. Peck PP: " + getPeck().getPp() + "/" +getPeck().getMaxRemains() +
                 "\n2. Gust PP: " + getGust().getPp() + "/" + getGust().getMaxRemains() +
                 "\n3. Fly PP: " + getFly().getPp() + "/" + getFly().getMaxRemains() +
                 "\n4. Wing Attack PP: " + getWingAttack().getPp() + "/" + getWingAttack().getMaxRemains());
+        int attack = Integer.parseInt(scanner.nextLine());
+        switch (attack){
+            case 1:
+                setAttackName("Peck");
+                return getPeck().attack(cpuType);
+            case 2:
+                setAttackName("Gust");
+                return getGust().attack(cpuType);
+            case 3:
+                setAttackName("Fly");
+                return getFly().attack(cpuType);
+            case 4:
+                setAttackName("Wing Attack");
+                return getWingAttack().attack(cpuType);
+        }
+        return move;
     }
 
-    public String PidgeyItems(String item){
+    public void PidgeyItems(String item){
         if (item.equals("Elixer")) {
             System.out.println("Which attack would you like to user elixer on?");
             System.out.println("Enter number: 1. Peck\n 2.Gust\n3. Fly\n4. Wing Attack");
             int restore = Integer.parseInt(scanner.nextLine());
             if (restore == 1){
-                return getPeck().useElixer("Elixer");
+                getPeck().useElixer("Elixer");
+                return;
             }else if (restore == 2){
-                return getGust().useElixer("ELixer");
+                getGust().useElixer("ELixer");
+                return;
             } else if (restore == 3){
-                return getFly().useElixer("Elixer");
+                getFly().useElixer("Elixer");
+                return;
             } else if (restore == 4){
-                return getWingAttack().useElixer("Elixer");
+                getWingAttack().useElixer("Elixer");
+                return;
             }
         }
-        return use_item(item);
+        use_item(item);
     }
 }
 

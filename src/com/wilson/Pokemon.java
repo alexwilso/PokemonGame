@@ -22,6 +22,10 @@ public class Pokemon {
         this.playable = true;
     }
 
+    public void setPlayable(boolean playable) {
+        this.playable = playable;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -71,6 +75,7 @@ public class Pokemon {
         setHealth(getHealth() - damage);
         if (getHealth() <= 0){
             System.out.println(this.name +" Fainted");
+            setPlayable(false);
         }
     }
 

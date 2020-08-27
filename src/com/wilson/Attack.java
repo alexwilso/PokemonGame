@@ -12,6 +12,14 @@ public class Attack {
         this.maxRemains = maxRemains;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public int getDamage() {
         return damage;
     }

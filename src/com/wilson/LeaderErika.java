@@ -121,12 +121,12 @@ class ErikaAI{
     }
 
 
-    public Map<String, Integer> CreateTreeVictreebel(LeaderErika leaderErika, Victreebel victreebel, int enemyHealth, String enemyType, String enemyStatus) {
+    public Map<Integer, String> CreateTreeVictreebel(LeaderErika leaderErika, Victreebel victreebel, int enemyHealth, String enemyType, String enemyStatus) {
         /*
         / Creates search tree based on input of victreebels status and status of enemy. Calls ErikaAttack to determine,
         / damage done with attack. Returns hashmap with string and damage as values.
          */
-        Map<String, Integer> move = new HashMap<>();
+        Map<Integer, String> move = new HashMap<>();
         if (victreebel.getHealth() < 20) {
             if (leaderErika.getBag().get("Max Potion") > 0) {
                 binaryTree.addNode(80, "Max Potion");
@@ -153,11 +153,11 @@ class ErikaAI{
         if (enemyHealth <= 15 && victreebel.getSpitUp().getPp() > 0) {
             binaryTree.addNode(90, "Spit up");
         }
-        if (enemyStatus.equals("Normal") && victreebel.getSleep().getPp() > 0) {
-            binaryTree.addNode(50, "Sleep");
-        }
+//        if (enemyStatus.equals("Normal") && victreebel.getSleep().getPp() > 0) {
+//            binaryTree.addNode(50, "Sleep");
+//        }
         binaryTree.addNode(40, "Random");
-        move.put(binaryTree.maxValue(binaryTree.root), ErikaAttackVictreebel(leaderErika, victreebel, binaryTree.maxValue(binaryTree.root), enemyType));
+        move.put(ErikaAttackVictreebel(leaderErika, victreebel, binaryTree.maxValue(binaryTree.root), enemyType), binaryTree.maxValue(binaryTree.root));
         return move;
     }
 
@@ -213,12 +213,12 @@ class ErikaAI{
         return 0;
     }
 
-    public Map<String, Integer> CreateTreeVileplume(LeaderErika leaderErika, Vileplume vileplume, int enemyHealth, String enemyType, String enemyStatus) {
+    public Map<Integer, String> CreateTreeVileplume(LeaderErika leaderErika, Vileplume vileplume, int enemyHealth, String enemyType, String enemyStatus) {
          /*
         / Creates search tree based on input of vileplume status and status of enemy. Calls ErikaAttack to determine,
         / damage done with attack. Returns hashmap with string and damage as values.
          */
-        Map<String, Integer> move = new HashMap<>();
+        Map<Integer, String> move = new HashMap<>();
         if (vileplume.getHealth() < 20) {
             if (leaderErika.getBag().get("Potion") > 1) {
                 binaryTree.addNode(70, "Potion");
@@ -256,7 +256,7 @@ class ErikaAI{
 
             binaryTree.addNode(40, "Random");
         }
-        move.put(binaryTree.maxValue(binaryTree.root), ErikaAttackVileplume(leaderErika, vileplume, binaryTree.maxValue(binaryTree.root), enemyType));
+        move.put(ErikaAttackVileplume(leaderErika, vileplume, binaryTree.maxValue(binaryTree.root), enemyType), binaryTree.maxValue(binaryTree.root));
         return move;
     }
 
@@ -315,12 +315,12 @@ class ErikaAI{
     }
 
 
-    public Map<String, Integer> CreateTreeTangela(LeaderErika leaderErika, Tangela tangela, int enemyHealth, String enemyType, String enemyStatus) {
+    public Map<Integer, String> CreateTreeTangela(LeaderErika leaderErika, Tangela tangela, int enemyHealth, String enemyType, String enemyStatus) {
          /*
         / Creates search tree based on input of Tangela status and status of enemy. Calls ErikaAttack to determine,
         / damage done with attack. Returns hashmap with string and damage as values.
          */
-        Map<String, Integer> move = new HashMap<>();
+        Map<Integer, String> move = new HashMap<>();
         if (tangela.getHealth() < 20) {
             if (leaderErika.getBag().get("Potion") > 0) {
                 binaryTree.addNode(70, "Potion");
@@ -345,7 +345,7 @@ class ErikaAI{
 
             binaryTree.addNode(40, "Random");
         }
-        move.put(binaryTree.maxValue(binaryTree.root), ErikaAttackTangela(leaderErika, tangela, binaryTree.maxValue(binaryTree.root), enemyType));
+        move.put(ErikaAttackTangela(leaderErika, tangela, binaryTree.maxValue(binaryTree.root), enemyType), binaryTree.maxValue(binaryTree.root));
         return move;
     }
 

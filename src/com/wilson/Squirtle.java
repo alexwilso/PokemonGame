@@ -9,6 +9,8 @@ public class Squirtle extends Pokemon {
     private Tackle tackle;
     private Surf surf;
     private ShellAttack shellAttack;
+    private String attackName;
+    Battlemenu battlemenu = new Battlemenu();
     Scanner scanner = new Scanner(System.in);
 
     public Squirtle(String name, String type, int level, int health, int maxHealth, String status, HydroPump hydroPump, Tackle tackle,
@@ -36,31 +38,56 @@ public class Squirtle extends Pokemon {
         return shellAttack;
     }
 
-    public String[] DisplaySquirtle(Squirtle squirtle) {
-        return new String[]{"Type: " + squirtle.getType(), "Growl damage: " + String.valueOf(squirtle.getSurf().getDamage()) + " PP: " + String.valueOf(squirtle.getSurf().getPp()),
-                "Quick Attack damage: " + String.valueOf(squirtle.getHydroPump().getDamage()) + " PP: " + String.valueOf(squirtle.getHydroPump().getPp()),
-                "Thunder damage: " + String.valueOf(squirtle.getShellAttack().getDamage()) + " PP: " + String.valueOf(squirtle.getShellAttack().getPp()),
-                "Thunder Shock Throw: " + String.valueOf(squirtle.getTackle().getDamage()) + " PP: " + String.valueOf(squirtle.getTackle().getPp())};
+    public String getAttackName() {
+        return attackName;
     }
 
-    public int SquirtleBattle(Player user, Object[] userPokemon){
-        Battlemenu battlemenu = new Battlemenu();
+    public void setAttackName(String attackName) {
+        this.attackName = attackName;
+    }
+
+    public String[] DisplaySquirtle(Squirtle squirtle) {
+        return new String[]{"Type: " + squirtle.getType(), "Growl damage: " + squirtle.getSurf().getDamage() + " PP: " + squirtle.getSurf().getPp(),
+                "Quick Attack damage: " + squirtle.getHydroPump().getDamage() + " PP: " + squirtle.getHydroPump().getPp(),
+                "Thunder damage: " + squirtle.getShellAttack().getDamage() + " PP: " + squirtle.getShellAttack().getPp(),
+                "Thunder Shock Throw: " + squirtle.getTackle().getDamage() + " PP: " + squirtle.getTackle().getPp()};
+    }
+
+    public Map<Integer, String> SquirtleBattle(Player user, Object[] userPokemon, String cpuType){
+        Map<Integer, String> move = new HashMap<>();
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
-            SquirtleAttacks();;
+            return SquirtleAttacks(cpuType);
         } else if (selection == 2){
             battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
             SquirtleItems(battlemenu.UseItem(user));
         }
-        return 1;
+        return move;
     }
 
-    public void SquirtleAttacks(){
+    public Map<Integer, String> SquirtleAttacks(String cpuType){
+        Map<Integer, String> move = new HashMap<>();
         System.out.println("1. Tackle PP: " + getTackle().getPp() + "/" +getTackle().getMaxRemains() +
                 "\n2. Shell Attack PP: " + getShellAttack().getPp() + "/" + getShellAttack().getMaxRemains() +
                 "\n3. Hydro pump PP: " + getHydroPump().getPp() + "/" + getHydroPump().getMaxRemains() +
                 "\n4. Surf PP: " + getSurf().getPp() + "/" + getSurf().getMaxRemains());
+        int attack = Integer.parseInt(scanner.nextLine());
+        switch (attack){
+            case 1:
+                setAttackName("Tackle");
+                return getTackle().attack(cpuType);
+            case 2:
+                setAttackName("Shell Attack");
+                return getShellAttack().attack(cpuType);
+            case 3:
+                setAttackName("Hydro Pump");
+                return getHydroPump().attack(cpuType);
+            case 4:
+                setAttackName("Surf");
+                return getSurf().attack(cpuType);
+        }
+        return move;
     }
 
     public String SquirtleItems(String item){

@@ -9,6 +9,8 @@ public class Pikachu extends Pokemon {
     private final ThunderShock thunderShock;
     private final Thunder thunder;
     private final Growl growl;
+    private String attackName;
+    Battlemenu battlemenu = new Battlemenu();
     Scanner scanner = new Scanner(System.in);
 
     public Pikachu(String name, String type, int level, int health, int maxHealth, String status, QuickAttack quickAttack,
@@ -36,49 +38,78 @@ public class Pikachu extends Pokemon {
         return growl;
     }
 
-    public String[] DisplayPikachu(Pikachu pikachu){
-        return new String[]{"Type: " + pikachu.getType(),"Growl damage: " + String.valueOf(pikachu.getGrowl().getDamage()) + " PP: " + String.valueOf(pikachu.getGrowl().getPp()),
-                "Quick Attack damage: " + String.valueOf(pikachu.getQuickAttack().getDamage()) + " PP: " + String.valueOf(pikachu.getQuickAttack().getPp()),
-                "Thunder damage: " + String.valueOf(pikachu.getThunder().getDamage()) + " PP: " + String.valueOf(pikachu.getThunder().getPp()),
-                "Thunder Shock Throw: " + String.valueOf(pikachu.getThunderShock().getDamage()) + " PP: " + String.valueOf(pikachu.getThunderShock().getPp())};
+    public String getAttackName() {
+        return attackName;
     }
 
-    public int PikachuBattle(Player user, Object[] userPokemon){
-        Battlemenu battlemenu = new Battlemenu();
+    public void setAttackName(String attackName) {
+        this.attackName = attackName;
+    }
+
+    public String[] DisplayPikachu(Pikachu pikachu){
+        return new String[]{"Type: " + pikachu.getType(),"Growl damage: " + pikachu.getGrowl().getDamage() + " PP: " + pikachu.getGrowl().getPp(),
+                "Quick Attack damage: " + pikachu.getQuickAttack().getDamage() + " PP: " + pikachu.getQuickAttack().getPp(),
+                "Thunder damage: " + pikachu.getThunder().getDamage() + " PP: " + pikachu.getThunder().getPp(),
+                "Thunder Shock Throw: " + pikachu.getThunderShock().getDamage() + " PP: " + pikachu.getThunderShock().getPp()};
+    }
+
+    public Map<Integer, String> PikachuBattle(Player user, Object[] userPokemon, String cpuType){
+        Map<Integer, String> move = new HashMap<>();
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
-            PikachuAttacks();;
+            return PikachuAttacks(cpuType);
         } else if (selection == 2){
             battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
             PikachuItems(battlemenu.UseItem(user));
         }
-        return 1;
+        return move;
     }
 
-    public void PikachuAttacks(){
+    public Map<Integer, String> PikachuAttacks(String cpuType){
+        Map<Integer, String> move = new HashMap<>();
         System.out.println("1. Quick Attack PP: " + getQuickAttack().getPp() + "/" +getQuickAttack().getMaxRemains() +
                 "\n2. Thunder Shock PP: " + getThunderShock().getPp() + "/" + getThunderShock().getMaxRemains() +
                 "\n3. Thunder PP: " + getThunder().getPp() + "/" + getThunder().getMaxRemains() +
                 "\n4. Growl PP: " + getGrowl().getPp() + "/" + getGrowl().getMaxRemains());
+        int attack = Integer.parseInt(scanner.nextLine());
+        switch (attack){
+            case 1:
+                setAttackName("Quick Attack");
+                return getQuickAttack().attack(cpuType);
+            case 2:
+                setAttackName("Thunder Shock");
+                return getThunderShock().attack(cpuType);
+            case 3:
+                setAttackName("Thunder");
+                return getThunder().attack(cpuType);
+            case 4:
+                setAttackName("Growl");
+                return getGrowl().attack(cpuType);
+        }
+        return move;
     }
 
-    public String PikachuItems(String item){
+    public void PikachuItems(String item){
         if (item.equals("Elixer")) {
             System.out.println("Which attack would you like to user elixer on?");
             System.out.println("Enter number: 1. Quick Attack\n 2.Thunder Shock\n3. Thunder\n4. Growl");
             int restore = Integer.parseInt(scanner.nextLine());
             if (restore == 1){
-                return getQuickAttack().useElixer("Elixer");
+                getQuickAttack().useElixer("Elixer");
+                return;
             }else if (restore == 2){
-                return getThunderShock().useElixer("ELixer");
+                getThunderShock().useElixer("ELixer");
+                return;
             } else if (restore == 3){
-                return getThunder().useElixer("Elixer");
+                getThunder().useElixer("Elixer");
+                return;
             } else if (restore == 4){
-                return getGrowl().useElixer("Elixer");
+                getGrowl().useElixer("Elixer");
+                return;
             }
         }
-        return use_item(item);
+        use_item(item);
     }
 }
 

@@ -9,6 +9,8 @@ public class Onix extends Pokemon {
     private RockThrow rockThrow;
     private RockSmash rockSmash;
     private Bind bind;
+    private String attackName;
+    Battlemenu battlemenu = new Battlemenu();
     Scanner scanner = new Scanner(System.in);
 
     public Onix(String name, String type, int level, int health, int maxHealth, String status, Rage rage,
@@ -36,31 +38,56 @@ public class Onix extends Pokemon {
         return bind;
     }
 
-    public String[] DisplayOnix(Onix onix){
-        return new String[]{"Type: " + onix.getType(),"Bind damage: " + String.valueOf(onix.getBind().getDamage()) + " PP: " + String.valueOf(onix.getBind().getPp()),
-                "Rage damage: " + String.valueOf(onix.getRage().getDamage()) + " PP: " + String.valueOf(onix.getRage().getPp()),
-                "Rock Smash damage: " + String.valueOf(onix.getRockSmash().getDamage()) + " PP: " + String.valueOf(onix.getRockSmash().getPp()),
-                "Rock Throw: " + String.valueOf(onix.getRockThrow().getDamage()) + " PP: " + String.valueOf(onix.getRockThrow().getPp())};
+    public String getAttackName() {
+        return attackName;
     }
 
-    public int OnixBattle(Player user, Object[] userPokemon){
-        Battlemenu battlemenu = new Battlemenu();
+    public void setAttackName(String attackName) {
+        this.attackName = attackName;
+    }
+
+    public String[] DisplayOnix(Onix onix){
+        return new String[]{"Type: " + onix.getType(),"Bind damage: " + onix.getBind().getDamage() + " PP: " + onix.getBind().getPp(),
+                "Rage damage: " + onix.getRage().getDamage() + " PP: " + onix.getRage().getPp(),
+                "Rock Smash damage: " + onix.getRockSmash().getDamage() + " PP: " + onix.getRockSmash().getPp(),
+                "Rock Throw: " + onix.getRockThrow().getDamage() + " PP: " + onix.getRockThrow().getPp()};
+    }
+
+    public Map<Integer, String> OnixBattle(Player user, Object[] userPokemon, String cpuType){
+        Map<Integer, String> move = new HashMap<>();
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
-            OnixAttacks();;
+            return OnixAttacks(cpuType);
         } else if (selection == 2){
             battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
             OnixItems(battlemenu.UseItem(user));
         }
-        return 1;
+        return move;
     }
 
-    public void OnixAttacks(){
+    public  Map<Integer, String> OnixAttacks(String cpuType){
+        Map<Integer, String> move = new HashMap<>();
         System.out.println("1. Bind PP: " + getBind().getPp() + "/" +getBind().getMaxRemains() +
                 "\n2. Rage PP: " + getRage().getPp() + "/" + getRage().getMaxRemains() +
                 "\n3. Rock Smash PP: " + getRockSmash().getPp() + "/" + getRockSmash().getMaxRemains() +
                 "\n4. Rock Throw PP: " + getRockThrow().getPp() + "/" + getRockThrow().getMaxRemains());
+        int attack = Integer.parseInt(scanner.nextLine());
+        switch (attack){
+            case 1:
+                setAttackName("Bind");
+                return getBind().attack(cpuType);
+            case 2:
+                setAttackName("Rage");
+                return getRage().attack(cpuType);
+            case 3:
+                setAttackName("Rock Smash");
+                return getRockSmash().attack(cpuType);
+            case 4:
+                setAttackName("Rock Throw");
+                return getRockThrow().attack(cpuType);
+        }
+        return move;
     }
 
     public String OnixItems(String item){

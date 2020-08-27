@@ -9,7 +9,9 @@ public class Gengar extends Pokemon {
     private final ConfusionRay confusionRay;
     private final Lick lick;
     private final ShadowBall shadowBall;
+    private String attackName;
     Scanner scanner = new Scanner(System.in);
+    Battlemenu battlemenu = new Battlemenu();
 
     public Gengar(String name, String type, int level, int health, int maxHealth, String status,  PoisonJab poisonJab,
                   ConfusionRay confusionRay, Lick lick, ShadowBall shadowBall) {
@@ -36,31 +38,57 @@ public class Gengar extends Pokemon {
         return shadowBall;
     }
 
-    public String[] DisplayGengar(Gengar gengar){
-        return new String[]{"Type: " + gengar.getType(),"Poison jab damage: " + String.valueOf(gengar.getPoisonJab().getDamage()) + " PP: " + String.valueOf(gengar.getPoisonJab().getPp()),
-                "Shadowball damage: " + String.valueOf(gengar.getShadowBall().getDamage()) + " PP: " + String.valueOf(gengar.getShadowBall().getPp()),
-                "Confusion Ray damage: " + String.valueOf(gengar.getConfusionRay().getDamage()) + " PP: " + String.valueOf(gengar.getConfusionRay().getPp()),
-                "Lick damage: " + String.valueOf(gengar.getLick().getDamage()) + " PP: " + String.valueOf(gengar.getLick().getPp())};
+    public String getAttackName() {
+        return attackName;
     }
 
-    public int GengarBattle(Player user, Object[] userPokemon){
-        Battlemenu battlemenu = new Battlemenu();
+    public void setAttackName(String attackName) {
+        this.attackName = attackName;
+    }
+
+    public String[] DisplayGengar(Gengar gengar){
+        return new String[]{"Type: " + gengar.getType(),"Poison jab damage: " + gengar.getPoisonJab().getDamage() + " PP: " + gengar.getPoisonJab().getPp(),
+                "Shadowball damage: " + gengar.getShadowBall().getDamage() + " PP: " + gengar.getShadowBall().getPp(),
+                "Confusion Ray damage: " + gengar.getConfusionRay().getDamage() + " PP: " + gengar.getConfusionRay().getPp(),
+                "Lick damage: " + gengar.getLick().getDamage() + " PP: " + gengar.getLick().getPp()};
+    }
+
+    public Map<Integer, String> GengarBattle(Player user, Object[] userPokemon, String cpuType){
+        Map<Integer, String> move = new HashMap<>();
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
-            GengarAttacks();;
+            return GengarAttacks(cpuType);
         } else if (selection == 2){
             battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
             GengarItems(battlemenu.UseItem(user));
         }
-        return 1;
+        return move;
     }
 
-    public void GengarAttacks(){
+    public Map<Integer, String> GengarAttacks(String cpuType){
+        Map<Integer, String> move = new HashMap<>();
+        System.out.println("Enter number of attack...");
         System.out.println("1. Confusion Ray PP: " + getConfusionRay().getPp() + "/" +getConfusionRay().getMaxRemains() +
                 "\n2. Lick PP: " + getLick().getPp() + "/" + getLick().getMaxRemains() +
                 "\n3. Poison Jab PP: " + getPoisonJab().getPp() + "/" + getPoisonJab().getMaxRemains() +
                 "\n4. Shadow Ball PP: " + getShadowBall().getPp() + "/" + getShadowBall().getMaxRemains());
+        int attack = Integer.parseInt(scanner.nextLine());
+        switch (attack){
+            case 1:
+                setAttackName("Confusion Ray");
+                return getConfusionRay().attack();
+            case 2:
+                setAttackName("Lick");
+                return getLick().attack();
+            case 3:
+                setAttackName("Poison Jab");
+                return getPoisonJab().attack(cpuType);
+            case 4:
+                setAttackName("Shadow Ball");
+                return getShadowBall().attack(cpuType);
+        }
+        return move;
     }
 
     public String GengarItems(String item){
@@ -123,7 +151,7 @@ class ConfusionRay extends Attack{
         super(damage, remaining, maxRemains);
     }
 
-    public Map<Integer, String> attack(String type){
+    public Map<Integer, String> attack(){
         // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Has a 20% chance of
         // confusing enemy. Returns hashmap with damage and status
 
@@ -148,7 +176,7 @@ class Lick extends Attack{
     public Lick(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
-    public Map<Integer, String> attack(String type){
+    public Map<Integer, String> attack(){
         // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0.
 
         Map<Integer, String> moveResult = new HashMap<>();

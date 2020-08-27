@@ -4,16 +4,16 @@ import java.util.Map;
 
 public class ReturnMove {
 
-    public Integer moveDamage(Map<String, Integer> moveResult, String key){
+    public String MoveString(Map<Integer, String> moveResult, Integer key){
         return moveResult.get(key);
     }
 
-    public String MoveString(Map<String, Integer> moveResult) {
+    public Integer MoveDamage(Map<Integer, String> moveResult) {
         // Returns damage of move
-        for (String key : moveResult.keySet()) {
+        for (Integer key : moveResult.keySet()) {
             return key;
         }
-        return "False";
+        return 0;
     }
 
 }
