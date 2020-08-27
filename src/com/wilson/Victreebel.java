@@ -32,6 +32,7 @@ public class Victreebel extends Pokemon{
     public SpitUp getSpitUp() {
         return spitUp;
     }
+
 }
 
 class SpitUp extends Attack{

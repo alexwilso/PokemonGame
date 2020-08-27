@@ -42,8 +42,8 @@ public class Main {
         String name;
         Player player = new Player(2500);
         Store store = new Store(player);
-        Object[] playersPokemon = new Object[3];
-        Object[] rivalPokemon = new Object[3];
+//        Object[] playersPokemon = new Object[3];
+//        Object[] rivalPokemon = new Object[3];
 
         // Introduces player to game
         System.out.println("Professor Oak: Hello there! Welcome to the world of pokémon! " + "\n" +
@@ -53,7 +53,7 @@ public class Main {
         System.out.println("Your Name?");
         name = scanner.nextLine();
         System.out.println("Professor Oak: Ah yes! Very nice to meet you " + name + "\n" +
-                "This is my grandson. He has been your rivalName since you were babies." + "\n" +
+                "This is my grandson. He has been your rival since you were babies." + "\n" +
                 "... Erm, what was his name now?");
         do {
             System.out.println("Rivals name?");
@@ -69,15 +69,15 @@ public class Main {
                 " Lose all your pokemon and it's game over. Lets go!");
 
         Object[] pokemon = choosePokemon.UserSelect(bulbasaur, charmander, gengar, onix, pidgey, pikachu, squirtle, player, rival);
-        System.out.println(Arrays.toString(player.getPokemon()));
-        System.out.println("Professor Oak: So you selected " + pokemon[0] + ", " + pokemon[1] + ", " + pokemon[2] + "! " + "All great pokémon!");
+        System.out.println("Professor Oak: So you selected " + pokemon[0] + ", " + pokemon[1] + ", " + pokemon[2] + "! " + "All great pokémon!"); // Fix this, returning objects 
         System.out.println(rivalName + ": I'll take " + pokemon[3] + ", " + pokemon[4] + ", " + pokemon[5] + " then! My pokémon are a lot tougher than yours!");
         System.out.println("Professor Oak: " + rivalName + " also very good pokémon! I'm sure you guys will get to battle soon enough... Now let me explain how this world works.\n" +
                 "The goal is to defeat all the gym leaders. Defeating a gym leader will reward you money. Before each match you are able to buy " +
                 "items from the store to help your pokemon in battle! \nLets check it out before we send you on your way.");
         Main.visitStore(store, player, scanner);
         System.out.println("Professor Oak: Okay good! You're all set! Remember you're able to visit the store after each battle \n" +
-        "First stop is in Celadon City. Goodluck in there " + name + "!");
+        "First stop is in Celadon City where you'll battle Erika, master of grass type pokémon. Goodluck in there " + name + "!");
+        pikachu.getThunder().attack("Grass");
         celadonCityGym.Welcome(player, pokemon);
 
     }

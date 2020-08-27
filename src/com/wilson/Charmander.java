@@ -2,13 +2,14 @@ package com.wilson;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Charmander extends Pokemon{
     private final Scratch scratch;
     private final Ember ember;
     private final Flamethrower flamethrower;
     private final Tailwhip tailwhip;
-//    static String status = "Normal";
+    Scanner scanner = new Scanner(System.in);
 
     public Charmander(String name, String type, int level, int health, int maxHealth, String status, Scratch scratch, Ember ember,
                       Flamethrower flamethrower, Tailwhip tailwhip) {
@@ -40,6 +41,44 @@ public class Charmander extends Pokemon{
                 "Flamethrower damage: " + String.valueOf(charmander.getFlamethrower().getDamage()) + " PP: " + String.valueOf(charmander.getFlamethrower().getPp()),
                 "Scratch damage: " + String.valueOf(charmander.getScratch().getDamage()) + " PP: " + String.valueOf(charmander.getScratch().getPp()),
                 "Tailwhip damage: " + String.valueOf(charmander.getTailwhip().getDamage()) + " PP: " + String.valueOf(charmander.getTailwhip().getPp())};
+    }
+
+    public int CharmanderBattle(Player user, Object[] userPokemon){
+        Battlemenu battlemenu = new Battlemenu();
+        int selection = battlemenu.Menu(getName());
+        if (selection == 1){
+            CharmanderAttacks();;
+        } else if (selection == 2){
+            battlemenu.ChangePokemon(user, userPokemon);
+        } else if(selection == 3){
+            CharmanderItems(battlemenu.UseItem(user));
+        }
+        return 1;
+    }
+
+    public void CharmanderAttacks(){
+        System.out.println("1. Ember PP: " + getEmber().getPp() + "/" +getEmber().getMaxRemains() +
+                "\n2. Scratch PP: " + getScratch().getPp() + "/" + getScratch().getMaxRemains() +
+                "\n3. Tailwhip PP: " + getTailwhip().getPp() + "/" + getTailwhip().getMaxRemains() +
+                "\n4. Flamethrower PP: " + getFlamethrower().getPp() + "/" + getFlamethrower().getMaxRemains());
+    }
+
+    public String CharmanderItems(String item){
+        if (item.equals("Elixer")) {
+            System.out.println("Which attack would you like to user elixer on?");
+            System.out.println("Enter number: 1. Ember\n 2. Scratch\n3. Tailwhip\n4. Flamethrower");
+            int restore = Integer.parseInt(scanner.nextLine());
+            if (restore == 1){
+                return getEmber().useElixer("Elixer");
+            }else if (restore == 2){
+                return getScratch().useElixer("ELixer");
+            } else if (restore == 3){
+                return getTailwhip().useElixer("Elixer");
+            } else if (restore == 4){
+                return getFlamethrower().useElixer("Elixer");
+            }
+        }
+        return use_item(item);
     }
 }
 
@@ -166,5 +205,14 @@ class Tailwhip extends Attack{
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
+    }
+
+}
+
+
+class CharmanderBattle {
+
+    public String menu(Charmander charmander) {
+        return "Here you are";
     }
 }

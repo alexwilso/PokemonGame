@@ -29,9 +29,9 @@ public class ChoosePokemon {
             choice[x - 1] = bulbasaur.getName();
             chosen[x - 1] = select;
             if(x <= 3){
-                player.setPokemon(bulbasaur, (3-x));
+                player.setPokemon(bulbasaur, (x - 1));
             } else {
-                rival.setPokemon(bulbasaur, (6-x));
+                rival.setPokemon(bulbasaur, (-4 + x));
             }
 
         } else if (select == 2) {
@@ -40,52 +40,52 @@ public class ChoosePokemon {
             if(x <= 3){
                 player.setPokemon(charmander, (x-1));
             } else {
-                rival.setPokemon(charmander, (6-x));
+                rival.setPokemon(charmander, (-4 + x));
             }
 
         } else if (select == 3) {
             choice[x - 1] = gengar.getName();
             chosen[x - 1] = select;
             if(x <= 3){
-                player.setPokemon(gengar, (3 - x));
+                player.setPokemon(gengar, (x - 1));
             } else {
-                rival.setPokemon(gengar, (6-x));
+                rival.setPokemon(gengar, (-4 + x));
             }
 
         } else if (select == 4) {
             choice[x - 1] = onix.getName();
             chosen[x - 1] = select;
             if(x <= 3){
-                player.setPokemon(onix, (3 - x));
+                player.setPokemon(onix, (x - 1));
             } else {
-                rival.setPokemon(onix, (6-x));
+                rival.setPokemon(onix, (-4 + x));
             }
 
         } else if (select == 5) {
             choice[x - 1] = pidgey.getName();
             chosen[x - 1] = select;
             if(x <= 3){
-                player.setPokemon(pidgey, (3 - x));
+                player.setPokemon(pidgey, (x - 1));
             } else {
-                rival.setPokemon(pidgey, (6-x));
+                rival.setPokemon(pidgey, (-4 + x));
             }
 
         } else if (select == 6) {
             choice[x - 1] = pikachu.getName();
             chosen[x - 1] = select;
             if(x <= 3){
-                player.setPokemon(pikachu, (3 - x));
+                player.setPokemon(pikachu, (x - 1));
             } else {
-                rival.setPokemon(pikachu, (6-x));
+                rival.setPokemon(pikachu, (-4 + x));
             }
 
         } else if (select == 7) {
             choice[x - 1] = squirtle.getName();
             chosen[x - 1] = select;
             if(x <= 3){
-                player.setPokemon(squirtle, (3 - x));
+                player.setPokemon(squirtle, (x - 1));
             } else {
-                rival.setPokemon(squirtle, (6-x));
+                rival.setPokemon(squirtle, (-4 + x));
             }
 
         } else {

@@ -2,12 +2,14 @@ package com.wilson;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Pidgey extends Pokemon{
     private Fly fly;
     private Gust gust;
     private WingAttack wingAttack;
     private Peck peck;
+    Scanner scanner = new Scanner(System.in);
 
     public Pidgey(String name, String type, int level, int health, int maxHealth, String status, Fly fly, Gust gust, WingAttack wingAttack,
                   Peck peck) {
@@ -40,6 +42,44 @@ public class Pidgey extends Pokemon{
                 "Gust damage: " + String.valueOf(pidgey.getGust().getDamage()) + " PP: " + String.valueOf(pidgey.getGust().getPp()),
                 "Peck damage: " + String.valueOf(pidgey.getPeck().getDamage()) + " PP: " + String.valueOf(pidgey.getPeck().getPp()),
                 "Wing Attack Throw: " + String.valueOf(pidgey.getWingAttack().getDamage()) + " PP: " + String.valueOf(pidgey.getWingAttack().getPp())};
+    }
+
+    public int PidgeyBattle(Player user, Object[] userPokemon){
+        Battlemenu battlemenu = new Battlemenu();
+        int selection = battlemenu.Menu(getName());
+        if (selection == 1){
+            PidgeyAttacks();;
+        } else if (selection == 2){
+            battlemenu.ChangePokemon(user, userPokemon);
+        } else if(selection == 3){
+            PidgeyItems(battlemenu.UseItem(user));
+        }
+        return 1;
+    }
+
+    public void PidgeyAttacks(){
+        System.out.println("1. Peck PP: " + getPeck().getPp() + "/" +getPeck().getMaxRemains() +
+                "\n2. Gust PP: " + getGust().getPp() + "/" + getGust().getMaxRemains() +
+                "\n3. Fly PP: " + getFly().getPp() + "/" + getFly().getMaxRemains() +
+                "\n4. Wing Attack PP: " + getWingAttack().getPp() + "/" + getWingAttack().getMaxRemains());
+    }
+
+    public String PidgeyItems(String item){
+        if (item.equals("Elixer")) {
+            System.out.println("Which attack would you like to user elixer on?");
+            System.out.println("Enter number: 1. Peck\n 2.Gust\n3. Fly\n4. Wing Attack");
+            int restore = Integer.parseInt(scanner.nextLine());
+            if (restore == 1){
+                return getPeck().useElixer("Elixer");
+            }else if (restore == 2){
+                return getGust().useElixer("ELixer");
+            } else if (restore == 3){
+                return getFly().useElixer("Elixer");
+            } else if (restore == 4){
+                return getWingAttack().useElixer("Elixer");
+            }
+        }
+        return use_item(item);
     }
 }
 
@@ -152,4 +192,10 @@ class Peck extends Attack{
         return moveResult;
     }
 }
+class PidgeyBattle{
 
+    public String menu(Pidgey pidgey){
+        return "Here you are";
+    }
+
+}

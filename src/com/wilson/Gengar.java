@@ -2,12 +2,14 @@ package com.wilson;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Gengar extends Pokemon {
     private final PoisonJab poisonJab;
     private final ConfusionRay confusionRay;
     private final Lick lick;
     private final ShadowBall shadowBall;
+    Scanner scanner = new Scanner(System.in);
 
     public Gengar(String name, String type, int level, int health, int maxHealth, String status,  PoisonJab poisonJab,
                   ConfusionRay confusionRay, Lick lick, ShadowBall shadowBall) {
@@ -39,6 +41,44 @@ public class Gengar extends Pokemon {
                 "Shadowball damage: " + String.valueOf(gengar.getShadowBall().getDamage()) + " PP: " + String.valueOf(gengar.getShadowBall().getPp()),
                 "Confusion Ray damage: " + String.valueOf(gengar.getConfusionRay().getDamage()) + " PP: " + String.valueOf(gengar.getConfusionRay().getPp()),
                 "Lick damage: " + String.valueOf(gengar.getLick().getDamage()) + " PP: " + String.valueOf(gengar.getLick().getPp())};
+    }
+
+    public int GengarBattle(Player user, Object[] userPokemon){
+        Battlemenu battlemenu = new Battlemenu();
+        int selection = battlemenu.Menu(getName());
+        if (selection == 1){
+            GengarAttacks();;
+        } else if (selection == 2){
+            battlemenu.ChangePokemon(user, userPokemon);
+        } else if(selection == 3){
+            GengarItems(battlemenu.UseItem(user));
+        }
+        return 1;
+    }
+
+    public void GengarAttacks(){
+        System.out.println("1. Confusion Ray PP: " + getConfusionRay().getPp() + "/" +getConfusionRay().getMaxRemains() +
+                "\n2. Lick PP: " + getLick().getPp() + "/" + getLick().getMaxRemains() +
+                "\n3. Poison Jab PP: " + getPoisonJab().getPp() + "/" + getPoisonJab().getMaxRemains() +
+                "\n4. Shadow Ball PP: " + getShadowBall().getPp() + "/" + getShadowBall().getMaxRemains());
+    }
+
+    public String GengarItems(String item){
+        if (item.equals("Elixer")) {
+            System.out.println("Which attack would you like to user elixer on?");
+            System.out.println("Enter number: 1. Confusion Ray\n 2.Lick\n3. Poison Jab \n4. Shadow Ball");
+            int restore = Integer.parseInt(scanner.nextLine());
+            if (restore == 1){
+                return getConfusionRay().useElixer("Elixer");
+            }else if (restore == 2){
+                return getLick().useElixer("ELixer");
+            } else if (restore == 3){
+                return getPoisonJab().useElixer("Elixer");
+            } else if (restore == 4){
+                return getShadowBall().useElixer("Elixer");
+            }
+        }
+        return use_item(item);
     }
 }
 
@@ -151,4 +191,5 @@ class ShadowBall extends Attack{
         }
     }
 }
+
 

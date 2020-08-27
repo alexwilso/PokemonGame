@@ -9,6 +9,7 @@ public class Pokemon {
     private int health;
     private int maxHealth;
     private String status;
+    private boolean playable;
 
 
     public Pokemon(String name, String type, int level, int health, int maxHealth, String status) {
@@ -18,6 +19,7 @@ public class Pokemon {
         this.health = health;
         this.maxHealth = maxHealth;
         this.status = status;
+        this.playable = true;
     }
 
     public String getStatus() {
@@ -66,8 +68,8 @@ public class Pokemon {
 
     public void loseHealth(int damage) {
         // Takes health away from pokemon. If pokemon loses all its health, user presented with fainted message,
-        this.health = this.health - damage;
-        if (this.health <= 0){
+        setHealth(getHealth() - damage);
+        if (getHealth() <= 0){
             System.out.println(this.name +" Fainted");
         }
     }
@@ -91,6 +93,16 @@ public class Pokemon {
         if (item.equals("Revive")){
             this.health = this.maxHealth;
             System.out.println(this.name + " was revived. May now be used again to battle.");
+        }
+    }
+
+    public boolean isPlayable() {
+        return playable;
+    }
+
+    public void setPlayable() {
+        if (getHealth() == 0){
+            this.playable = false;
         }
     }
 
@@ -159,7 +171,7 @@ public class Pokemon {
             // Player uses potion, Health is restored by 20 points
             case "Potion":
                 if (this.getHealth() != this.getMaxHealth()){
-                    this.setHealth(20);
+                    this.gainHealth(20);
                     return(this.getName() + " was healed. Health is now " + this.getHealth());
                 } else {
                     return (this.getName() + " is already at max health");

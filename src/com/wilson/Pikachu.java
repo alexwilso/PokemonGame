@@ -2,12 +2,14 @@ package com.wilson;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Pikachu extends Pokemon {
     private final QuickAttack quickAttack;
     private final ThunderShock thunderShock;
     private final Thunder thunder;
     private final Growl growl;
+    Scanner scanner = new Scanner(System.in);
 
     public Pikachu(String name, String type, int level, int health, int maxHealth, String status, QuickAttack quickAttack,
     ThunderShock thunderShock, Thunder thunder, Growl growl) {
@@ -39,6 +41,44 @@ public class Pikachu extends Pokemon {
                 "Quick Attack damage: " + String.valueOf(pikachu.getQuickAttack().getDamage()) + " PP: " + String.valueOf(pikachu.getQuickAttack().getPp()),
                 "Thunder damage: " + String.valueOf(pikachu.getThunder().getDamage()) + " PP: " + String.valueOf(pikachu.getThunder().getPp()),
                 "Thunder Shock Throw: " + String.valueOf(pikachu.getThunderShock().getDamage()) + " PP: " + String.valueOf(pikachu.getThunderShock().getPp())};
+    }
+
+    public int PikachuBattle(Player user, Object[] userPokemon){
+        Battlemenu battlemenu = new Battlemenu();
+        int selection = battlemenu.Menu(getName());
+        if (selection == 1){
+            PikachuAttacks();;
+        } else if (selection == 2){
+            battlemenu.ChangePokemon(user, userPokemon);
+        } else if(selection == 3){
+            PikachuItems(battlemenu.UseItem(user));
+        }
+        return 1;
+    }
+
+    public void PikachuAttacks(){
+        System.out.println("1. Quick Attack PP: " + getQuickAttack().getPp() + "/" +getQuickAttack().getMaxRemains() +
+                "\n2. Thunder Shock PP: " + getThunderShock().getPp() + "/" + getThunderShock().getMaxRemains() +
+                "\n3. Thunder PP: " + getThunder().getPp() + "/" + getThunder().getMaxRemains() +
+                "\n4. Growl PP: " + getGrowl().getPp() + "/" + getGrowl().getMaxRemains());
+    }
+
+    public String PikachuItems(String item){
+        if (item.equals("Elixer")) {
+            System.out.println("Which attack would you like to user elixer on?");
+            System.out.println("Enter number: 1. Quick Attack\n 2.Thunder Shock\n3. Thunder\n4. Growl");
+            int restore = Integer.parseInt(scanner.nextLine());
+            if (restore == 1){
+                return getQuickAttack().useElixer("Elixer");
+            }else if (restore == 2){
+                return getThunderShock().useElixer("ELixer");
+            } else if (restore == 3){
+                return getThunder().useElixer("Elixer");
+            } else if (restore == 4){
+                return getGrowl().useElixer("Elixer");
+            }
+        }
+        return use_item(item);
     }
 }
 
@@ -163,4 +203,12 @@ class Growl extends Attack{
         }
         return moveResult;
     }
+}
+
+class PikcahuBattle{
+
+    public String menu(Pikachu pikachu){
+        return "Here you are";
+    }
+
 }

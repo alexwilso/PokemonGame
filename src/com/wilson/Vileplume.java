@@ -116,7 +116,7 @@ class HyperBeam extends Attack{
             System.out.println("No attack remaining");
             moveResult.put(0, "Normal");
             return moveResult;
-        } else if (type.equals("Ground") || type.equals("Water")){
+        } else if (type.equals("Rock") || type.equals("Water")){
             this.setPp(this.getPp() - 1);
             System.out.println("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");

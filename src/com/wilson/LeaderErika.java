@@ -65,27 +65,33 @@ class ErikaAI{
         / Sets pokemon status based on result of move.
          */
         String randomMove = "Random";
+        Map<Integer, String>  erikaAttack;
         switch (move) {
             case "Max Potion":
                 victreebel.use_item("Max Potion");
                 leaderErika.useItem("Max Potion");
                 break;
             case "Vine Whip":
-                setOpponentStatus(moveStatus(victreebel.getVineWhip().attack(enemyType),
-                        ReturnKeys(victreebel.getVineWhip().attack(enemyType))));
-                return ReturnKeys(victreebel.getVineWhip().attack(enemyType));
+                // You are calling this 3 times, you only want to call once
+                erikaAttack = victreebel.getVineWhip().attack(enemyType);
+                setOpponentStatus(moveStatus(erikaAttack,
+                        ReturnKeys(erikaAttack)));
+                return ReturnKeys(erikaAttack);
             case "Razor Leaf":
-                setOpponentStatus(moveStatus(victreebel.getRazorLeaf().attack(enemyType),
-                        ReturnKeys(victreebel.getRazorLeaf().attack(enemyType))));
-                return ReturnKeys(victreebel.getRazorLeaf().attack(enemyType));
+                erikaAttack = victreebel.getRazorLeaf().attack(enemyType);
+                setOpponentStatus(moveStatus(erikaAttack,
+                        ReturnKeys(erikaAttack)));
+                return ReturnKeys(erikaAttack);
             case "Sleep":
-                setOpponentStatus(moveStatus(victreebel.getSleep().attack(enemyType),
-                        ReturnKeys(victreebel.getSleep().attack(enemyType))));
-                return ReturnKeys(victreebel.getSleep().attack(enemyType));
+                erikaAttack = victreebel.getSleep().attack(enemyType);
+                setOpponentStatus(moveStatus(erikaAttack,
+                        ReturnKeys(erikaAttack)));
+                return ReturnKeys(erikaAttack);
             case "Spit up":
-                setOpponentStatus(moveStatus(victreebel.getSpitUp().attack(enemyType),
-                        ReturnKeys(victreebel.getSpitUp().attack(enemyType))));
-                return ReturnKeys(victreebel.getSpitUp().attack(enemyType));
+                erikaAttack = victreebel.getSpitUp().attack(enemyType);
+                setOpponentStatus(moveStatus(erikaAttack,
+                        ReturnKeys(erikaAttack)));
+                return ReturnKeys(erikaAttack);
             case "Random":
                 int min = 1;
                 int max = 4;
@@ -128,20 +134,26 @@ class ErikaAI{
                 binaryTree.addNode(0, "Max Potion");
             }
         }
-        if (enemyType.equals("Ground") || enemyType.equals("Water")) {
-            binaryTree.addNode(70, "Vine Whip");
-            binaryTree.addNode(60, "Razor Leaf");
+        if (enemyType.equals("Rock") || enemyType.equals("Water")) {
+            if(victreebel.getVineWhip().getPp() > 0) {
+                binaryTree.addNode(70, "Vine Whip");
+            } if (victreebel.getRazorLeaf().getPp() > 0) {
+                binaryTree.addNode(60, "Razor Leaf");
+            }
         } else if (enemyType.equals("Flying") || enemyType.equals("Fire")) {
-            binaryTree.addNode(10, "Vine Whip");
-            binaryTree.addNode(20, "Razor Leaf");
+            if(victreebel.getVineWhip().getPp() > 0) {
+                binaryTree.addNode(10, "Vine Whip");
+            } if (victreebel.getRazorLeaf().getPp() > 0) {
+                binaryTree.addNode(20, "Razor Leaf");
+            }
         }
-        if (enemyHealth <= 10) {
+        if (enemyHealth <= 10 && victreebel.getSleep().getPp() > 0) {
             binaryTree.addNode(100, "Sleep");
         }
-        if (enemyHealth <= 15) {
+        if (enemyHealth <= 15 && victreebel.getSpitUp().getPp() > 0) {
             binaryTree.addNode(90, "Spit up");
         }
-        if (enemyStatus.equals("Normal")) {
+        if (enemyStatus.equals("Normal") && victreebel.getSleep().getPp() > 0) {
             binaryTree.addNode(50, "Sleep");
         }
         binaryTree.addNode(40, "Random");
@@ -212,25 +224,34 @@ class ErikaAI{
                 binaryTree.addNode(70, "Potion");
             } else {
                 binaryTree.addNode(0, "Potion");
-                binaryTree.addNode(70, "Absorb");
+                if(vileplume.getAbsorb().getPp() > 0) {
+                    binaryTree.addNode(70, "Absorb");
+                }
             }
-            if (enemyType.equals("Ground") || enemyType.equals("Water")) {
-                binaryTree.addNode(70, "HyperBeam");
+            if (enemyType.equals("Rock") || enemyType.equals("Water")) {
+                if (vileplume.getHyperBeam().getPp() > 0) {
+                    binaryTree.addNode(70, "HyperBeam");
+                }
             } else if (enemyType.equals("Flying") || enemyType.equals("Fire")) {
-                binaryTree.addNode(10, "HyperBeam");
+                if (vileplume.getHyperBeam().getPp() > 0) {
+                    binaryTree.addNode(10, "HyperBeam");
+                }
             }
-            if (enemyHealth <= 10) {
+            if (enemyHealth <= 10 && vileplume.getSleep().getPp() > 0) {
                 binaryTree.addNode(100, "Sleep");
             }
-            if (enemyHealth <= 15) {
+            if (enemyHealth <= 15 && vileplume.getStunSpore().getPp() > 0) {
                 binaryTree.addNode(90, "StunSpore");
             }
-            if (enemyHealth <= 25){
+            if (enemyHealth <= 25 && vileplume.getAbsorb().getPp() > 0){
                 binaryTree.addNode(80, "Absorb");
             }
             if (!enemyStatus.equals("Normal")){
-                binaryTree.addNode(60, "sleep");
-                binaryTree.addNode(50, "stunSpore");
+                if (vileplume.getSleep().getPp() > 0) {
+                    binaryTree.addNode(60, "sleep");
+                } if (vileplume.getStunSpore().getPp() > 0) {
+                    binaryTree.addNode(50, "stunSpore");
+                }
             }
 
             binaryTree.addNode(40, "Random");
@@ -305,7 +326,9 @@ class ErikaAI{
                 binaryTree.addNode(70, "Potion");
             } else if (tangela.getMegadrain().getPp() > 0) {
                 binaryTree.addNode(0, "Potion");
-                binaryTree.addNode(60, "Mega Drain");
+                if (tangela.getMegadrain().getPp() > 0) {
+                    binaryTree.addNode(60, "Mega Drain");
+                }
             }
             if (enemyHealth <= 25 && tangela.getConstrict().getPp() > 0) {
                 binaryTree.addNode(70, "Constrict");

@@ -2,12 +2,14 @@ package com.wilson;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Onix extends Pokemon {
     private Rage rage;
     private RockThrow rockThrow;
     private RockSmash rockSmash;
     private Bind bind;
+    Scanner scanner = new Scanner(System.in);
 
     public Onix(String name, String type, int level, int health, int maxHealth, String status, Rage rage,
                 RockThrow rockThrow, RockSmash rockSmash, Bind bind) {
@@ -39,6 +41,44 @@ public class Onix extends Pokemon {
                 "Rage damage: " + String.valueOf(onix.getRage().getDamage()) + " PP: " + String.valueOf(onix.getRage().getPp()),
                 "Rock Smash damage: " + String.valueOf(onix.getRockSmash().getDamage()) + " PP: " + String.valueOf(onix.getRockSmash().getPp()),
                 "Rock Throw: " + String.valueOf(onix.getRockThrow().getDamage()) + " PP: " + String.valueOf(onix.getRockThrow().getPp())};
+    }
+
+    public int OnixBattle(Player user, Object[] userPokemon){
+        Battlemenu battlemenu = new Battlemenu();
+        int selection = battlemenu.Menu(getName());
+        if (selection == 1){
+            OnixAttacks();;
+        } else if (selection == 2){
+            battlemenu.ChangePokemon(user, userPokemon);
+        } else if(selection == 3){
+            OnixItems(battlemenu.UseItem(user));
+        }
+        return 1;
+    }
+
+    public void OnixAttacks(){
+        System.out.println("1. Bind PP: " + getBind().getPp() + "/" +getBind().getMaxRemains() +
+                "\n2. Rage PP: " + getRage().getPp() + "/" + getRage().getMaxRemains() +
+                "\n3. Rock Smash PP: " + getRockSmash().getPp() + "/" + getRockSmash().getMaxRemains() +
+                "\n4. Rock Throw PP: " + getRockThrow().getPp() + "/" + getRockThrow().getMaxRemains());
+    }
+
+    public String OnixItems(String item){
+        if (item.equals("Elixer")) {
+            System.out.println("Which attack would you like to user elixer on?");
+            System.out.println("Enter number: 1. Bind\n 2.Rage\n3. Rock Smash\n4. Rock Throw");
+            int restore = Integer.parseInt(scanner.nextLine());
+            if (restore == 1){
+                return getBind().useElixer("Elixer");
+            }else if (restore == 2){
+                return getRage().useElixer("ELixer");
+            } else if (restore == 3){
+                return getRockSmash().useElixer("Elixer");
+            } else if (restore == 4){
+                return getRockThrow().useElixer("Elixer");
+            }
+        }
+        return use_item(item);
     }
 }
 
@@ -150,4 +190,12 @@ class Bind extends Attack{
         }
         return moveResult;
     }
+}
+
+class OnixBattle{
+
+    public String menu(Onix onix){
+        return "Here you are";
+    }
+
 }

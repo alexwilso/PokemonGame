@@ -27,9 +27,10 @@ public class Player {
         this.pokeballs[number] = pokemon;
     }
 
-    public Object[] getPokemon() {
-        return pokeballs;
+    public Object getPokemon(int x) {
+        return pokeballs[x];
     }
+
 
     public void checkBag(){
         /*

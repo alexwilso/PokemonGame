@@ -121,21 +121,27 @@ class SurgeAI{
         Map<String, Integer> move = new HashMap<>();
         if (pikachu.getHealth() < 20) {
             if (leaderSurge.getBag().get("Max Potion") > 1) {
-                binaryTree.addNode(70, "Max Potion");
+                binaryTree.addNode(80, "Max Potion");
             } else {
                 binaryTree.addNode(0, "Max Potion");
             }
             if (enemyType.equals("Water")) {
-                binaryTree.addNode(70, "Thunder");
-                binaryTree.addNode(60, "Thunder Shock");
+                if (pikachu.getThunder().getPp() > 0) {
+                    binaryTree.addNode(70, "Thunder");
+                } if (pikachu.getThunderShock().getPp() > 0) {
+                    binaryTree.addNode(60, "Thunder Shock");
+                }
             } else if (enemyType.equals("Rock")) {
-                binaryTree.addNode(10, "Thunder");
-                binaryTree.addNode(10, "Thunder Shock");
+                if (pikachu.getThunder().getPp() > 0) {
+                    binaryTree.addNode(10, "Thunder");
+                } if (pikachu.getThunderShock().getPp() > 0) {
+                    binaryTree.addNode(20, "Thunder Shock");
+                }
             }
-            if (enemyHealth <= 10) {
+            if (enemyHealth <= 10 && pikachu.getGrowl().getPp() > 0) {
                 binaryTree.addNode(100, "Growl");
             }
-            if (enemyHealth <= 15) {
+            if (enemyHealth <= 15 && pikachu.getGrowl().getPp() > 0) {
                 binaryTree.addNode(90, "Quick Attack");
             }
 
@@ -145,3 +151,5 @@ class SurgeAI{
         return move;
     }
 }
+
+// GO OVER AI WHEN PP OUT!!!! FOR BOTH CLASSES
