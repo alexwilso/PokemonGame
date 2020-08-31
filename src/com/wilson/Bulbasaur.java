@@ -9,7 +9,6 @@ public class Bulbasaur extends Pokemon {
     private final SludgeBomb sludgeBomb;
     private final RazorLeaf razorLeaf;
     private final LeechSeed leechSeed;
-    private String attackName;
     Battlemenu battlemenu = new Battlemenu();
     Scanner scanner = new Scanner(System.in);
 
@@ -32,14 +31,6 @@ public class Bulbasaur extends Pokemon {
 
     public RazorLeaf getRazorLeaf() {
         return razorLeaf;
-    }
-
-    public String getAttackName() {
-        return attackName;
-    }
-
-    public void setAttackName(String attackName) {
-        this.attackName = attackName;
     }
 
     public LeechSeed getLeechSeed() {
@@ -65,9 +56,14 @@ public class Bulbasaur extends Pokemon {
         if (selection == 1){
             return BulbasuarAttacks(cpuType);
         } else if (selection == 2){
-            battlemenu.ChangePokemon(user, userPokemon);
+            return battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
-            BulbasuarItems(battlemenu.UseItem(user));
+            if (user.getBag().isEmpty()){
+                System.out.println("You have no items to use.");
+                BulbasuarBattle(user, userPokemon, cpuType);
+            } else {
+                return BulbasuarItems(battlemenu.UseItem(user));
+            }
         }
         return move;
     }
@@ -83,40 +79,47 @@ public class Bulbasaur extends Pokemon {
         switch (attack){
             case 1:
                 setAttackName("Razor Leaf");
-                return getRazorLeaf().attack(cpuType);
+                move = getRazorLeaf().attack(cpuType);
+                setAttackStrength(getRazorLeaf().getStrength());
+                break;
             case 2:
                 setAttackName("Leech Seed");
-                return getLeechSeed().attack();
+                move = getLeechSeed().attack();
+                setAttackStrength(getLeechSeed().getStrength());
+                break;
             case 3:
                 setAttackName("Sludge Bomb");
-                return getSludgeBomb().attack();
+                move = getSludgeBomb().attack();
+                setAttackStrength(getSludgeBomb().getStrength());
+                break;
             case 4:
                 setAttackName("Vine whip");
-                return getVineWhip().attack(cpuType);
+                move = getVineWhip().attack(cpuType);
+                setAttackStrength(getVineWhip().getStrength());
+                break;
         }
         return move;
     }
 
-    public void BulbasuarItems(String item){
+    public Map<Integer, String> BulbasuarItems(String item){
+        Map<Integer, String> itemMap = new HashMap<>();
+        itemMap.put(0, item);
         if (item.equals("Elixer")) {
             System.out.println("Which attack would you like to user elixer on?");
             System.out.println("Enter number: 1. Razor Leaf\n 2. Leech Seed\n3. Sludge bomb\n4. Vine whip");
             int restore = Integer.parseInt(scanner.nextLine());
             if (restore == 1){
                 getLeechSeed().useElixer("Elixer");
-                return;
             }else if (restore == 2){
                 getLeechSeed().useElixer("Eixer");
-                return;
             } else if (restore == 3){
                 getSludgeBomb().useElixer("Elixer");
-                return;
             } else if (restore == 4){
                 getVineWhip().useElixer("Elixer");
-                return;
             }
         }
         use_item(item);
+        return itemMap;
     }
 }
 
@@ -137,17 +140,18 @@ class VineWhip extends Attack{
             return moveResult;
         } else if (type.equals("Rock") || (type.equals("Water"))){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
             return moveResult;
         } else if (type.equals("Flying") || type.equals("Fire")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very effective");
+            setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }
@@ -168,6 +172,7 @@ class SludgeBomb extends Attack{
             moveResult.put(0, "Sludge bomb");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
@@ -190,19 +195,20 @@ class RazorLeaf extends Attack{
             return moveResult;
         } else if (type.equals("Rock") || (type.equals("Water"))){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
             this.setStatus("Normal");
             return moveResult;
         } else if (type.equals("Flying") || type.equals("Fire")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very effective");
+            setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
 
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }
@@ -228,6 +234,7 @@ class LeechSeed extends Attack{
         } else {
             this.setPp(this.getPp() - 1);
             this.setHeal(this.getDamage());
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;

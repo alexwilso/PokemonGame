@@ -44,16 +44,17 @@ class FlameCharge extends Attack {
             return moveResult;
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, status);
             return moveResult;
         } else if (type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very effective");
+            setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, status);
             return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
             return moveResult;
         }
@@ -75,6 +76,7 @@ class SuperPower extends Attack {
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
@@ -102,6 +104,7 @@ class Toxic extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
         }
         return moveResult;
@@ -125,16 +128,17 @@ class FirePunch extends Attack {
             return moveResult;
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
             return moveResult;
         } else if (type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very effective");
+            setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
             return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }

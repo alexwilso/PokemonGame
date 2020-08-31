@@ -9,7 +9,6 @@ public class Onix extends Pokemon {
     private RockThrow rockThrow;
     private RockSmash rockSmash;
     private Bind bind;
-    private String attackName;
     Battlemenu battlemenu = new Battlemenu();
     Scanner scanner = new Scanner(System.in);
 
@@ -38,14 +37,6 @@ public class Onix extends Pokemon {
         return bind;
     }
 
-    public String getAttackName() {
-        return attackName;
-    }
-
-    public void setAttackName(String attackName) {
-        this.attackName = attackName;
-    }
-
     public String[] DisplayOnix(Onix onix){
         return new String[]{"Type: " + onix.getType(),"Bind damage: " + onix.getBind().getDamage() + " PP: " + onix.getBind().getPp(),
                 "Rage damage: " + onix.getRage().getDamage() + " PP: " + onix.getRage().getPp(),
@@ -59,8 +50,12 @@ public class Onix extends Pokemon {
         if (selection == 1){
             return OnixAttacks(cpuType);
         } else if (selection == 2){
-            battlemenu.ChangePokemon(user, userPokemon);
+            return battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
+            if (user.getBag().isEmpty()){
+                System.out.println("You have no items to use.");
+                OnixBattle(user, userPokemon, cpuType);
+            }
             OnixItems(battlemenu.UseItem(user));
         }
         return move;
@@ -76,36 +71,47 @@ public class Onix extends Pokemon {
         switch (attack){
             case 1:
                 setAttackName("Bind");
-                return getBind().attack(cpuType);
+                move = getBind().attack(cpuType);
+                setAttackStrength(getBind().getStrength());
+                break;
             case 2:
                 setAttackName("Rage");
-                return getRage().attack(cpuType);
+                move = getRage().attack(cpuType);
+                setAttackStrength(getRage().getStrength());
+                break;
             case 3:
                 setAttackName("Rock Smash");
-                return getRockSmash().attack(cpuType);
+                move = getRockSmash().attack(cpuType);
+                setAttackStrength(getRockSmash().getStrength());
+                break;
             case 4:
                 setAttackName("Rock Throw");
-                return getRockThrow().attack(cpuType);
+                move = getRockThrow().attack(cpuType);
+                setAttackStrength(getRockThrow().getStrength());
+                break;
         }
         return move;
     }
 
-    public String OnixItems(String item){
+    public Map<Integer, String> OnixItems(String item){
+        Map<Integer, String> itemMap = new HashMap<>();
+        itemMap.put(0, item);
         if (item.equals("Elixer")) {
             System.out.println("Which attack would you like to user elixer on?");
             System.out.println("Enter number: 1. Bind\n 2.Rage\n3. Rock Smash\n4. Rock Throw");
             int restore = Integer.parseInt(scanner.nextLine());
             if (restore == 1){
-                return getBind().useElixer("Elixer");
+                getBind().useElixer("Elixer");
             }else if (restore == 2){
-                return getRage().useElixer("ELixer");
+                getRage().useElixer("ELixer");
             } else if (restore == 3){
-                return getRockSmash().useElixer("Elixer");
+                getRockSmash().useElixer("Elixer");
             } else if (restore == 4){
-                return getRockThrow().useElixer("Elixer");
+                getRockThrow().useElixer("Elixer");
             }
         }
-        return use_item(item);
+        use_item(item);
+        return itemMap;
     }
 }
 
@@ -125,6 +131,7 @@ class Rage extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
@@ -147,17 +154,18 @@ class RockThrow extends Attack{
             return moveResult;
         }else if (type.equals("Flying") || type.equals("Fire")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
             return moveResult;
         } else if (type.equals("Rock")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very Effective");
+            setStrength("It's not very Effective");
             moveResult.put(this.getDamage() / 2, "Normal");
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }
@@ -180,17 +188,18 @@ class RockSmash extends Attack{
             return moveResult;
         }else if (type.equals("Flying") || type.equals("Fire")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
             return moveResult;
         } else if (type.equals("Rock")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very Effective");
+            setStrength("It's not very Effective");
             moveResult.put(this.getDamage() / 2, "Normal");
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }
@@ -213,16 +222,9 @@ class Bind extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
     }
-}
-
-class OnixBattle{
-
-    public String menu(Onix onix){
-        return "Here you are";
-    }
-
 }

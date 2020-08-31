@@ -1,7 +1,5 @@
 package com.wilson;
 
-import java.util.StringJoiner;
-
 public class Pokemon {
     private String name;
     private String type;
@@ -10,6 +8,8 @@ public class Pokemon {
     private int maxHealth;
     private String status;
     private boolean playable;
+    private String attackName;
+    private String attackStrength;
 
 
     public Pokemon(String name, String type, int level, int health, int maxHealth, String status) {
@@ -68,6 +68,22 @@ public class Pokemon {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getAttackName() {
+        return attackName;
+    }
+
+    public void setAttackName(String attackName) {
+        this.attackName = attackName;
+    }
+
+    public String getAttackStrength() {
+        return attackStrength;
+    }
+
+    public void setAttackStrength(String attackStrength) {
+        this.attackStrength = attackStrength;
     }
 
     public void loseHealth(int damage) {

@@ -5,11 +5,13 @@ public class Attack {
     private int pp;
     private int maxRemains;
     private String status;
+    private String strength;
 
     public Attack(int damage, int remaining, int maxRemains) {
         this.damage = damage;
         this.pp = remaining;
         this.maxRemains = maxRemains;
+        this.strength = "Normal";
     }
 
     public String getStatus() {
@@ -18,6 +20,14 @@ public class Attack {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getStrength() {
+        return strength;
+    }
+
+    public void setStrength(String strength) {
+        this.strength = strength;
     }
 
     public int getDamage() {

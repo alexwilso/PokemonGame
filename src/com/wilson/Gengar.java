@@ -9,7 +9,6 @@ public class Gengar extends Pokemon {
     private final ConfusionRay confusionRay;
     private final Lick lick;
     private final ShadowBall shadowBall;
-    private String attackName;
     Scanner scanner = new Scanner(System.in);
     Battlemenu battlemenu = new Battlemenu();
 
@@ -38,14 +37,6 @@ public class Gengar extends Pokemon {
         return shadowBall;
     }
 
-    public String getAttackName() {
-        return attackName;
-    }
-
-    public void setAttackName(String attackName) {
-        this.attackName = attackName;
-    }
-
     public String[] DisplayGengar(Gengar gengar){
         return new String[]{"Type: " + gengar.getType(),"Poison jab damage: " + gengar.getPoisonJab().getDamage() + " PP: " + gengar.getPoisonJab().getPp(),
                 "Shadowball damage: " + gengar.getShadowBall().getDamage() + " PP: " + gengar.getShadowBall().getPp(),
@@ -59,9 +50,13 @@ public class Gengar extends Pokemon {
         if (selection == 1){
             return GengarAttacks(cpuType);
         } else if (selection == 2){
-            battlemenu.ChangePokemon(user, userPokemon);
+            return battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
-            GengarItems(battlemenu.UseItem(user));
+            if (user.getBag().isEmpty()){
+                System.out.println("You have no items to use.");
+                GengarBattle(user, userPokemon, cpuType);
+            }
+            return GengarItems(battlemenu.UseItem(user));
         }
         return move;
     }
@@ -77,36 +72,47 @@ public class Gengar extends Pokemon {
         switch (attack){
             case 1:
                 setAttackName("Confusion Ray");
-                return getConfusionRay().attack();
+                move = getConfusionRay().attack();
+                setAttackStrength(getConfusionRay().getStrength());
+                break;
             case 2:
                 setAttackName("Lick");
-                return getLick().attack();
+                move = getLick().attack();
+                setAttackStrength(getLick().getStrength());
+                break;
             case 3:
                 setAttackName("Poison Jab");
-                return getPoisonJab().attack(cpuType);
+                move = getPoisonJab().attack(cpuType);
+                setAttackStrength(getPoisonJab().getStrength());
+                break;
             case 4:
                 setAttackName("Shadow Ball");
-                return getShadowBall().attack(cpuType);
+                move = getShadowBall().attack(cpuType);
+                setAttackStrength(getShadowBall().getStrength());
+                break;
         }
         return move;
     }
 
-    public String GengarItems(String item){
+    public Map<Integer, String> GengarItems(String item){
+        Map<Integer, String> itemMap = new HashMap<>();
+        itemMap.put(0, item);
         if (item.equals("Elixer")) {
             System.out.println("Which attack would you like to user elixer on?");
             System.out.println("Enter number: 1. Confusion Ray\n 2.Lick\n3. Poison Jab \n4. Shadow Ball");
             int restore = Integer.parseInt(scanner.nextLine());
             if (restore == 1){
-                return getConfusionRay().useElixer("Elixer");
+                getConfusionRay().useElixer("Elixer");
             }else if (restore == 2){
-                return getLick().useElixer("ELixer");
+                getLick().useElixer("Elixer");
             } else if (restore == 3){
-                return getPoisonJab().useElixer("Elixer");
+                getPoisonJab().useElixer("Elixer");
             } else if (restore == 4){
-                return getShadowBall().useElixer("Elixer");
+                getShadowBall().useElixer("Elixer");
             }
         }
-        return use_item(item);
+        use_item(item);
+        return itemMap;
     }
 }
 
@@ -128,16 +134,16 @@ class PoisonJab extends Attack{
         }
         if (this.getPp() == 0){
             System.out.println("No attack remaining");
-            System.out.println("No attack remaining");
             moveResult.put(0, "Normal");
             return moveResult;
         } else if(type.equals("Rock") || type.equals("Ghost")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, status);
             return moveResult;
         } else {
             this.setPp(this.getPp() -1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
             return moveResult;
         }
@@ -165,6 +171,7 @@ class ConfusionRay extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
         }
         return moveResult;
@@ -185,6 +192,7 @@ class Lick extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
@@ -209,11 +217,12 @@ class ShadowBall extends Attack{
             return moveResult;
         } else if(type.equals("Rock") || type.equals("Ghost")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
             return moveResult;
         } else {
             this.setPp(this.getPp() -1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }

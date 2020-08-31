@@ -50,6 +50,7 @@ class SpitUp extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;

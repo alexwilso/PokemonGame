@@ -79,6 +79,11 @@ public class Main {
         "First stop is in Celadon City where you'll battle Erika, master of grass type pokémon. Goodluck in there " + name + "!");
         pikachu.getThunder().attack("Grass");
         celadonCityGym.Welcome(player, pokemon);
+        if (celadonCityGym.playerwins){
+            System.out.println("hu");
+        } else {
+            System.out.println("huuu");
+        }
 
     }
 

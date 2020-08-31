@@ -61,6 +61,7 @@ class PoisionPowder extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
         }
         return moveResult;
@@ -88,6 +89,7 @@ class Megadrain extends Attack {
             return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             this.setHeal(this.getDamage());
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
@@ -120,6 +122,7 @@ class Slam extends Attack {
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
@@ -142,6 +145,7 @@ class Constrict extends Attack {
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;

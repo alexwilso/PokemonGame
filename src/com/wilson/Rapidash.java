@@ -49,6 +49,7 @@ class Stomp extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
@@ -77,17 +78,18 @@ class FireSpin extends Attack{
             return moveResult;
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super Effective");
+            setStrength("It's super Effective");
             moveResult.put(this.getDamage() * 2, status);
             return moveResult;
         } else if (type.equals("Water") || type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very Effective");
+            setStrength("It's not very Effective");
             moveResult.put(this.getDamage() / 2, status);
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
             return moveResult;
         }
@@ -118,17 +120,18 @@ class FireBlast extends Attack{
             return moveResult;
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super Effective");
+            setStrength("It's super Effective");
             moveResult.put(this.getDamage() * 2, status);
             return moveResult;
         } else if (type.equals("Water") || type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very Effective");
+            setStrength("It's not very Effective");
             moveResult.put(this.getDamage() / 2, status);
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
             return moveResult;
         }
@@ -150,6 +153,7 @@ class Bounce extends Attack {
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;

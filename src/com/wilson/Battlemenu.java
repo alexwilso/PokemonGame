@@ -1,9 +1,10 @@
 package com.wilson;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Battlemenu {
-    CeladonCityGym celadonCityGym = new CeladonCityGym();
     Scanner scanner = new Scanner(System.in);
 
     public int Menu(String pokemon){
@@ -13,9 +14,10 @@ public class Battlemenu {
         return Integer.parseInt(scanner.nextLine());
     }
 
-    public void ChangePokemon(Player user, Object[] userPokemon){
+    public Map<Integer, String> ChangePokemon(Player user, Object[] userPokemon){
         // Allows user to change pokemon. Prints out list of playable pokemon. Takes user number and recursively calls
         // usermove function with pokemon user chooses to change to.
+        Map<Integer, String> changeMap = new HashMap<>();
         for(int x = 0; x < 3; x++){
             System.out.println(Integer.toString(x+1) + " " + userPokemon[x]);
         }
@@ -31,7 +33,8 @@ public class Battlemenu {
             }
         } while (! playable);
         System.out.println("Go " + userPokemon[pokemon-1]);
-        celadonCityGym.userMove(user, userPokemon, pokemon-1, false);
+        changeMap.put(pokemon, "changed");
+        return changeMap;
     }
 
     public String UseItem(Player user){

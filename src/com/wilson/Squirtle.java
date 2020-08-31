@@ -9,7 +9,6 @@ public class Squirtle extends Pokemon {
     private Tackle tackle;
     private Surf surf;
     private ShellAttack shellAttack;
-    private String attackName;
     Battlemenu battlemenu = new Battlemenu();
     Scanner scanner = new Scanner(System.in);
 
@@ -38,14 +37,6 @@ public class Squirtle extends Pokemon {
         return shellAttack;
     }
 
-    public String getAttackName() {
-        return attackName;
-    }
-
-    public void setAttackName(String attackName) {
-        this.attackName = attackName;
-    }
-
     public String[] DisplaySquirtle(Squirtle squirtle) {
         return new String[]{"Type: " + squirtle.getType(), "Growl damage: " + squirtle.getSurf().getDamage() + " PP: " + squirtle.getSurf().getPp(),
                 "Quick Attack damage: " + squirtle.getHydroPump().getDamage() + " PP: " + squirtle.getHydroPump().getPp(),
@@ -59,9 +50,13 @@ public class Squirtle extends Pokemon {
         if (selection == 1){
             return SquirtleAttacks(cpuType);
         } else if (selection == 2){
-            battlemenu.ChangePokemon(user, userPokemon);
+            return battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
-            SquirtleItems(battlemenu.UseItem(user));
+            if (user.getBag().isEmpty()){
+                System.out.println("You have no items to use.");
+                SquirtleBattle(user, userPokemon, cpuType);
+            }
+            return SquirtleItems(battlemenu.UseItem(user));
         }
         return move;
     }
@@ -76,36 +71,48 @@ public class Squirtle extends Pokemon {
         switch (attack){
             case 1:
                 setAttackName("Tackle");
-                return getTackle().attack(cpuType);
+                move = getTackle().attack(cpuType);
+                setAttackStrength(getTackle().getStrength());
+                break;
+
             case 2:
                 setAttackName("Shell Attack");
-                return getShellAttack().attack(cpuType);
+                move = getShellAttack().attack(cpuType);
+                setAttackStrength(getShellAttack().getStrength());
+                break;
             case 3:
                 setAttackName("Hydro Pump");
-                return getHydroPump().attack(cpuType);
+                move = getHydroPump().attack(cpuType);
+                setAttackStrength(getHydroPump().getStrength());
+                break;
             case 4:
                 setAttackName("Surf");
-                return getSurf().attack(cpuType);
+                move = getSurf().attack(cpuType);
+                setAttackStrength(getSurf().getStrength());
+                break;
         }
         return move;
     }
 
-    public String SquirtleItems(String item){
+    public Map<Integer, String> SquirtleItems(String item){
+        Map<Integer, String> itemMap = new HashMap<>();
+        itemMap.put(0, item);
         if (item.equals("Elixer")) {
             System.out.println("Which attack would you like to user elixer on?");
             System.out.println("Enter number: 1. Tackle\n 2.Shell Attack\n3. Hydro Pump\n4. Surf");
             int restore = Integer.parseInt(scanner.nextLine());
             if (restore == 1){
-                return getTackle().useElixer("Elixer");
+                getTackle().useElixer("Elixer");
             }else if (restore == 2){
-                return getShellAttack().useElixer("ELixer");
+                getShellAttack().useElixer("ELixer");
             } else if (restore == 3){
-                return getHydroPump().useElixer("Elixer");
+                getHydroPump().useElixer("Elixer");
             } else if (restore == 4){
-                return getSurf().useElixer("Elixer");
+                getSurf().useElixer("Elixer");
             }
         }
-        return use_item(item);
+        use_item(item);
+        return itemMap;
     }
 }
 
@@ -126,17 +133,18 @@ class HydroPump extends Attack{
             return moveResult;
         } else if (type.equals("Fire") || type.equals("Rock")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
             return moveResult;
         } else if (type.equals("Water") || type.equals("Grass")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very effective");
+            setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }
@@ -159,6 +167,7 @@ class Tackle extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
@@ -182,17 +191,18 @@ class Surf extends Attack {
             return moveResult;
         } else if (type.equals("Fire") || type.equals("Rock")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
             return moveResult;
         } else if (type.equals("Water") || type.equals("Grass")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very effective");
+            setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }
@@ -214,6 +224,7 @@ class ShellAttack extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;

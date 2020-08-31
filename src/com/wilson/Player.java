@@ -31,6 +31,9 @@ public class Player {
         return pokeballs[x];
     }
 
+    public void setMoney(int money) {
+        this.money = getMoney() + money;
+    }
 
     public void checkBag(){
         /*

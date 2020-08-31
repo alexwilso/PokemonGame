@@ -9,7 +9,6 @@ public class Charmander extends Pokemon{
     private final Ember ember;
     private final Flamethrower flamethrower;
     private final Tailwhip tailwhip;
-    private String attackName;
     Scanner scanner = new Scanner(System.in);
     Battlemenu battlemenu = new Battlemenu();
 
@@ -20,14 +19,6 @@ public class Charmander extends Pokemon{
         this.ember = ember;
         this.flamethrower = flamethrower;
         this.tailwhip = tailwhip;
-    }
-
-    public String getAttackName() {
-        return attackName;
-    }
-
-    public void setAttackName(String attackName) {
-        this.attackName = attackName;
     }
 
     public Scratch getScratch() {
@@ -59,9 +50,13 @@ public class Charmander extends Pokemon{
         if (selection == 1){
             return CharmanderAttacks(cpuType);
         } else if (selection == 2){
-            battlemenu.ChangePokemon(user, userPokemon);
+            return battlemenu.ChangePokemon(user, userPokemon);
         } else if(selection == 3){
-            CharmanderItems(battlemenu.UseItem(user));
+            if (user.getBag().isEmpty()){
+                System.out.println("You have no items to use.");
+                CharmanderBattle(user, userPokemon, cpuType);
+            }
+            return CharmanderItems(battlemenu.UseItem(user));
         }
         return move;
     }
@@ -77,40 +72,47 @@ public class Charmander extends Pokemon{
         switch (attack){
             case 1:
                 setAttackName("Ember");
-                return getEmber().attack(cpuType);
+                move = getEmber().attack(cpuType);
+                setAttackStrength(getEmber().getStrength());
+                break;
             case 2:
                 setAttackName("Scratch");
-                return getScratch().attack(cpuType);
+                move = getScratch().attack(cpuType);
+                setAttackStrength(getScratch().getStrength());
+                break;
             case 3:
                 setAttackName("Tail whip");
-                return getTailwhip().attack(cpuType);
+                move = getTailwhip().attack(cpuType);
+                setAttackStrength(getTailwhip().getStrength());
+                break;
             case 4:
                 setAttackName("Flamethrower");
-                return getFlamethrower().attack(cpuType);
+                move = getFlamethrower().attack(cpuType);
+                setAttackStrength(getFlamethrower().getStrength());
+                break;
         }
         return move;
     }
 
-    public void CharmanderItems(String item){
+    public Map<Integer, String> CharmanderItems(String item){
+        Map<Integer, String> itemMap = new HashMap<>();
+        itemMap.put(0, item);
         if (item.equals("Elixer")) {
             System.out.println("Which attack would you like to user elixer on?");
             System.out.println("Enter number: 1. Ember\n 2. Scratch\n3. Tailwhip\n4. Flamethrower");
             int restore = Integer.parseInt(scanner.nextLine());
             if (restore == 1){
                 getEmber().useElixer("Elixer");
-                return;
             }else if (restore == 2){
-                getScratch().useElixer("ELixer");
-                return;
+                getScratch().useElixer("Elixer");
             } else if (restore == 3){
                 getTailwhip().useElixer("Elixer");
-                return;
             } else if (restore == 4){
                 getFlamethrower().useElixer("Elixer");
-                return;
             }
         }
         use_item(item);
+        return itemMap;
     }
 }
 
@@ -128,6 +130,7 @@ class Scratch extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
@@ -158,17 +161,18 @@ class Ember extends Attack{
             return moveResult;
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super Effective");
+            setStrength("It's super Effective");
             moveResult.put(this.getDamage() * 2, status);
             return moveResult;
         } else if (type.equals("Water") || type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very Effective");
+            setStrength("It's not very Effective");
             moveResult.put(this.getDamage() / 2, status);
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
             return moveResult;
         }
@@ -201,17 +205,18 @@ class Flamethrower extends Attack{
             return moveResult;
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super Effective");
+            setStrength("It's super Effective");
             moveResult.put(this.getDamage() * 2, status);
             return moveResult;
         } else if (type.equals("Water") || type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very Effective");
+            setStrength("It's not very Effective");
             moveResult.put(this.getDamage() / 2, status);
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
             return moveResult;
         }
@@ -233,6 +238,7 @@ class Tailwhip extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;

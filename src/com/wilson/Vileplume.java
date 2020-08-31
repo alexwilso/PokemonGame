@@ -65,6 +65,7 @@ class Absorb extends Attack {
         } else {
             this.setPp(this.getPp() - 1);
             this.setHeal(this.getDamage());
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
@@ -94,6 +95,7 @@ class StunSpore extends Attack{
             return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
             return moveResult;
 
@@ -118,17 +120,18 @@ class HyperBeam extends Attack{
             return moveResult;
         } else if (type.equals("Rock") || type.equals("Water")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective");
+            setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
             return moveResult;
         } else if (type.equals("Flying") || type.equals("Fire")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very effective");
+            setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }
@@ -155,6 +158,7 @@ class Sleep extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), status);
         }
         return moveResult;

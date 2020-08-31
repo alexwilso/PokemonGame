@@ -61,6 +61,7 @@ class TriAttack extends Attack {
             return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }
@@ -82,6 +83,7 @@ class MudSlap extends Attack{
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
         }
         return moveResult;
@@ -107,17 +109,18 @@ class Dig extends Attack{
             return moveResult;
         }else if (type.equals("Rock") || type.equals("Fire")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective ");
+            setStrength("It's super effective ");
             moveResult.put(this.getDamage() * 2, "Normal");
             return moveResult;
         } else if (type.equals("Flying")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very effective");
+            setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }
@@ -140,17 +143,18 @@ class EarthQuake extends Attack{
             return moveResult;
         }else if (type.equals("Rock") || type.equals("Fire")) {
             this.setPp(this.getPp() - 1);
-            System.out.println("It's super effective ");
+            setStrength("It's super effective ");
             moveResult.put(this.getDamage() * 2, "Normal");
             return moveResult;
         } else if (type.equals("Flying")){
             this.setPp(this.getPp() - 1);
-            System.out.println("It's not very effective");
+            setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
+            setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
             return moveResult;
         }
