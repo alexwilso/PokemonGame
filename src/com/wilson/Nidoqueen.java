@@ -92,9 +92,11 @@ class BodySlam extends Attack{
 
 class PoisonSting extends Attack{
     // Initializes poison sting
-    int pokemonStatus = new PokemonStatus().PoisonChance();
-    public PoisonSting(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+    public PoisonSting(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public  Map<Integer, String> attack(String type){
@@ -102,16 +104,16 @@ class PoisonSting extends Attack{
         // damage and status.
 
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 3){
-            status = "Poisoned";
+        this.status = "Normal";
+        if(this.pokemonStatus.PoisonChance() == 3){
+            this.status = "Poisoned";
         }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
             moveResult.put(0, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
         }
         return moveResult;
     }

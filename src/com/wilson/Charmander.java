@@ -9,16 +9,17 @@ public class Charmander extends Pokemon{
     private final Ember ember;
     private final Flamethrower flamethrower;
     private final Tailwhip tailwhip;
+    private final Battlemenu battlemenu;
     Scanner scanner = new Scanner(System.in);
-    Battlemenu battlemenu = new Battlemenu();
 
     public Charmander(String name, String type, int level, int health, int maxHealth, String status, Scratch scratch, Ember ember,
-                      Flamethrower flamethrower, Tailwhip tailwhip) {
+                      Flamethrower flamethrower, Tailwhip tailwhip, Battlemenu battlemenu) {
         super(name, type, level, health, maxHealth, status);
         this.scratch = scratch;
         this.ember = ember;
         this.flamethrower = flamethrower;
         this.tailwhip = tailwhip;
+        this.battlemenu = battlemenu;
     }
 
     public Scratch getScratch() {
@@ -38,26 +39,29 @@ public class Charmander extends Pokemon{
     }
 
     public String[] DisplayCharmander(Charmander charmander){
-        return new String[]{"Type: " + charmander.getType(),"Ember damage: " + charmander.getEmber().getDamage() + " PP: " + charmander.getEmber().getPp(),
+        return new String[]{"Type: " + charmander.getType(),"Attacks: Ember damage: " + charmander.getEmber().getDamage() + " PP: " + charmander.getEmber().getPp(),
                 "Flamethrower damage: " + charmander.getFlamethrower().getDamage() + " PP: " + charmander.getFlamethrower().getPp(),
                 "Scratch damage: " + charmander.getScratch().getDamage() + " PP: " + charmander.getScratch().getPp(),
                 "Tailwhip damage: " + charmander.getTailwhip().getDamage() + " PP: " + charmander.getTailwhip().getPp()};
     }
 
-    public Map<Integer, String> CharmanderBattle(Player user, Object[] userPokemon, String cpuType){
+    public Map<Integer, String> CharmanderBattle(Player user, Object[] userPokemon, String cpuType, int activePokemon){
         int selection = battlemenu.Menu(getName());
         Map<Integer, String> move = new HashMap<>();
         if (selection == 1){
-            return CharmanderAttacks(cpuType);
-        } else if (selection == 2){
-            return battlemenu.ChangePokemon(user, userPokemon);
-        } else if(selection == 3){
+            return CharmanderAttacks(cpuType); }
+
+        else if (selection == 2){
+            return battlemenu.ChangePokemon(user, userPokemon, activePokemon); }
+
+        else if(selection == 3){
             if (user.getBag().isEmpty()){
                 System.out.println("You have no items to use.");
-                CharmanderBattle(user, userPokemon, cpuType);
-            }
-            return CharmanderItems(battlemenu.UseItem(user));
-        }
+                CharmanderBattle(user, userPokemon, cpuType, activePokemon);}
+            return CharmanderItems(battlemenu.UseItem(user), user);}
+        else {
+            System.out.println("Not a valid option");
+            CharmanderBattle(user, userPokemon, cpuType, activePokemon);}
         return move;
     }
 
@@ -94,7 +98,7 @@ public class Charmander extends Pokemon{
         return move;
     }
 
-    public Map<Integer, String> CharmanderItems(String item){
+    public Map<Integer, String> CharmanderItems(String item, Player user){
         Map<Integer, String> itemMap = new HashMap<>();
         itemMap.put(0, item);
         if (item.equals("Elixer")) {
@@ -110,9 +114,49 @@ public class Charmander extends Pokemon{
             } else if (restore == 4){
                 getFlamethrower().useElixer("Elixer");
             }
+        } else {
+            use_item(item);
         }
-        use_item(item);
+        user.useItem(item);
+        setAttackName(item);
+        setAttackStrength("Normal");
         return itemMap;
+    }
+
+    public boolean CharmanderStatus(Charmander charmander){
+        // If pokemon status anything other than normal, function is called. Returns true if charmander cannot make move
+        // and true if able to
+        if (charmander.getStatus().equals("Asleep")){
+            if (charmander.WakeUp()){
+                charmander.setStatus("Normal");
+                System.out.println(charmander.getName() + " woke up");
+            } else {
+                System.out.println(charmander.getName() + " is asleep. Cannot make a move");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            }} else if (charmander.getStatus().equals("Burned")){
+            System.out.println("Charmander is burned. Lost 10 health.");
+            charmander.Burn();
+        } else if (charmander.getStatus().equals("Poisoned")){
+            System.out.println("Chamander is poisoned. Lost 10 health.");
+            charmander.Poisioned();
+        } else  if (charmander.getStatus().equals("Paralyzed")){
+            if (charmander.Paralyzed()){
+                System.out.println("Charmander is paralzyed and cannot move");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            }
+        } else if (charmander.getStatus().equals("Confused")){
+            if (charmander.Confusion()){
+                System.out.println("Charmander is confused. Charmander hurt itself and cannot make a move. Lost 10 health");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            } else {
+                System.out.println("Carmander snapped out of confusion");
+                charmander.setStatus("Normal");
+            }
+        }
+        return false;
     }
 }
 
@@ -127,8 +171,8 @@ class Scratch extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-        } else {
+            moveResult.put(999, "Normal"); }
+        else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
             moveResult.put(this.getDamage(), "Normal");
@@ -139,9 +183,12 @@ class Scratch extends Attack{
 
 class Ember extends Attack{
     // Initializes ember
-    int pokemonStatus = new PokemonStatus().BurnChance();
-    public Ember(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+
+    public Ember(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public Map<Integer, String> attack(String type){
@@ -151,29 +198,28 @@ class Ember extends Attack{
         / chance of burning enemy.
          */
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 3){
-            status = "Burned";
+        this.status = "Normal";
+        if(this.pokemonStatus.BurnChance() == 3){
+            this.status = "Burned";
         }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-            return moveResult;
-        } else if (type.equals("Grass")){
+            moveResult.put(999, "Normal");
+            return moveResult; }
+        else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
             setStrength("It's super Effective");
-            moveResult.put(this.getDamage() * 2, status);
-            return moveResult;
-        } else if (type.equals("Water") || type.equals("Rock")) {
+            moveResult.put(this.getDamage() * 2, this.status);
+            return moveResult; }
+        else if (type.equals("Water") || type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's not very Effective");
-            moveResult.put(this.getDamage() / 2, status);
-            return moveResult;
-        }
+            moveResult.put(this.getDamage() / 2, this.status);
+            return moveResult; }
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
             return moveResult;
         }
     }
@@ -181,10 +227,12 @@ class Ember extends Attack{
 
 class Flamethrower extends Attack{
     // initializes Flamethrower attack
-    int pokemonStatus = new PokemonStatus().BurnChance();
+    PokemonStatus pokemonStatus;
+    String status;
 
-    public Flamethrower(int damage, int remaining, int maxRemains) {
+    public Flamethrower(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public Map<Integer, String> attack(String type){
@@ -195,29 +243,29 @@ class Flamethrower extends Attack{
          */
 
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 3){
-            status = "Burned";
+        this.status = "Normal";
+        if(this.pokemonStatus.BurnChance() == 3){
+            this.status = "Burned";
         }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
+            moveResult.put(999, "Normal");
             return moveResult;
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
             setStrength("It's super Effective");
-            moveResult.put(this.getDamage() * 2, status);
+            moveResult.put(this.getDamage() * 2, this.status);
             return moveResult;
         } else if (type.equals("Water") || type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's not very Effective");
-            moveResult.put(this.getDamage() / 2, status);
+            moveResult.put(this.getDamage() / 2, this.status);
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
             return moveResult;
         }
     }
@@ -235,7 +283,7 @@ class Tailwhip extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
+            moveResult.put(999, "Normal");
         } else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");

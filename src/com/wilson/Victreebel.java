@@ -9,7 +9,8 @@ public class Victreebel extends Pokemon{
     private final Sleep sleep;
     private final SpitUp spitUp;
 
-    public Victreebel(String name, String type, int level, int health, int maxHealth, String status, RazorLeaf razorLeaf, VineWhip vineWhip, Sleep sleep, SpitUp spitUp) {
+    public Victreebel(String name, String type, int level, int health, int maxHealth, String status, RazorLeaf razorLeaf,
+                      VineWhip vineWhip, Sleep sleep, SpitUp spitUp) {
         super(name, type, level, health, maxHealth, status);
         this.razorLeaf = razorLeaf;
         this.vineWhip = vineWhip;
@@ -33,6 +34,38 @@ public class Victreebel extends Pokemon{
         return spitUp;
     }
 
+    public boolean VictrebellStatus(Victreebel victreebel){
+        // If pokemon status anything other than normal, function is called. Returns true if victreebel cannot make move
+        // and true if able to
+        if (victreebel.getStatus().equals("Asleep")){
+            if (victreebel.WakeUp()){
+                victreebel.setStatus("Normal");
+                System.out.println(victreebel.getName() + " woke up");
+            } else {
+                System.out.println(victreebel.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (victreebel.getStatus().equals("Burned")){
+            System.out.println("Victreebel is burned. Lost 10 health.");
+            victreebel.Burn();
+        } else if (victreebel.getStatus().equals("Poisoned")){
+            System.out.println("Victreebel is poisoned. Lost 10 health.");
+            victreebel.Poisioned();
+        } else  if (victreebel.getStatus().equals("Paralyzed")){
+            if (victreebel.Paralyzed()){
+                System.out.println("Victreebel is paralyzed and cannot move");
+                return true;
+            }
+        } else if (victreebel.getStatus().equals("Confused")){
+            if (victreebel.Confusion()){
+                System.out.println("Victreebel is confused. Victreebel hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println("Victreebel snapped out of confusion");
+                victreebel.setStatus("Normal");
+            }
+        }
+        return false;
+    }
 }
 
 class SpitUp extends Attack{

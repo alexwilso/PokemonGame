@@ -9,16 +9,17 @@ public class Squirtle extends Pokemon {
     private Tackle tackle;
     private Surf surf;
     private ShellAttack shellAttack;
-    Battlemenu battlemenu = new Battlemenu();
+    private final Battlemenu battlemenu;
     Scanner scanner = new Scanner(System.in);
 
     public Squirtle(String name, String type, int level, int health, int maxHealth, String status, HydroPump hydroPump, Tackle tackle,
-                    Surf surf, ShellAttack shellAttack) {
+                    Surf surf, ShellAttack shellAttack, Battlemenu battlemenu) {
         super(name, type, level, health, maxHealth, status);
         this.HydroPump = hydroPump;
         this.tackle = tackle;
         this.surf = surf;
         this.shellAttack = shellAttack;
+        this.battlemenu = battlemenu;
     }
 
     public HydroPump getHydroPump() {
@@ -38,26 +39,27 @@ public class Squirtle extends Pokemon {
     }
 
     public String[] DisplaySquirtle(Squirtle squirtle) {
-        return new String[]{"Type: " + squirtle.getType(), "Growl damage: " + squirtle.getSurf().getDamage() + " PP: " + squirtle.getSurf().getPp(),
+        return new String[]{"Type: " + squirtle.getType(), "Attacks: Growl damage: " + squirtle.getSurf().getDamage() + " PP: " + squirtle.getSurf().getPp(),
                 "Quick Attack damage: " + squirtle.getHydroPump().getDamage() + " PP: " + squirtle.getHydroPump().getPp(),
                 "Thunder damage: " + squirtle.getShellAttack().getDamage() + " PP: " + squirtle.getShellAttack().getPp(),
                 "Thunder Shock Throw: " + squirtle.getTackle().getDamage() + " PP: " + squirtle.getTackle().getPp()};
     }
 
-    public Map<Integer, String> SquirtleBattle(Player user, Object[] userPokemon, String cpuType){
+    public Map<Integer, String> SquirtleBattle(Player user, Object[] userPokemon, String cpuType, int activePokemon){
         Map<Integer, String> move = new HashMap<>();
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
-            return SquirtleAttacks(cpuType);
-        } else if (selection == 2){
-            return battlemenu.ChangePokemon(user, userPokemon);
-        } else if(selection == 3){
+            return SquirtleAttacks(cpuType); }
+        else if (selection == 2){
+            return battlemenu.ChangePokemon(user, userPokemon, activePokemon);}
+        else if(selection == 3){
             if (user.getBag().isEmpty()){
                 System.out.println("You have no items to use.");
-                SquirtleBattle(user, userPokemon, cpuType);
-            }
-            return SquirtleItems(battlemenu.UseItem(user));
-        }
+                SquirtleBattle(user, userPokemon, cpuType, activePokemon);}
+            return SquirtleItems(battlemenu.UseItem(user), user); }
+        else {
+            System.out.println("Not a valid option");
+            SquirtleBattle(user, userPokemon, cpuType, activePokemon); }
         return move;
     }
 
@@ -94,7 +96,7 @@ public class Squirtle extends Pokemon {
         return move;
     }
 
-    public Map<Integer, String> SquirtleItems(String item){
+    public Map<Integer, String> SquirtleItems(String item, Player user){
         Map<Integer, String> itemMap = new HashMap<>();
         itemMap.put(0, item);
         if (item.equals("Elixer")) {
@@ -109,10 +111,49 @@ public class Squirtle extends Pokemon {
                 getHydroPump().useElixer("Elixer");
             } else if (restore == 4){
                 getSurf().useElixer("Elixer");
+            } } else {
+            use_item(item);
+        }
+        user.useItem(item);
+        setAttackName(item);
+        setAttackStrength("Normal");
+        return itemMap;
+    }
+
+    public boolean SquirtleStatus(Squirtle squirtle){
+        // If pokemon status anything other than normal, function is called. Returns true if squirtle cannot make move
+        // and true if able to
+        if (squirtle.getStatus().equals("Asleep")){
+            if (squirtle.WakeUp()){
+                squirtle.setStatus("Normal");
+                System.out.println(squirtle.getName() + " woke up");
+            } else {
+                System.out.println(squirtle.getName() + " is asleep. Cannot make a move");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            }} else if (squirtle.getStatus().equals("Burned")){
+            System.out.println("Squirtle is burned. Lost 10 health.");
+            squirtle.Burn();
+        } else if (squirtle.getStatus().equals("Poisoned")){
+            System.out.println("Squirtle is poisoned. Lost 10 health.");
+            squirtle.Poisioned();
+        } else  if (squirtle.getStatus().equals("Paralyzed")){
+            if (squirtle.Paralyzed()){
+                System.out.println("Squirtle is paralyzed and cannot move");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            }
+        } else if (squirtle.getStatus().equals("Confused")){
+            if (squirtle.Confusion()){
+                System.out.println("Squirtle is confused. Squirtle hurt itself and cannot make a move. Lost 10 health");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            } else {
+                System.out.println("Squirtle snapped out of confusion");
+                squirtle.setStatus("Normal");
             }
         }
-        use_item(item);
-        return itemMap;
+        return false;
     }
 }
 
@@ -129,19 +170,18 @@ class HydroPump extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-            return moveResult;
-        } else if (type.equals("Fire") || type.equals("Rock")){
+            moveResult.put(999, "Normal");
+            return moveResult;}
+        else if (type.equals("Fire") || type.equals("Rock")){
             this.setPp(this.getPp() - 1);
             setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
-            return moveResult;
-        } else if (type.equals("Water") || type.equals("Grass")) {
+            return moveResult; }
+        else if (type.equals("Water") || type.equals("Grass")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
-            return moveResult;
-        }
+            return moveResult; }
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
@@ -164,12 +204,11 @@ class Tackle extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-        } else {
+            moveResult.put(999, "Normal"); }
+        else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), "Normal");
-        }
+            moveResult.put(this.getDamage(), "Normal"); }
         return moveResult;
     }
 }
@@ -187,19 +226,18 @@ class Surf extends Attack {
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-            return moveResult;
-        } else if (type.equals("Fire") || type.equals("Rock")){
+            moveResult.put(999, "Normal");
+            return moveResult; }
+        else if (type.equals("Fire") || type.equals("Rock")){
             this.setPp(this.getPp() - 1);
             setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
-            return moveResult;
-        } else if (type.equals("Water") || type.equals("Grass")) {
+            return moveResult; }
+        else if (type.equals("Water") || type.equals("Grass")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
-            return moveResult;
-        }
+            return moveResult; }
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
@@ -221,12 +259,11 @@ class ShellAttack extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-        } else {
+            moveResult.put(999, "Normal"); }
+        else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), "Normal");
-        }
+            moveResult.put(this.getDamage(), "Normal"); }
         return moveResult;
     }
 }

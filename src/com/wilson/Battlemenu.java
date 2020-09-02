@@ -14,7 +14,7 @@ public class Battlemenu {
         return Integer.parseInt(scanner.nextLine());
     }
 
-    public Map<Integer, String> ChangePokemon(Player user, Object[] userPokemon){
+    public Map<Integer, String> ChangePokemon(Player user, Object[] userPokemon, int activePokemon){
         // Allows user to change pokemon. Prints out list of playable pokemon. Takes user number and recursively calls
         // usermove function with pokemon user chooses to change to.
         Map<Integer, String> changeMap = new HashMap<>();
@@ -27,7 +27,13 @@ public class Battlemenu {
             System.out.println("Enter number of pokémon you wish to play");
             pokemon = Integer.parseInt(scanner.nextLine());
             if (pokemon >= 0 && pokemon <= 3){
-                playable = true;
+                if (user.searchFainted(pokemon-1)){
+                    System.out.println("That pokemon fainted and is no longer playable. You must revive them to use them");
+                    playable = false;} else if ((pokemon - 1) == activePokemon){
+                    System.out.println("That Pokemon is already in play");
+                    playable = false;
+                } else {
+                    playable = true;}
             } else {
                 System.out.println("Not a valid option");
             }
@@ -42,4 +48,15 @@ public class Battlemenu {
         System.out.println("Enter item would you like to use?\n" + user.getBag());
         return scanner.nextLine();
     }
+
+    public void pressAnyKeyToContinue() {
+    System.out.println("Press Enter key to continue...");
+    try
+    {
+        System.in.read();
+    }
+    catch(Exception ignored)
+    {}
+    }
 }
+

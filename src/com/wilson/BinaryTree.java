@@ -44,6 +44,11 @@ public class BinaryTree{
         }
         return current.name;
     }
+
+    public void deleteTree(){
+        // deletes existing binary tree
+        root = null;
+    }
 }
 
 class Node {

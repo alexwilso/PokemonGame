@@ -20,10 +20,12 @@ public class Flareon extends Pokemon {
 
 class FlameCharge extends Attack {
     // Initializes FlameCharge attack
-    int pokemonStatus = new PokemonStatus().BurnChance();
+    PokemonStatus pokemonStatus;
+    String status;
 
-    public FlameCharge(int damage, int remaining, int maxRemains) {
+    public FlameCharge(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public Map<Integer, String> attack(String type){
@@ -34,9 +36,9 @@ class FlameCharge extends Attack {
          */
 
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 3){
-            status = "Burned";
+        this.status = "Normal";
+        if(pokemonStatus.BurnChance() == 3){
+            this.status = "Burned";
         }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
@@ -45,17 +47,17 @@ class FlameCharge extends Attack {
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
             setStrength("It's super effective");
-            moveResult.put(this.getDamage() * 2, status);
+            moveResult.put(this.getDamage() * 2, this.status);
             return moveResult;
         } else if (type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's not very effective");
-            moveResult.put(this.getDamage() / 2, status);
+            moveResult.put(this.getDamage() / 2,this.status);
             return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
             return moveResult;
         }
     }
@@ -85,9 +87,12 @@ class SuperPower extends Attack {
 
 class Toxic extends Attack{
     // Initializes Toxic attack
-    int pokemonStatus = new PokemonStatus().PoisonChance();
-    public Toxic(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+
+    public Toxic(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public  Map<Integer, String> attack(String type){
@@ -95,9 +100,9 @@ class Toxic extends Attack{
         // poisoning opponent. Returns hashmap with damage and status.
 
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 3){
-            status = "Poisoned";
+        this.status = "Normal";
+        if(pokemonStatus.PoisonChance() == 3){
+            this.status = "Poisoned";
         }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
@@ -105,7 +110,7 @@ class Toxic extends Attack{
         } else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
         }
         return moveResult;
     }

@@ -36,18 +36,20 @@ public class Voltorb extends Pokemon{
 }
 
 class Spark extends Attack{
-    int pokemonStatus = new PokemonStatus().ParalyzeChance();
-    public Spark(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+    public Spark(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public Map<Integer, String> attack(String type) {
         // Carries out attack. If type Water, then damage is doubled. If type Rock, damage halved. Subtracts 1
         // from remaining unless remaining is 0 then returns 0. Returns hashmap with damage and status.
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if (pokemonStatus == 1) {
-            status = "Paralyzed";
+        this.status = "Normal";
+        if (this.pokemonStatus.ParalyzeChance() == 1) {
+            this.status = "Paralyzed";
         }
 
         if (this.getPp() == 0) {
@@ -57,17 +59,17 @@ class Spark extends Attack{
         } else if (type.equals("Water")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's super effective");
-            moveResult.put(this.getDamage() * 2, status);
+            moveResult.put(this.getDamage() * 2, this.status);
             return moveResult;
         } else if (type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's not very effective");
-            moveResult.put(this.getDamage() / 2, status);
+            moveResult.put(this.getDamage() / 2, this.status);
             return moveResult;
         } else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
             return moveResult;
         }
     }

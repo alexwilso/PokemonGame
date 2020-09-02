@@ -6,12 +6,35 @@ public class Player {
     private Hashtable<String, Integer> bag;
     private int money;
     private Object[] pokeballs = new Object[3];
+    private String[] faintedPokemon= new String[3];
 
     public Player(int money) {
         this.bag = new Hashtable<String, Integer>();
         this.money = money;
     }
 
+    public void addFaintedPokemon(int index, String name) {
+        this.faintedPokemon[index] = name;
+    }
+
+    public boolean searchFainted(int index){
+        if (this.faintedPokemon[index] == null){
+            return false;
+        } return true;
+    }
+
+    public boolean allFainted(){
+        for (int x=0; x<3; x++){
+            if (this.faintedPokemon[x] == null){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public String[] getFaintedPokemon() {
+        return faintedPokemon;
+    }
 
     public Hashtable<String, Integer> getBag() {
         return bag;
@@ -20,8 +43,6 @@ public class Player {
     public int getMoney() {
         return this.money;
     }
-
-
 
     public void setPokemon(Object pokemon, int number) {
         this.pokeballs[number] = pokemon;

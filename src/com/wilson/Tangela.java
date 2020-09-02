@@ -21,8 +21,10 @@ public class Tangela extends Pokemon {
         return poisionPowder;
     }
 
-    public Megadrain getMegadrain() {
-        this.restoreHealth();
+    public Megadrain getMegadrain(boolean heal) {
+        if (heal){
+            restoreHealth();
+        }
         return megadrain;
     }
 
@@ -35,16 +37,51 @@ public class Tangela extends Pokemon {
     }
 
     public void restoreHealth(){
-        this.setHealth(this.getHealth() + megadrain.getHeal());
+        this.gainHealth(megadrain.getHeal());
+    }
+
+    public boolean TangelaStatus(Tangela tangela){
+        // If pokemon status anything other than normal, function is called. Returns true if tangela cannot make move
+        // and true if able to
+        if (tangela.getStatus().equals("Asleep")){
+            if (tangela.WakeUp()){
+                tangela.setStatus("Normal");
+                System.out.println(tangela.getName() + " woke up");
+            } else {
+                System.out.println(tangela.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (tangela.getStatus().equals("Burned")){
+            System.out.println("Tangela is burned. Lost 10 health.");
+            tangela.Burn();
+        } else if (tangela.getStatus().equals("Poisoned")){
+            System.out.println("Tangela is poisoned. Lost 10 health.");
+            tangela.Poisioned();
+        } else  if (tangela.getStatus().equals("Paralyzed")){
+            if (tangela.Paralyzed()){
+                System.out.println("Tangela is paralyzed and cannot move");
+                return true;
+            }
+        } else if (tangela.getStatus().equals("Confused")){
+            if (tangela.Confusion()){
+                System.out.println("Tangela is confused. Tangela hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println("Tangela snapped out of confusion");
+                tangela.setStatus("Normal");
+            }
+        }
+        return false;
     }
 
 }
 
 class PoisionPowder extends Attack{
     // initializes PoisonPowder attack
-    int pokemonStatus = new PokemonStatus().PoisonChance();
-    public PoisionPowder(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+    public PoisionPowder(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public Map<Integer, String> attack(String type){
@@ -52,9 +89,9 @@ class PoisionPowder extends Attack{
         // poisoning opponent. Returns hashmap with damage and status.
 
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 3){
-            status = "Poisoned";
+        this.status = "Normal";
+        if(this.pokemonStatus.PoisonChance() == 3){
+            this.status = "Poisoned";
         }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
@@ -62,7 +99,7 @@ class PoisionPowder extends Attack{
         } else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
         }
         return moveResult;
     }
@@ -76,7 +113,6 @@ class Megadrain extends Attack {
         super(damage, remaining, maxRemains);
         this.heal = heal;
     }
-
 
     public Map<Integer, String> attack(String type){
         // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap of damage

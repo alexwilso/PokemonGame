@@ -57,9 +57,11 @@ class Stomp extends Attack{
 }
 
 class FireSpin extends Attack{
-    int pokemonStatus = new PokemonStatus().BurnChance();
-    public FireSpin(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+    public FireSpin(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
     public Map<Integer, String> attack(String type){
         /*
@@ -68,9 +70,9 @@ class FireSpin extends Attack{
         / chance of burning enemy.
          */
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 3){
-            status = "Burned";
+        this.status = "Normal";
+        if(this.pokemonStatus.BurnChance() == 3){
+            this.status = "Burned";
         }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
@@ -79,28 +81,29 @@ class FireSpin extends Attack{
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
             setStrength("It's super Effective");
-            moveResult.put(this.getDamage() * 2, status);
+            moveResult.put(this.getDamage() * 2, this.status);
             return moveResult;
         } else if (type.equals("Water") || type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's not very Effective");
-            moveResult.put(this.getDamage() / 2, status);
+            moveResult.put(this.getDamage() / 2, this.status);
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
             return moveResult;
         }
     }
 }
 
 class FireBlast extends Attack{
-
-    int pokemonStatus = new PokemonStatus().BurnChance();
-    public FireBlast(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+    public FireBlast(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public Map<Integer, String> attack(String type){
@@ -110,9 +113,9 @@ class FireBlast extends Attack{
         / chance of burning enemy.
          */
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 3){
-            status = "Burned";
+        this.status = "Normal";
+        if(this.pokemonStatus.BurnChance() == 3){
+            this.status = "Burned";
         }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
@@ -121,18 +124,18 @@ class FireBlast extends Attack{
         } else if (type.equals("Grass")){
             this.setPp(this.getPp() - 1);
             setStrength("It's super Effective");
-            moveResult.put(this.getDamage() * 2, status);
+            moveResult.put(this.getDamage() * 2, this.status);
             return moveResult;
         } else if (type.equals("Water") || type.equals("Rock")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's not very Effective");
-            moveResult.put(this.getDamage() / 2, status);
+            moveResult.put(this.getDamage() / 2, this.status);
             return moveResult;
         }
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
             return moveResult;
         }
     }

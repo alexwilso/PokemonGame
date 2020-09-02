@@ -38,6 +38,47 @@ public class Pokemon {
         this.status = status;
     }
 
+    public int RandomNum(int min, int max){
+        // generates random number
+        return (int) (Math.random() * (max - min + 1)) + min;
+    }
+
+    public boolean WakeUp(){
+        // Chance of a pokemon waking up
+        if (RandomNum(1, 3) == 2){
+            return true;
+        }
+        return false;
+    }
+
+    public void Burn(){
+        // Pokemon loses 5 health per turn while burned
+        this.loseHealth(10);
+    }
+
+    public boolean Confusion(){
+        // Pokemon has 50% chance of hitting self, instead of opponent if confused. Has 50% chance to snap out of confusion
+
+        if (RandomNum(1, 2) == 2){
+            loseHealth(10);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean Paralyzed(){
+        // Chance of a pokemon waking up
+        if (RandomNum(1, 3) == 2){
+            return true;
+        }
+        return false;
+    }
+
+    public void Poisioned(){
+        this.loseHealth(10);
+    }
+
+
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
     }

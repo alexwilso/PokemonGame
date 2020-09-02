@@ -78,7 +78,7 @@ public class Store {
                 return "Restores health by 20 points. Not effective on fainted pokémon.";
             case "Elixir":
                 return "Restores pp of single attack by 10. If max pp less then 10 restores pp to max.";
-            case "Paralyze heal":
+            case "Paralyze Heal":
                 return "Heals pokémon from paralyzed state.";
             case "Max Potion":
                 return  "Restores health to max health on a single pokémon. Not effective on fainted pokémon.";

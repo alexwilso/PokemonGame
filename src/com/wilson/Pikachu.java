@@ -10,16 +10,17 @@ public class Pikachu extends Pokemon {
     private final ThunderShock thunderShock;
     private final Thunder thunder;
     private final Growl growl;
-    Battlemenu battlemenu = new Battlemenu();
+    Battlemenu battlemenu;
     Scanner scanner = new Scanner(System.in);
 
     public Pikachu(String name, String type, int level, int health, int maxHealth, String status, QuickAttack quickAttack,
-    ThunderShock thunderShock, Thunder thunder, Growl growl) {
+    ThunderShock thunderShock, Thunder thunder, Growl growl, Battlemenu battlemenu) {
         super(name, type, level, health, maxHealth, status);
         this.quickAttack = quickAttack;
         this.thunderShock = thunderShock;
         this.thunder = thunder;
         this.growl = growl;
+        this.battlemenu = battlemenu;
     }
 
     public QuickAttack getQuickAttack() {
@@ -39,26 +40,27 @@ public class Pikachu extends Pokemon {
     }
 
     public String[] DisplayPikachu(Pikachu pikachu){
-        return new String[]{"Type: " + pikachu.getType(),"Growl damage: " + pikachu.getGrowl().getDamage() + " PP: " + pikachu.getGrowl().getPp(),
+        return new String[]{"Type: " + pikachu.getType(),"Attacks: Growl damage: " + pikachu.getGrowl().getDamage() + " PP: " + pikachu.getGrowl().getPp(),
                 "Quick Attack damage: " + pikachu.getQuickAttack().getDamage() + " PP: " + pikachu.getQuickAttack().getPp(),
                 "Thunder damage: " + pikachu.getThunder().getDamage() + " PP: " + pikachu.getThunder().getPp(),
                 "Thunder Shock Throw: " + pikachu.getThunderShock().getDamage() + " PP: " + pikachu.getThunderShock().getPp()};
     }
 
-    public Map<Integer, String> PikachuBattle(Player user, Object[] userPokemon, String cpuType){
+    public Map<Integer, String> PikachuBattle(Player user, Object[] userPokemon, String cpuType, int activePokemon){
         Map<Integer, String> move = new HashMap<>();
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
-            return PikachuAttacks(cpuType);
-        } else if (selection == 2){
-            return battlemenu.ChangePokemon(user, userPokemon);
-        } else if(selection == 3){
+            return PikachuAttacks(cpuType);}
+        else if (selection == 2){
+            return battlemenu.ChangePokemon(user, userPokemon, activePokemon); }
+        else if(selection == 3){
             if (user.getBag().isEmpty()){
                 System.out.println("You have no items to use.");
-                PikachuBattle(user, userPokemon, cpuType);
-            }
-            return PikachuItems(battlemenu.UseItem(user));
-        }
+                PikachuBattle(user, userPokemon, cpuType, activePokemon);}
+            return PikachuItems(battlemenu.UseItem(user), user); }
+        else {
+            System.out.println("Not a valid option");
+            PikachuBattle(user, userPokemon, cpuType, activePokemon);}
         return move;
     }
 
@@ -78,7 +80,7 @@ public class Pikachu extends Pokemon {
             case 2:
                 setAttackName("Thunder Shock");
                 move = getThunderShock().attack(cpuType);
-                setAttackStrength(getThunderShock().getStatus());
+                setAttackStrength(getThunderShock().getStrength());
                 break;
             case 3:
                 setAttackName("Thunder");
@@ -94,7 +96,7 @@ public class Pikachu extends Pokemon {
         return move;
     }
 
-    public Map<Integer, String> PikachuItems(String item){
+    public Map<Integer, String> PikachuItems(String item, Player user){
         Map<Integer, String> itemMap = new HashMap<>();
         itemMap.put(0, item);
         if (item.equals("Elixer")) {
@@ -109,10 +111,49 @@ public class Pikachu extends Pokemon {
                 getThunder().useElixer("Elixer");
             } else if (restore == 4){
                 getGrowl().useElixer("Elixer");
+            } } else {
+                use_item(item);
+            }
+        user.useItem(item);
+        setAttackName(item);
+        setAttackStrength("Normal");
+        return itemMap;
+    }
+
+    public boolean PikachuStatus(Pikachu pikachu){
+        // If pokemon status anything other than normal, function is called. Returns true if pikachu cannot make move
+        // and true if able to
+        if (pikachu.getStatus().equals("Asleep")){
+            if (pikachu.WakeUp()){
+                pikachu.setStatus("Normal");
+                System.out.println(pikachu.getName() + " woke up");
+            } else {
+                System.out.println(pikachu.getName() + " is asleep. Cannot make a move");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            }} else if (pikachu.getStatus().equals("Burned")){
+            System.out.println("Pikachu is burned. Lost 10 health.");
+            pikachu.Burn();
+        } else if (pikachu.getStatus().equals("Poisoned")){
+            System.out.println("Pikachu is poisoned. Lost 10 health.");
+            pikachu.Poisioned();
+        } else  if (pikachu.getStatus().equals("Paralyzed")){
+            if (pikachu.Paralyzed()){
+                System.out.println("Pikachu is paralyzed and cannot move");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            }
+        } else if (pikachu.getStatus().equals("Confused")){
+            if (pikachu.Confusion()){
+                System.out.println("Pikachu is confused. Pikachu hurt itself and cannot make a move. Lost 10 health");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            } else {
+                System.out.println("Pikachu snapped out of confusion");
+                pikachu.setStatus("Normal");
             }
         }
-        use_item(item);
-        return itemMap;
+        return false;
     }
 }
 
@@ -129,50 +170,50 @@ class QuickAttack extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-        } else {
+            moveResult.put(999, "Normal"); }
+        else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), "Normal");
-        }
+            moveResult.put(this.getDamage(), "Normal"); }
         return moveResult;
     }
 }
 
 class ThunderShock extends Attack{
     // Initializes ThunderShock attack
-    int pokemonStatus = new PokemonStatus().ParalyzeChance();
-    public ThunderShock(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+    public ThunderShock(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public Map<Integer, String> attack(String type){
         // Carries out attack. If type Water, then damage is doubled. If type Rock, damage halved. Subtracts 1
         // from remaining unless remaining is 0 then returns 0. Returns hashmap with damage and status.
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 1){
-            status = "Paralyzed";
+        this.status = "Normal";
+        if(this.pokemonStatus.ParalyzeChance() == 1){
+            this.status = "Paralyzed";
         }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-            return moveResult;
-        } else if (type.equals("Water")){
+            moveResult.put(999, "Normal");
+            return moveResult;}
+        else if (type.equals("Water")){
             this.setPp(this.getPp() - 1);
             setStrength("It's super effective");
-            moveResult.put(this.getDamage() * 2, status);
-            return moveResult;
-        } else if (type.equals("Rock")){
+            moveResult.put(this.getDamage() * 2, this.status);
+            return moveResult; }
+        else if (type.equals("Rock")){
             this.setPp(this.getPp() - 1);
             setStrength("It's not very effective");
-            moveResult.put(this.getDamage() / 2, status);
-            return moveResult;
-        }
+            moveResult.put(this.getDamage() / 2, this.status);
+            return moveResult;}
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
             return moveResult;
         }
     }
@@ -180,9 +221,11 @@ class ThunderShock extends Attack{
 
 class Thunder extends Attack{
     // Initializes Thunder attack
-    int pokemonStatus = new PokemonStatus().ParalyzeChance();
-    public Thunder(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+    public Thunder(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public Map<Integer, String> attack(String type){
@@ -190,30 +233,29 @@ class Thunder extends Attack{
         // from remaining unless remaining is 0 then returns 0. Returns hashmap with damage and status.
 
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 1){
-            status = "Paralyzed";
+        this.status = "Normal";
+        if(this.pokemonStatus.ParalyzeChance() == 1){
+            this.status = "Paralyzed";
         }
 
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-            return moveResult;
-        } else if (type.equals("Water")){
+            moveResult.put(999, "Normal");
+            return moveResult; }
+        else if (type.equals("Water")){
             this.setPp(this.getPp() - 1);
             setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
-            return moveResult;
-        } else if (type.equals("Rock")){
+            return moveResult; }
+        else if (type.equals("Rock")){
             this.setPp(this.getPp() - 1);
             setStrength("It's not very effective");
-            moveResult.put(this.getDamage() / 2, status);
-            return moveResult;
-        }
+            moveResult.put(this.getDamage() / 2, this.status);
+            return moveResult; }
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
             return moveResult;
         }
     }
@@ -232,12 +274,11 @@ class Growl extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-        } else {
+            moveResult.put(999, "Normal");}
+        else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), "Normal");
-        }
+            moveResult.put(this.getDamage(), "Normal"); }
         return moveResult;
     }
 }

@@ -5,20 +5,21 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Onix extends Pokemon {
-    private Rage rage;
-    private RockThrow rockThrow;
-    private RockSmash rockSmash;
-    private Bind bind;
-    Battlemenu battlemenu = new Battlemenu();
+    private final Rage rage;
+    private final RockThrow rockThrow;
+    private final RockSmash rockSmash;
+    private final Bind bind;
+    private final Battlemenu battlemenu;
     Scanner scanner = new Scanner(System.in);
 
     public Onix(String name, String type, int level, int health, int maxHealth, String status, Rage rage,
-                RockThrow rockThrow, RockSmash rockSmash, Bind bind) {
+                RockThrow rockThrow, RockSmash rockSmash, Bind bind, Battlemenu battlemenu) {
         super(name, type, level, health, maxHealth, status);
         this.rage = rage;
         this.rockThrow = rockThrow;
         this.rockSmash =rockSmash;
         this.bind = bind;
+        this.battlemenu = battlemenu;
     }
 
     public Rage getRage() {
@@ -38,25 +39,27 @@ public class Onix extends Pokemon {
     }
 
     public String[] DisplayOnix(Onix onix){
-        return new String[]{"Type: " + onix.getType(),"Bind damage: " + onix.getBind().getDamage() + " PP: " + onix.getBind().getPp(),
+        return new String[]{"Type: " + onix.getType(),"Attacks: Bind damage: " + onix.getBind().getDamage() + " PP: " + onix.getBind().getPp(),
                 "Rage damage: " + onix.getRage().getDamage() + " PP: " + onix.getRage().getPp(),
                 "Rock Smash damage: " + onix.getRockSmash().getDamage() + " PP: " + onix.getRockSmash().getPp(),
                 "Rock Throw: " + onix.getRockThrow().getDamage() + " PP: " + onix.getRockThrow().getPp()};
     }
 
-    public Map<Integer, String> OnixBattle(Player user, Object[] userPokemon, String cpuType){
+    public Map<Integer, String> OnixBattle(Player user, Object[] userPokemon, String cpuType, int activePokemon){
         Map<Integer, String> move = new HashMap<>();
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
-            return OnixAttacks(cpuType);
-        } else if (selection == 2){
-            return battlemenu.ChangePokemon(user, userPokemon);
-        } else if(selection == 3){
+            return OnixAttacks(cpuType);}
+        else if (selection == 2){
+            return battlemenu.ChangePokemon(user, userPokemon, activePokemon);}
+        else if(selection == 3){
             if (user.getBag().isEmpty()){
                 System.out.println("You have no items to use.");
-                OnixBattle(user, userPokemon, cpuType);
-            }
-            OnixItems(battlemenu.UseItem(user));
+                return OnixBattle(user, userPokemon, cpuType, activePokemon);}
+            return OnixItems(battlemenu.UseItem(user), user);}
+        else {
+            System.out.println("Not a valid option");
+            OnixBattle(user, userPokemon, cpuType, activePokemon);
         }
         return move;
     }
@@ -93,7 +96,7 @@ public class Onix extends Pokemon {
         return move;
     }
 
-    public Map<Integer, String> OnixItems(String item){
+    public Map<Integer, String> OnixItems(String item, Player user){
         Map<Integer, String> itemMap = new HashMap<>();
         itemMap.put(0, item);
         if (item.equals("Elixer")) {
@@ -103,15 +106,55 @@ public class Onix extends Pokemon {
             if (restore == 1){
                 getBind().useElixer("Elixer");
             }else if (restore == 2){
-                getRage().useElixer("ELixer");
+                getRage().useElixer("Elixer");
             } else if (restore == 3){
                 getRockSmash().useElixer("Elixer");
             } else if (restore == 4){
                 getRockThrow().useElixer("Elixer");
+            } } else {
+            use_item(item);
+        }
+        user.useItem(item);
+        setAttackName(item);
+        setAttackStrength("Normal");
+        return itemMap;
+    }
+
+    public boolean OnixStatus(Onix onix) {
+        // If pokemon status anything other than normal, function is called. Returns true if onix cannot make move
+        // and true if able to
+        if (onix.getStatus().equals("Asleep")) {
+            if (onix.WakeUp()) {
+                onix.setStatus("Normal");
+                System.out.println(onix.getName() + " woke up");
+            } else {
+                System.out.println(onix.getName() + " is asleep. Cannot make a move");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            }
+        } else if (onix.getStatus().equals("Burned")) {
+            System.out.println("Onix is burned. Lost 10 health.");
+            onix.Burn();
+        } else if (onix.getStatus().equals("Poisoned")) {
+            System.out.println("Onix is poisoned. Lost 10 health.");
+            onix.Poisioned();
+        } else if (onix.getStatus().equals("Paralyzed")) {
+            if (onix.Paralyzed()) {
+                System.out.println("Onix is paralyzed and cannot move");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            }
+        } else if (onix.getStatus().equals("Confused")) {
+            if (onix.Confusion()) {
+                System.out.println("Onix is confused. Onix hurt itself and cannot make a move. Lost 10 health");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            } else {
+                System.out.println("Onix snapped out of confusion");
+                onix.setStatus("Normal");
             }
         }
-        use_item(item);
-        return itemMap;
+        return false;
     }
 }
 
@@ -128,12 +171,11 @@ class Rage extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-        } else {
+            moveResult.put(999, "Normal");}
+        else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), "Normal");
-        }
+            moveResult.put(this.getDamage(), "Normal");}
         return moveResult;
     }
 }
@@ -150,25 +192,20 @@ class RockThrow extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack Remaining");
-            moveResult.put(0, "Normal");
-            return moveResult;
-        }else if (type.equals("Flying") || type.equals("Fire")) {
+            moveResult.put(999, "Normal");}
+        else if (type.equals("Flying") || type.equals("Fire")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's super effective");
-            moveResult.put(this.getDamage() * 2, "Normal");
-            return moveResult;
-        } else if (type.equals("Rock")){
+            moveResult.put(this.getDamage() * 2, "Normal");}
+        else if (type.equals("Rock")){
             this.setPp(this.getPp() - 1);
             setStrength("It's not very Effective");
-            moveResult.put(this.getDamage() / 2, "Normal");
-            return moveResult;
-        }
+            moveResult.put(this.getDamage() / 2, "Normal");}
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), "Normal");
-            return moveResult;
-        }
+            moveResult.put(this.getDamage(), "Normal");}
+        return moveResult;
     }
 }
 
@@ -184,19 +221,18 @@ class RockSmash extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack Remaining");
-            moveResult.put(0, "Normal");
-            return moveResult;
-        }else if (type.equals("Flying") || type.equals("Fire")) {
+            moveResult.put(999, "Normal");
+            return moveResult;}
+        else if (type.equals("Flying") || type.equals("Fire")) {
             this.setPp(this.getPp() - 1);
             setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
-            return moveResult;
-        } else if (type.equals("Rock")){
+            return moveResult; }
+        else if (type.equals("Rock")){
             this.setPp(this.getPp() - 1);
             setStrength("It's not very Effective");
             moveResult.put(this.getDamage() / 2, "Normal");
-            return moveResult;
-        }
+            return moveResult; }
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
@@ -206,25 +242,24 @@ class RockSmash extends Attack{
     }
 }
 
-class Bind extends Attack{
+class Bind extends Attack {
     // Initializes Bind attack
     public Bind(int damage, int remaining, int maxRemains) {
         super(damage, remaining, maxRemains);
     }
 
-    public Map<Integer, String> attack(String type){
+    public Map<Integer, String> attack(String type) {
         // Carries out attack. Subtracts from remaining unless remaining is 0 then returns 0. Returns hashmap with
         // damage and status
 
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-        } else {
+            moveResult.put(999, "Normal");}
+        else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), "Normal");
-        }
+            moveResult.put(this.getDamage(), "Normal");}
         return moveResult;
     }
 }

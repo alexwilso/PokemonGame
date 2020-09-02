@@ -9,16 +9,17 @@ public class Bulbasaur extends Pokemon {
     private final SludgeBomb sludgeBomb;
     private final RazorLeaf razorLeaf;
     private final LeechSeed leechSeed;
-    Battlemenu battlemenu = new Battlemenu();
+    private final Battlemenu battlemenu;
     Scanner scanner = new Scanner(System.in);
 
     public Bulbasaur(String name, String type, int level, int health, int maxHealth, String status, VineWhip vineWhip,
-                     SludgeBomb sludgeBomb, RazorLeaf razorLeaf, LeechSeed leechSeed) {
+                     SludgeBomb sludgeBomb, RazorLeaf razorLeaf, LeechSeed leechSeed, Battlemenu battlemenu) {
         super(name, type, level, health, maxHealth, status);
         this.vineWhip = vineWhip;
         this.sludgeBomb = sludgeBomb;
         this.razorLeaf = razorLeaf;
         this.leechSeed = leechSeed;
+        this.battlemenu = battlemenu;
     }
 
     public VineWhip getVineWhip() {
@@ -33,38 +34,41 @@ public class Bulbasaur extends Pokemon {
         return razorLeaf;
     }
 
-    public LeechSeed getLeechSeed() {
+    public LeechSeed getLeechSeed(boolean healing) {
+        if (healing){
+            restoreHealth();
+        }
         return leechSeed;
 
     }
 
     public void restoreHealth(){
-        this.setHealth(this.getHealth() + leechSeed.getHeal());
+        this.gainHealth(leechSeed.getHeal());
     }
 
     public String[] DisplayBulbasaur(Bulbasaur bulbasaur){
-        return new String[]{"Type: " + bulbasaur.getType(),"Leech Seed damage: " + bulbasaur.getLeechSeed().getDamage() + " PP: " + bulbasaur.getLeechSeed().getPp(),
+        return new String[]{"Type: " + bulbasaur.getType(),"Attacks: Leech Seed damage: " + bulbasaur.getLeechSeed(false).getDamage() + " PP: " + bulbasaur.getLeechSeed(false).getPp(),
                 "Razor Leaf damage: " + bulbasaur.getRazorLeaf().getDamage() + " PP: " + bulbasaur.getRazorLeaf().getPp(),
                 "Sludge Bomb damage: " + bulbasaur.getSludgeBomb().getDamage() + " PP: " + bulbasaur.getSludgeBomb().getPp(),
                 "Vine Whip damage: " + bulbasaur.getVineWhip().getDamage() + " PP: " + bulbasaur.getVineWhip().getPp()};
 
     }
 
-    public Map<Integer, String> BulbasuarBattle(Player user, Object[] userPokemon, String cpuType){
+    public Map<Integer, String> BulbasuarBattle(Player user, Object[] userPokemon, String cpuType, int activePokemon){
         Map<Integer, String> move = new HashMap<>();
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
-            return BulbasuarAttacks(cpuType);
-        } else if (selection == 2){
-            return battlemenu.ChangePokemon(user, userPokemon);
-        } else if(selection == 3){
+            return BulbasuarAttacks(cpuType); }
+        else if (selection == 2){
+            return battlemenu.ChangePokemon(user, userPokemon, activePokemon); }
+        else if(selection == 3){
             if (user.getBag().isEmpty()){
                 System.out.println("You have no items to use.");
-                BulbasuarBattle(user, userPokemon, cpuType);
-            } else {
-                return BulbasuarItems(battlemenu.UseItem(user));
-            }
-        }
+                BulbasuarBattle(user, userPokemon, cpuType, activePokemon); }
+            return BulbasuarItems(battlemenu.UseItem(user), user); }
+        else {
+            System.out.println("Not a valid option");
+            BulbasuarBattle(user, userPokemon, cpuType, activePokemon); }
         return move;
     }
 
@@ -72,7 +76,7 @@ public class Bulbasaur extends Pokemon {
         Map<Integer, String> move = new HashMap<>();
         System.out.println("Enter number of attack...");
         System.out.println("1. Razor Leaf PP: " + getRazorLeaf().getPp() + "/" +getRazorLeaf().getMaxRemains() +
-                "\n2. Leech Seed PP: " + getLeechSeed().getPp() + "/" + getLeechSeed().getMaxRemains() +
+                "\n2. Leech Seed PP: " + getLeechSeed(false).getPp() + "/" + getLeechSeed(false).getMaxRemains() +
                 "\n3. Sludge bomb PP: " + getSludgeBomb().getPp() + "/" + getSludgeBomb().getMaxRemains() +
                 "\n4. Vine whip PP: " + getVineWhip().getPp() + "/" + getVineWhip().getMaxRemains());
         int attack = Integer.parseInt(scanner.nextLine());
@@ -84,8 +88,8 @@ public class Bulbasaur extends Pokemon {
                 break;
             case 2:
                 setAttackName("Leech Seed");
-                move = getLeechSeed().attack();
-                setAttackStrength(getLeechSeed().getStrength());
+                move = getLeechSeed(true).attack();
+                setAttackStrength(getLeechSeed(false).getStrength());
                 break;
             case 3:
                 setAttackName("Sludge Bomb");
@@ -101,7 +105,7 @@ public class Bulbasaur extends Pokemon {
         return move;
     }
 
-    public Map<Integer, String> BulbasuarItems(String item){
+    public Map<Integer, String> BulbasuarItems(String item, Player user){
         Map<Integer, String> itemMap = new HashMap<>();
         itemMap.put(0, item);
         if (item.equals("Elixer")) {
@@ -109,17 +113,56 @@ public class Bulbasaur extends Pokemon {
             System.out.println("Enter number: 1. Razor Leaf\n 2. Leech Seed\n3. Sludge bomb\n4. Vine whip");
             int restore = Integer.parseInt(scanner.nextLine());
             if (restore == 1){
-                getLeechSeed().useElixer("Elixer");
+                getLeechSeed(false).useElixer("Elixer");
             }else if (restore == 2){
-                getLeechSeed().useElixer("Eixer");
+                getLeechSeed(false).useElixer("Eixer");
             } else if (restore == 3){
                 getSludgeBomb().useElixer("Elixer");
             } else if (restore == 4){
                 getVineWhip().useElixer("Elixer");
+            } } else {
+            use_item(item);
+        }
+        user.useItem(item);
+        setAttackName(item);
+        setAttackStrength("Normal");
+        return itemMap;
+    }
+
+    public boolean BulbasaurStatus(Bulbasaur bulbasaur){
+        // If pokemon status anything other than normal, function is called. Returns true if bulbausaur cannot make move
+        // and true if able to
+        if (bulbasaur.getStatus().equals("Asleep")){
+            if (bulbasaur.WakeUp()){
+                bulbasaur.setStatus("Normal");
+                System.out.println(bulbasaur.getName() + " woke up");
+            } else {
+                System.out.println(bulbasaur.getName() + " is asleep. Cannot make a move");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            }} else if (bulbasaur.getStatus().equals("Burned")){
+            System.out.println("Bulbasuar is burned. Lost 10 health.");
+            bulbasaur.Burn();
+        } else if (bulbasaur.getStatus().equals("Poisoned")){
+            System.out.println("Bulbasuar is poisoned. Lost 10 health.");
+            bulbasaur.Poisioned();
+        } else  if (bulbasaur.getStatus().equals("Paralyzed")){
+            if (bulbasaur.Paralyzed()){
+                System.out.println("Bulbasuar is paralyzed and cannot move");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            }
+        } else if (bulbasaur.getStatus().equals("Confused")){
+            if (bulbasaur.Confusion()){
+                System.out.println("Bulbasuar is confused. Bulbasuar hurt itself and cannot make a move. Lost 10 health");
+                battlemenu.pressAnyKeyToContinue();
+                return true;
+            } else {
+                System.out.println("Bulbasuar snapped out of confusion");
+                bulbasaur.setStatus("Normal");
             }
         }
-        use_item(item);
-        return itemMap;
+        return false;
     }
 }
 
@@ -136,19 +179,18 @@ class VineWhip extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "False");
-            return moveResult;
-        } else if (type.equals("Rock") || (type.equals("Water"))){
+            moveResult.put(999, "Normal");
+            return moveResult; }
+        else if (type.equals("Rock") || (type.equals("Water"))){
             this.setPp(this.getPp() - 1);
             setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
-            return moveResult;
-        } else if (type.equals("Flying") || type.equals("Fire")){
+            return moveResult; }
+        else if (type.equals("Flying") || type.equals("Fire")){
             this.setPp(this.getPp() - 1);
             setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
-            return moveResult;
-        }
+            return moveResult; }
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
@@ -169,12 +211,11 @@ class SludgeBomb extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Sludge bomb");
-        } else {
+            moveResult.put(999, "Normal"); }
+        else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), "Normal");
-        }
+            moveResult.put(this.getDamage(), "Normal"); }
         return moveResult;
     }
 }
@@ -191,21 +232,19 @@ class RazorLeaf extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Razor leaf");
-            return moveResult;
-        } else if (type.equals("Rock") || (type.equals("Water"))){
+            moveResult.put(999, "Normal");
+            return moveResult; }
+        else if (type.equals("Rock") || (type.equals("Water"))){
             this.setPp(this.getPp() - 1);
             setStrength("It's super effective");
             moveResult.put(this.getDamage() * 2, "Normal");
             this.setStatus("Normal");
-            return moveResult;
-        } else if (type.equals("Flying") || type.equals("Fire")){
+            return moveResult; }
+        else if (type.equals("Flying") || type.equals("Fire")){
             this.setPp(this.getPp() - 1);
             setStrength("It's not very effective");
             moveResult.put(this.getDamage() / 2, "Normal");
-
-            return moveResult;
-        }
+            return moveResult; }
         else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
@@ -230,8 +269,8 @@ class LeechSeed extends Attack{
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "False");
-        } else {
+            moveResult.put(999, "Normal"); }
+        else {
             this.setPp(this.getPp() - 1);
             this.setHeal(this.getDamage());
             setStrength("Normal");

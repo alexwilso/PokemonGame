@@ -32,9 +32,8 @@ public class PlayerMove {
         this.playerAttackStatus = playerAttackStatus;
     }
 
-    public boolean userItem(Map<Integer, String> item){
-        System.out.println("Player's used " + returnMove.MoveString(item, returnMove.MoveDamage(item)));
-        return false;
+    public void userItem(Map<Integer, String> item){
+        System.out.println("Player used " + returnMove.MoveString(item, returnMove.MoveDamage(item)));
     }
 
     public void AttackStrength(String strength){
@@ -45,7 +44,7 @@ public class PlayerMove {
     }
 
     public boolean BulbasaurMove(Player user, Bulbasaur bulbasaur, boolean firstTurn, boolean playerDamage, int damage, String status,
-                                              Object[] userPokemon, String cpuType){
+                                              Object[] userPokemon, String cpuType, int activePokemon){
         /*
         / Returns false to set users move in gym class to false allowing the cpu to move. Sets player attack damage and
         / enemy status after attack. If item is used, item is used and turn is ended. Updates bulbasaur health and status
@@ -53,29 +52,43 @@ public class PlayerMove {
          */
         if (!firstTurn && playerDamage){
             bulbasaur.loseHealth(damage);
-            bulbasaur.setStatus(status);
-        }
+            if (bulbasaur.getStatus().equals("Normal")){
+            bulbasaur.setStatus(status); }}
+        if (!bulbasaur.isPlayable()){
+            return true; }
         System.out.println("Player pokémon: " + bulbasaur.getName() + ". Health is " + bulbasaur.getHealth() + ". Status " +
                 "is " + bulbasaur.getStatus() + ".");
-        Map<Integer, String> bulbasaurMove = bulbasaur.BulbasuarBattle(user, userPokemon, cpuType);
+        if (!bulbasaur.getStatus().equals("Normal") && playerDamage){
+            if (bulbasaur.BulbasaurStatus(bulbasaur)) {
+                setPlayerAttackStatus("Normal");
+                setPlayerAttackDamage(0);
+                return false; } }
+        Map<Integer, String> bulbasaurMove = bulbasaur.BulbasuarBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(bulbasaurMove) == 0){
-            return userItem(bulbasaurMove);
-        } else if (returnMove.MoveDamage(bulbasaurMove) <= 3){
+            userItem(bulbasaurMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            System.out.println(bulbasaur.getName() + " health: " + bulbasaur.getHealth());
+            return false; }
+        else if (returnMove.MoveDamage(bulbasaurMove) <= 3){
             setPlayerAttackDamage(0);
             setPlayerAttackStatus("Normal");
             setActivePokemon(returnMove.MoveDamage(bulbasaurMove) - 1);
-            return false;
-        }
+            return false; }
+        else if (returnMove.MoveDamage(bulbasaurMove) == 999){
+            return BulbasaurMove(user, bulbasaur, false, false, damage, status, userPokemon, cpuType, activePokemon);}
         setPlayerAttackDamage(returnMove.MoveDamage(bulbasaurMove));
         setPlayerAttackStatus(returnMove.MoveString(bulbasaurMove, returnMove.MoveDamage(bulbasaurMove)));
         System.out.println("Player's " + bulbasaur.getName() + " used " + bulbasaur.getAttackName() + ".");
         AttackStrength(bulbasaur.getAttackStrength());
         System.out.println("Dealt " + getPlayerAttackDamage() + " damage to opponent.");
-        return false;
-    }
+        if (bulbasaur.getAttackName().equals("Leech Seed")){
+            System.out.println("Bulbasuar's health was restored by " + bulbasaur.getLeechSeed(false).getHeal() + "."
+            + " Bulbasuar's health: " + bulbasaur.getHealth()); }
+        return false; }
 
     public boolean CharmanderMove(Player user, Charmander charmander, boolean firstTurn, boolean playerDamage, int damage, String status,
-                                              Object[] userPokemon, String cpuType){
+                                              Object[] userPokemon, String cpuType, int activePokemon){
        /*
         / Returns false to set users move in gym class to false allowing the cpu to move. Sets player attack damage and
         / enemy status after attack. If item is used, item is used and turn is ended. Updates charmander health and status
@@ -83,19 +96,31 @@ public class PlayerMove {
          */
         if (!firstTurn && playerDamage){
             charmander.loseHealth(damage);
-            charmander.setStatus(status);
-        }
+            if (charmander.getStatus().equals("Normal")){
+                charmander.setStatus(status); }}
+        if (!charmander.isPlayable()){
+            return true; }
         System.out.println("Player pokémon: " + charmander.getName() + ". Health is " + charmander.getHealth() + ". Status " +
                 "is " + charmander.getStatus() + ".");
-        Map<Integer, String> charmanderMove = charmander.CharmanderBattle(user, userPokemon, cpuType);
+        if (!charmander.getStatus().equals("Normal") && playerDamage){
+            if (charmander.CharmanderStatus(charmander)) {
+                setPlayerAttackStatus("Normal");
+                setPlayerAttackDamage(0);
+                return false; } }
+        Map<Integer, String> charmanderMove = charmander.CharmanderBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(charmanderMove) == 0){
-            return userItem(charmanderMove);
-        } else if (returnMove.MoveDamage(charmanderMove) <= 3){
+            userItem(charmanderMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            System.out.println(charmander.getName() + " health: " + charmander.getHealth());
+            return false; }
+        else if (returnMove.MoveDamage(charmanderMove) <= 3){
             setPlayerAttackDamage(0);
             setPlayerAttackStatus("Normal");
             setActivePokemon(returnMove.MoveDamage(charmanderMove) - 1);
-            return false;
-        }
+            return false; }
+        else if (returnMove.MoveDamage(charmanderMove) == 999){
+            return CharmanderMove(user, charmander, false, false, damage, status, userPokemon, cpuType, activePokemon);}
         setPlayerAttackDamage(returnMove.MoveDamage(charmanderMove));
         setPlayerAttackStatus(returnMove.MoveString(charmanderMove, returnMove.MoveDamage(charmanderMove)));
         System.out.println("Player's " + charmander.getName() + " used " + charmander.getAttackName() + ".");
@@ -105,7 +130,7 @@ public class PlayerMove {
     }
 
     public boolean GengarMove(Player user, Gengar gengar, boolean firstTurn, boolean playerDamage, int damage, String status,
-                                               Object[] userPokemon, String cpuType){
+                                               Object[] userPokemon, String cpuType, int activePokemon){
         /*
         / Returns false to set users move in gym class to false allowing the cpu to move. Sets player attack damage and
         / enemy status after attack. If item is used, item is used and turn is ended. Updates gengar health and status
@@ -113,29 +138,40 @@ public class PlayerMove {
          */
         if (!firstTurn && playerDamage){
             gengar.loseHealth(damage);
-            gengar.setStatus(status);
-        }
+            if (gengar.getStatus().equals("Normal")){
+                gengar.setStatus(status); }}
+        if (!gengar.isPlayable()){
+            return true; }
         System.out.println("Player pokémon: " + gengar.getName() + ". Health is " + gengar.getHealth() + ". Status " +
                 "is " + gengar.getStatus() + ".");
-        Map<Integer, String> gengarMove = gengar.GengarBattle(user, userPokemon, cpuType);
+        if (!gengar.getStatus().equals("Normal") && playerDamage){
+            if (gengar.GengarStatus(gengar)) {
+                setPlayerAttackStatus("Normal");
+                setPlayerAttackDamage(0);
+                return false; } }
+        Map<Integer, String> gengarMove = gengar.GengarBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(gengarMove) == 0){
-            return userItem(gengarMove);
-        } else if (returnMove.MoveDamage(gengarMove) <= 3){
+            userItem(gengarMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            System.out.println(gengar.getName() + " health: " + gengar.getHealth());
+            return false; }
+        else if (returnMove.MoveDamage(gengarMove) <= 3){
             setPlayerAttackDamage(0);
             setPlayerAttackStatus("Normal");
             setActivePokemon(returnMove.MoveDamage(gengarMove) - 1);
-            return false;
-        }
+            return false; }
+        else if (returnMove.MoveDamage(gengarMove) == 999){
+            return GengarMove(user, gengar, false, false, damage, status, userPokemon, cpuType, activePokemon);}
         setPlayerAttackDamage(returnMove.MoveDamage(gengarMove));
         setPlayerAttackStatus(returnMove.MoveString(gengarMove, returnMove.MoveDamage(gengarMove)));
         System.out.println("Player's " + gengar.getName() + " used " + gengar.getAttackName() + ".");
         AttackStrength(gengar.getAttackStrength());
         System.out.println("Dealt " + getPlayerAttackDamage() + " damage to opponent.");
-        return false;
-    }
+        return false; }
 
     public boolean OnixMove(Player user, Onix onix, boolean firstTurn, boolean playerDamage, int damage, String status,
-                                           Object[] userPokemon, String cpuType){
+                                           Object[] userPokemon, String cpuType, int activePokemon){
         /*
         / Returns false to set users move in gym class to false allowing the cpu to move. Sets player attack damage and
         / enemy status after attack. If item is used, item is used and turn is ended. Updates Onix health and status
@@ -143,28 +179,40 @@ public class PlayerMove {
          */
         if (!firstTurn && playerDamage){
             onix.loseHealth(damage);
-            onix.setStatus(status);
-        }
+            if (onix.getStatus().equals("Normal")){
+                onix.setStatus(status); }}
+        if (!onix.isPlayable()){
+            return true; }
         System.out.println("Player pokémon: " + onix.getName() + ". Health is " + onix.getHealth() + ". Status " +
                 "is " + onix.getStatus() + ".");
-        Map<Integer, String> onixMove = onix.OnixBattle(user, userPokemon, cpuType);
+        if (!onix.getStatus().equals("Normal") && playerDamage){
+            if (onix.OnixStatus(onix)) {
+                setPlayerAttackStatus("Normal");
+                setPlayerAttackDamage(0);
+                return false; } }
+        Map<Integer, String> onixMove = onix.OnixBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(onixMove) == 0){
-            return userItem(onixMove);
-        } else if (returnMove.MoveDamage(onixMove) <= 3){
+            userItem(onixMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            System.out.println(onix.getName() + " health: " + onix.getHealth());
+            return false; }
+        else if (returnMove.MoveDamage(onixMove) <= 3){
             setPlayerAttackDamage(0);
             setPlayerAttackStatus("Normal");
             setActivePokemon(returnMove.MoveDamage(onixMove) - 1);
-            return false;
-        }
+            return false; }
+        else if (returnMove.MoveDamage(onixMove) == 999){
+            return OnixMove(user, onix, false, false, damage, status, userPokemon, cpuType, activePokemon);}
         setPlayerAttackDamage(returnMove.MoveDamage(onixMove));
         setPlayerAttackStatus(returnMove.MoveString(onixMove, returnMove.MoveDamage(onixMove)));
         System.out.println("Player's " + onix.getName() + " used " + onix.getAttackName() + ".");
         AttackStrength(onix.getAttackStrength());
         System.out.println("Dealt " + getPlayerAttackDamage() + " damage to opponent.");
-        return false;
-    }
+        return false; }
+
     public boolean PidgeyMove(Player user, Pidgey pidgey, boolean firstTurn, boolean playerDamage, int damage, String status,
-                                         Object[] userPokemon, String cpuType){
+                                         Object[] userPokemon, String cpuType, int activePokemon){
         /*
         / Returns false to set users move in gym class to false allowing the cpu to move. Sets player attack damage and
         / enemy status after attack. If item is used, item is used and turn is ended. Updates Pidgey health and status
@@ -172,29 +220,41 @@ public class PlayerMove {
          */
         if (!firstTurn && playerDamage){
             pidgey.loseHealth(damage);
-            pidgey.setStatus(status);
+            if (pidgey.getStatus().equals("Normal")){
+                pidgey.setStatus(status); }}
+        if (!pidgey.isPlayable()){
+            return true;
         }
         System.out.println("Player pokémon: " + pidgey.getName() + ". Health is " + pidgey.getHealth() + ". Status " +
                 "is " + pidgey.getStatus() + ".");
-        Map<Integer, String> pidgeyMove = pidgey.PidgeyBattle(user, userPokemon, cpuType);
+        if (!pidgey.getStatus().equals("Normal") && playerDamage){
+            if (pidgey.PidgeyStatus(pidgey)) {
+                setPlayerAttackStatus("Normal");
+                setPlayerAttackDamage(0);
+                return false; } }
+        Map<Integer, String> pidgeyMove = pidgey.PidgeyBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(pidgeyMove) == 0){
-            return userItem(pidgeyMove);
-        } else if (returnMove.MoveDamage(pidgeyMove) <= 3){
+            userItem(pidgeyMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            System.out.println(pidgey.getName() + " health: " + pidgey.getHealth());
+            return false; }
+        else if (returnMove.MoveDamage(pidgeyMove) <= 3){
             setPlayerAttackDamage(0);
             setPlayerAttackStatus("Normal");
             setActivePokemon(returnMove.MoveDamage(pidgeyMove) - 1);
-            return false;
-        }
+            return false; }
+        else if (returnMove.MoveDamage(pidgeyMove) == 999){
+            return PidgeyMove(user, pidgey, false, false, damage, status, userPokemon, cpuType, activePokemon);}
         setPlayerAttackDamage(returnMove.MoveDamage(pidgeyMove));
         setPlayerAttackStatus(returnMove.MoveString(pidgeyMove, returnMove.MoveDamage(pidgeyMove)));
         System.out.println("Player's " + pidgey.getName() + " used " + pidgey.getAttackName() + ".");
         AttackStrength(pidgey.getAttackStrength());
         System.out.println("Dealt " + getPlayerAttackDamage() + " damage to opponent.");
-        return false;
-    }
+        return false; }
 
     public boolean PikachuMove(Player user, Pikachu pikachu, boolean firstTurn, boolean playerDamage, int damage, String status,
-                                           Object[] userPokemon, String cpuType){
+                                           Object[] userPokemon, String cpuType, int activePokemon){
        /*
         / Returns false to set users move in gym class to false allowing the cpu to move. Sets player attack damage and
         / enemy status after attack. If item is used, item is used and turn is ended. Updates Pikachu health and status
@@ -202,19 +262,31 @@ public class PlayerMove {
          */
         if (!firstTurn && playerDamage){
             pikachu.loseHealth(damage);
-            pikachu.setStatus(status);
-        }
+            if (!pikachu.getStatus().equals("Normal")){
+                pikachu.setStatus(status); }}
+        if (!pikachu.isPlayable()){
+            return true; }
         System.out.println("Player pokémon: " + pikachu.getName() + ". Health is " + pikachu.getHealth() + ". Status " +
                 "is " + pikachu.getStatus() + ".");
-        Map<Integer, String> pikachuMove = pikachu.PikachuBattle(user, userPokemon, cpuType);
+        if (!pikachu.getStatus().equals("Normal") && playerDamage){
+            if (pikachu.PikachuStatus(pikachu)) {
+                setPlayerAttackStatus("Normal");
+                setPlayerAttackDamage(0);
+                return false; } }
+        Map<Integer, String> pikachuMove = pikachu.PikachuBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(pikachuMove) == 0){
-            return userItem(pikachuMove);
-        } else if (returnMove.MoveDamage(pikachuMove) <= 3){
+            userItem(pikachuMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            System.out.println(pikachu.getName() + " health: " + pikachu.getHealth());
+            return false; }
+        else if (returnMove.MoveDamage(pikachuMove) <= 3){
             setPlayerAttackDamage(0);
             setPlayerAttackStatus("Normal");
             setActivePokemon(returnMove.MoveDamage(pikachuMove) - 1);
-            return false;
-        }
+            return false; }
+        else if (returnMove.MoveDamage(pikachuMove) == 999){
+            return PikachuMove(user, pikachu, false, false, damage, status, userPokemon, cpuType, activePokemon);}
         setPlayerAttackDamage(returnMove.MoveDamage(pikachuMove));
         setPlayerAttackStatus(returnMove.MoveString(pikachuMove, returnMove.MoveDamage(pikachuMove)));
         System.out.println("Player's " + pikachu.getName() + " used " + pikachu.getAttackName() + ".");
@@ -225,7 +297,7 @@ public class PlayerMove {
 
 
     public boolean SquirtleMove(Player user, Squirtle squirtle, boolean firstTurn, boolean playerDamage, int damage, String status,
-                                            Object[] userPokemon, String cpuType) {
+                                            Object[] userPokemon, String cpuType, int activePokemon) {
         /*
         / Returns false to set users move in gym class to false allowing the cpu to move. Sets player attack damage and
         / enemy status after attack. If item is used, item is used and turn is ended. Updates Squirtle health and status
@@ -233,22 +305,31 @@ public class PlayerMove {
          */
         if (!firstTurn && playerDamage){
             squirtle.loseHealth(damage);
-            squirtle.setStatus(status);
-        }
+            if (squirtle.getStatus().equals("Normal")){
+                squirtle.setStatus(status); }}
         if (!squirtle.isPlayable()){
-            return true;
-        }
+            return true; }
         System.out.println("Player pokémon: " + squirtle.getName() + ". Health is " + squirtle.getHealth() + ". Status " +
                 "is " + squirtle.getStatus() + ".");
-        Map<Integer, String> squirtleMove = squirtle.SquirtleBattle(user, userPokemon, cpuType);
+        if (!squirtle.getStatus().equals("Normal") && playerDamage){
+            if (squirtle.SquirtleStatus(squirtle)) {
+                setPlayerAttackStatus("Normal");
+                setPlayerAttackDamage(0);
+                return false; } }
+        Map<Integer, String> squirtleMove = squirtle.SquirtleBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(squirtleMove) == 0) {
-            return userItem(squirtleMove);
-        } else if (returnMove.MoveDamage(squirtleMove) <= 3){
+            userItem(squirtleMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            System.out.println(squirtle.getName() + " health: " + squirtle.getHealth());
+            return false; }
+        else if (returnMove.MoveDamage(squirtleMove) <= 3){
             setPlayerAttackDamage(0);
             setPlayerAttackStatus("Normal");
             setActivePokemon(returnMove.MoveDamage(squirtleMove) - 1);
-            return false;
-        }
+            return false; }
+        else if (returnMove.MoveDamage(squirtleMove) == 999){
+            return SquirtleMove(user, squirtle, false, false, damage, status, userPokemon, cpuType, activePokemon);}
         setPlayerAttackDamage(returnMove.MoveDamage(squirtleMove));
         setPlayerAttackStatus(returnMove.MoveString(squirtleMove, returnMove.MoveDamage(squirtleMove)));
         System.out.println("Player's " + squirtle.getName() + " used " + squirtle.getAttackName() + ".");

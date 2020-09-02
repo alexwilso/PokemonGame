@@ -17,7 +17,10 @@ public class Vileplume extends Pokemon {
         this.sleep = sleep;
     }
 
-    public Absorb getAbsorb() {
+    public Absorb getAbsorb(boolean heal) {
+        if (heal){
+            restoreHealth();
+        }
         return absorb;
     }
 
@@ -34,7 +37,39 @@ public class Vileplume extends Pokemon {
     }
 
     public void restoreHealth(){
-        this.setHealth(this.getHealth() + absorb.getHeal());
+        this.gainHealth(absorb.getHeal());
+    }
+    public boolean VileplumeStatus(Vileplume vileplume){
+        // If pokemon status anything other than normal, function is called. Returns true if vileplume cannot make move
+        // and true if able to
+        if (vileplume.getStatus().equals("Asleep")){
+            if (vileplume.WakeUp()){
+                vileplume.setStatus("Normal");
+                System.out.println(vileplume.getName() + " woke up");
+            } else {
+                System.out.println(vileplume.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (vileplume.getStatus().equals("Burned")){
+            System.out.println("Vileplume is burned. Lost 10 health.");
+            vileplume.Burn();
+        } else if (vileplume.getStatus().equals("Poisoned")){
+            System.out.println("Vileplume is poisoned. Lost 10 health.");
+            vileplume.Poisioned();
+        } else  if (vileplume.getStatus().equals("Paralyzed")){
+            if (vileplume.Paralyzed()){
+                System.out.println("Vileplume is paralyzed and cannot move");
+                return true;
+            }
+        } else if (vileplume.getStatus().equals("Confused")){
+            if (vileplume.Confusion()){
+                System.out.println("Vileplume is confused. Vileplume hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println("Vileplume snapped out of confusion");
+                vileplume.setStatus("Normal");
+            }
+        }
+        return false;
     }
 }
 
@@ -74,9 +109,12 @@ class Absorb extends Attack {
 }
 
 class StunSpore extends Attack{
-    int pokemonStatus = new PokemonStatus().ParalyzeChance();
-    public StunSpore(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+
+    public StunSpore(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public Map<Integer, String> attack(String type){
@@ -84,9 +122,9 @@ class StunSpore extends Attack{
         // damage and status.
 
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 1){
-            status = "Paralyzed";
+        this.status = "Normal";
+        if(pokemonStatus.ParalyzeChance() == 1){
+            this.status = "Paralyzed";
         }
 
         if (this.getPp() == 0) {
@@ -96,7 +134,7 @@ class StunSpore extends Attack{
         } else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
             return moveResult;
 
         }
@@ -138,10 +176,14 @@ class HyperBeam extends Attack{
     }
 }
 
+
 class Sleep extends Attack{
-    int pokemonStatus = new PokemonStatus().SleepChance();
-    public Sleep(int damage, int remaining, int maxRemains) {
+    PokemonStatus pokemonStatus;
+    String status;
+
+    public Sleep(int damage, int remaining, int maxRemains, PokemonStatus pokemonStatus) {
         super(damage, remaining, maxRemains);
+        this.pokemonStatus = pokemonStatus;
     }
 
     public Map<Integer, String> attack(String type){
@@ -149,9 +191,9 @@ class Sleep extends Attack{
         // damage and status
 
         Map<Integer, String> moveResult = new HashMap<>();
-        String status = "Normal";
-        if(pokemonStatus == 1){
-            status = "Asleep";
+        this.status = "Normal";
+        if(pokemonStatus.SleepChance() == 1){
+            this.status = "Asleep";
         }
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
@@ -159,7 +201,7 @@ class Sleep extends Attack{
         } else {
             this.setPp(this.getPp() - 1);
             setStrength("Normal");
-            moveResult.put(this.getDamage(), status);
+            moveResult.put(this.getDamage(), this.status);
         }
         return moveResult;
     }

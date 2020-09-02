@@ -45,8 +45,12 @@ class ErikaAI{
     /*
     / Responsible for determining move to be used by Leader Erika
      */
-    BinaryTree binaryTree = new BinaryTree();
+    BinaryTree binaryTree;
     private String opponentStatus;
+
+    public ErikaAI(BinaryTree binaryTree) {
+        this.binaryTree = binaryTree;
+    }
 
     public String getOpponentStatus() {
         return opponentStatus;
@@ -79,7 +83,10 @@ class ErikaAI{
             case "Max Potion":
                 victreebel.use_item("Max Potion");
                 leaderErika.useItem("Max Potion");
-                break;
+                setOpponentStatus("Normal");
+                victreebel.setAttackName("Max Potion");
+                leaderErika.setStrength("Normal");
+                return 0;
             case "Vine Whip":
                 // You are calling this 3 times, you only want to call once
                 erikaAttack = victreebel.getVineWhip().attack(enemyType);
@@ -146,36 +153,33 @@ class ErikaAI{
         / Creates search tree based on input of victreebels status and status of enemy. Calls ErikaAttack to determine,
         / damage done with attack. Returns hashmap with string and damage as values.
          */
+        binaryTree.deleteTree();
         Map<Integer, String> move = new HashMap<>();
         if (victreebel.getHealth() < 20) {
             if (leaderErika.getBag().get("Max Potion") > 0) {
-                binaryTree.addNode(80, "Max Potion");
-            } else {
-                binaryTree.addNode(0, "Max Potion");
-            }
-        }
+                binaryTree.addNode(90, "Max Potion");}}
+
         if (enemyType.equals("Rock") || enemyType.equals("Water")) {
             if(victreebel.getVineWhip().getPp() > 0) {
-                binaryTree.addNode(70, "Vine Whip");
-            } if (victreebel.getRazorLeaf().getPp() > 0) {
-                binaryTree.addNode(60, "Razor Leaf");
-            }
-        } else if (enemyType.equals("Flying") || enemyType.equals("Fire")) {
+                binaryTree.addNode(70, "Vine Whip");}
+            if (victreebel.getRazorLeaf().getPp() > 0) {
+                binaryTree.addNode(60, "Razor Leaf"); }}
+
+        if (enemyType.equals("Flying") || enemyType.equals("Fire")) {
             if(victreebel.getVineWhip().getPp() > 0) {
-                binaryTree.addNode(10, "Vine Whip");
-            } if (victreebel.getRazorLeaf().getPp() > 0) {
-                binaryTree.addNode(20, "Razor Leaf");
-            }
-        }
+                binaryTree.addNode(10, "Vine Whip");}
+            if (victreebel.getRazorLeaf().getPp() > 0) {
+                binaryTree.addNode(20, "Razor Leaf");}}
+
         if (enemyHealth <= 10 && victreebel.getSleep().getPp() > 0) {
-            binaryTree.addNode(100, "Sleep");
-        }
+            binaryTree.addNode(100, "Sleep");}
+
         if (enemyHealth <= 15 && victreebel.getSpitUp().getPp() > 0) {
-            binaryTree.addNode(90, "Spit up");
-        }
-//        if (enemyStatus.equals("Normal") && victreebel.getSleep().getPp() > 0) {
-//            binaryTree.addNode(50, "Sleep");
-//        }
+            binaryTree.addNode(95, "Spit up");}
+
+        if (enemyStatus.equals("Normal") && victreebel.getSleep().getPp() > 0) {
+            binaryTree.addNode(50, "Sleep");}
+
         binaryTree.addNode(40, "Random");
         move.put(ErikaAttackVictreebel(leaderErika, victreebel, binaryTree.maxValue(binaryTree.root), enemyType), binaryTree.maxValue(binaryTree.root));
         return move;
@@ -191,13 +195,16 @@ class ErikaAI{
             case "Potion":
                 vileplume.use_item("Potion");
                 leaderErika.useItem("Potion");
+                setOpponentStatus("Normal");
+                vileplume.setAttackName("Potion");
+                leaderErika.setStrength("Normal");
                 break;
             case "Absorb":
-                erikaAttack = vileplume.getAbsorb().attack(enemyType);
+                erikaAttack = vileplume.getAbsorb(true).attack(enemyType);
                 setOpponentStatus(moveStatus(erikaAttack,
                         ReturnKeys(erikaAttack)));
                 vileplume.setAttackName("Absorb");
-                leaderErika.setStrength(vileplume.getAbsorb().getStrength());
+                leaderErika.setStrength(vileplume.getAbsorb(false).getStrength());
                 return ReturnKeys(erikaAttack);
             case "HyperBeam":
                 erikaAttack = vileplume.getHyperBeam().attack(enemyType);
@@ -226,7 +233,7 @@ class ErikaAI{
                 int random = (int) (Math.random() * (max - min + 1)) + min;
                 switch (random) {
                     case 1:
-                        if (vileplume.getAbsorb().getPp() > 0) {
+                        if (vileplume.getAbsorb(false).getPp() > 0) {
                             vileplume.setAttackName("Absorb");
                             randomMove = "Absorb";
                             break;} break;
@@ -258,42 +265,37 @@ class ErikaAI{
         / damage done with attack. Returns hashmap with string and damage as values.
          */
         Map<Integer, String> move = new HashMap<>();
+        binaryTree.deleteTree();
         if (vileplume.getHealth() < 20) {
-            if (leaderErika.getBag().get("Potion") > 1) {
-                binaryTree.addNode(70, "Potion");
-            } else {
-                binaryTree.addNode(0, "Potion");
-                if(vileplume.getAbsorb().getPp() > 0) {
-                    binaryTree.addNode(70, "Absorb");
-                }
-            }
-            if (enemyType.equals("Rock") || enemyType.equals("Water")) {
+            if (leaderErika.getBag().get("Potion") > 0) {
+                binaryTree.addNode(70, "Potion"); }
+
+            else if(vileplume.getAbsorb(false).getPp() > 0) {
+                    binaryTree.addNode(70, "Absorb"); }}
+
+        if (enemyType.equals("Rock") || enemyType.equals("Water")) {
+            if (vileplume.getHyperBeam().getPp() > 0) {
+                binaryTree.addNode(80, "HyperBeam"); }}
+
+        if (enemyType.equals("Flying") || enemyType.equals("Fire")) {
                 if (vileplume.getHyperBeam().getPp() > 0) {
-                    binaryTree.addNode(70, "HyperBeam");
-                }
-            } else if (enemyType.equals("Flying") || enemyType.equals("Fire")) {
-                if (vileplume.getHyperBeam().getPp() > 0) {
-                    binaryTree.addNode(10, "HyperBeam");
-                }
-            }
-            if (enemyHealth <= 10 && vileplume.getSleep().getPp() > 0) {
-                binaryTree.addNode(100, "Sleep");
-            }
-            if (enemyHealth <= 15 && vileplume.getStunSpore().getPp() > 0) {
-                binaryTree.addNode(90, "StunSpore");
-            }
-            if (enemyHealth <= 25 && vileplume.getAbsorb().getPp() > 0){
-                binaryTree.addNode(80, "Absorb");
-            }
-            if (!enemyStatus.equals("Normal")){
-                if (vileplume.getSleep().getPp() > 0) {
-                    binaryTree.addNode(60, "sleep");
-                } if (vileplume.getStunSpore().getPp() > 0) {
-                    binaryTree.addNode(50, "stunSpore");
-                }
-            }
-            binaryTree.addNode(40, "Random");
-        }
+                    binaryTree.addNode(10, "HyperBeam");}}
+
+        if (enemyHealth <= 10 && vileplume.getSleep().getPp() > 0) {
+            binaryTree.addNode(100, "Sleep");}
+
+        if (enemyHealth <= 15 && vileplume.getStunSpore().getPp() > 0) {
+            binaryTree.addNode(90, "StunSpore"); }
+
+        if (enemyHealth <= 25 && vileplume.getAbsorb(false).getPp() > 0){
+            binaryTree.addNode(85, "Absorb"); }
+
+        if (enemyStatus.equals("Normal")){
+            if (vileplume.getSleep().getPp() > 0) {
+                binaryTree.addNode(60, "sleep");}
+            if (vileplume.getStunSpore().getPp() > 0) {
+                binaryTree.addNode(50, "stunSpore");}}
+        binaryTree.addNode(40, "Random");
         move.put(ErikaAttackVileplume(leaderErika, vileplume, binaryTree.maxValue(binaryTree.root), enemyType), binaryTree.maxValue(binaryTree.root));
         return move;
     }
@@ -308,9 +310,11 @@ class ErikaAI{
             case "Potion":
                 tangela.use_item("Potion");
                 leaderErika.useItem("Potion");
-                break;
+                setOpponentStatus("Normal");
+                tangela.setAttackName("Potion");
+                leaderErika.setStrength("Normal");
             case "Mega Drain":
-                erikaAttack = tangela.getMegadrain().attack(enemyType);
+                erikaAttack = tangela.getMegadrain(true).attack(enemyType);
                 setOpponentStatus(moveStatus(erikaAttack,
                         ReturnKeys(erikaAttack)));
                 tangela.setAttackName("Mega Drain");
@@ -339,7 +343,7 @@ class ErikaAI{
                 int random = (int) (Math.random() * (max - min + 1)) + min;
                 switch (random) {
                     case 1:
-                        if (tangela.getMegadrain().getPp() > 0){
+                        if (tangela.getMegadrain(false).getPp() > 0){
                         tangela.setAttackName("Mega Drain");
                         randomMove = "Mega Drain";
                         break;} break;
@@ -373,33 +377,26 @@ class ErikaAI{
          */
         Map<Integer, String> move = new HashMap<>();
         if (tangela.getHealth() < 20) {
-            if (leaderErika.getBag().get("Potion") > 0) {
+            if (leaderErika.getBag().get("Potion") > 1) {
                 binaryTree.addNode(70, "Potion");
-            } else if (tangela.getMegadrain().getPp() > 0) {
-                binaryTree.addNode(0, "Potion");
-                if (tangela.getMegadrain().getPp() > 0) {
-                    binaryTree.addNode(60, "Mega Drain");
-                }
-            }
-            if (enemyHealth <= 25 && tangela.getConstrict().getPp() > 0) {
-                binaryTree.addNode(70, "Constrict");
-            }
-            if (enemyHealth <= 15 && tangela.getSlam().getPp() > 0) {
-                binaryTree.addNode(90, "Slam");
-            }
-            if (enemyHealth <= 20 && tangela.getMegadrain().getPp() > 0){
-                binaryTree.addNode(80, "Mega Drain");
-            }
-            if (!enemyStatus.equals("Normal") && tangela.getPoisionPowder().getPp() > 0){
-                binaryTree.addNode(50, "Poison Powder");
-            }
+            } else if (tangela.getMegadrain(false).getPp() > 0) {
+                binaryTree.addNode(60, "Mega Drain"); }}
+        if (enemyHealth <= 25 && tangela.getConstrict().getPp() > 0) {
+            binaryTree.addNode(80, "Constrict"); }
 
-            binaryTree.addNode(40, "Random");
-        }
+        if (enemyHealth <= 15 && tangela.getSlam().getPp() > 0) {
+            binaryTree.addNode(100, "Slam"); }
+
+        if (enemyHealth <= 20 && tangela.getMegadrain(false).getPp() > 0){
+            binaryTree.addNode(90, "Mega Drain"); }
+
+        if (enemyStatus.equals("Normal") && tangela.getPoisionPowder().getPp() > 0){
+            binaryTree.addNode(50, "Poison Powder"); }
+        binaryTree.addNode(40, "Random");
         move.put(ErikaAttackTangela(leaderErika, tangela, binaryTree.maxValue(binaryTree.root), enemyType), binaryTree.maxValue(binaryTree.root));
         return move;
     }
 
 }
 
-// ORDER FOR BATTLE... VILEPLUME, TANGELA, VICTREBELL
+// ORDER FOR BATTLE... Victrebell, TANGELA, Vileplume
