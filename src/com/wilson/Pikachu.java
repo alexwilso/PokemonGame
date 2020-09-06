@@ -48,6 +48,7 @@ public class Pikachu extends Pokemon {
 
     public Map<Integer, String> PikachuBattle(Player user, Object[] userPokemon, String cpuType, int activePokemon){
         Map<Integer, String> move = new HashMap<>();
+        boolean noneFainted = true;
         int selection = battlemenu.Menu(getName());
         if (selection == 1){
             return PikachuAttacks(cpuType);}
@@ -56,8 +57,16 @@ public class Pikachu extends Pokemon {
         else if(selection == 3){
             if (user.getBag().isEmpty()){
                 System.out.println("You have no items to use.");
-                PikachuBattle(user, userPokemon, cpuType, activePokemon);}
-            return PikachuItems(battlemenu.UseItem(user), user); }
+                return PikachuBattle(user, userPokemon, cpuType, activePokemon); }
+            String item = battlemenu.UseItem(user);
+            if (item.equals("Revive")) {
+                for (int x = 0; x<3; x++){
+                    if (user.getFaintedPokemon()[x] != null){
+                        noneFainted = false; } }
+                if (noneFainted){
+                    System.out.println("All pokemon are playable");
+                    return PikachuBattle(user, userPokemon, cpuType, activePokemon); } }
+            return PikachuItems(item, user); }
         else {
             System.out.println("Not a valid option");
             PikachuBattle(user, userPokemon, cpuType, activePokemon);}
@@ -98,6 +107,20 @@ public class Pikachu extends Pokemon {
 
     public Map<Integer, String> PikachuItems(String item, Player user){
         Map<Integer, String> itemMap = new HashMap<>();
+        if (item.equals("Revive")){
+            boolean noFainted = true;
+            System.out.println("Fainted Pokemon:");
+            for (int x = 0; x<3; x++){
+                if (user.getFaintedPokemon()[x] != null){
+                    noFainted = false;
+                    System.out.println((x+ 1) + ". " +user.getFaintedPokemon()[x]); } }
+            if (noFainted){
+                System.out.println("All pokemon are playable");
+            }
+            System.out.println("Enter the number of the pokemon you would like to revive?");
+            Integer revive = Integer.parseInt(scanner.nextLine()) * -1;
+            itemMap.put(revive, item);
+            return itemMap; }
         itemMap.put(0, item);
         if (item.equals("Elixer")) {
             System.out.println("Which attack would you like to user elixer on?");

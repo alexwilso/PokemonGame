@@ -1,6 +1,7 @@
 package com.wilson;
 
 import java.util.Map;
+import java.util.jar.JarOutputStream;
 
 public class PlayerMove {
     private int playerAttackDamage;
@@ -39,9 +40,64 @@ public class PlayerMove {
     public void AttackStrength(String strength){
         // Prints strength if
         if(!strength.equals("Normal")){
-            System.out.println(strength);
-        }
-    }
+            System.out.println(strength); } }
+
+    public void RemovePokemonFromFainted(Player user, String pokemon){
+        for(int x = 0; x < 3; x++){
+            if (user.getFaintedPokemon()[x] == null){
+                break;
+            } else if (user.getFaintedPokemon()[x].equals(pokemon)){
+                user.getFaintedPokemon()[x] = null; }
+        }}
+
+    public boolean RevivePokemon(Player user, Object[] userPokemon, int pokemon){
+        // Revives pokemon chosen by user. If entered something other than pokemon, true is returned and function is called again.
+        int revive = (pokemon * -1) - 1;
+        switch (userPokemon[revive].toString()){
+            case("Bulbasuar"):
+                Bulbasaur bulbasaur = (Bulbasaur) user.getPokemon(revive);
+                bulbasaur.revive();
+                user.useItem("Revive");
+                RemovePokemonFromFainted(user, bulbasaur.getName());
+                return false;
+            case("Charmander"):
+                Charmander charmander = (Charmander) user.getPokemon(revive);
+                charmander.revive();
+                user.useItem("Revive");
+                RemovePokemonFromFainted(user, charmander.getName());
+                System.out.println(user.getBag());
+                return false;
+            case("Gengar"):
+                Gengar gengar = (Gengar) user.getPokemon(revive);
+                gengar.revive();
+                user.useItem("Revive");
+                RemovePokemonFromFainted(user, gengar.getName());
+                return false;
+            case("Onix"):
+                Onix onix = (Onix) user.getPokemon(revive);
+                onix.revive();
+                user.useItem("Revive");
+                RemovePokemonFromFainted(user, onix.getName());
+                return false;
+            case("Pidgey"):
+                Pidgey pidgey = (Pidgey) user.getPokemon(revive);
+                pidgey.revive();
+                user.useItem("Revive");
+                RemovePokemonFromFainted(user, pidgey.getName());
+                return false;
+            case("Pikacu"):
+                Pikachu pikachu = (Pikachu) user.getPokemon(revive);
+                pikachu.revive();
+                user.useItem("Revive");
+                RemovePokemonFromFainted(user, pikachu.getName());
+                return false;
+            case("Squirtle"):
+                Squirtle squirtle = (Squirtle) user.getPokemon(revive);
+                squirtle.revive();
+                user.useItem("Revive");
+                RemovePokemonFromFainted(user, squirtle.getName());
+                return false; }
+        return true; }
 
     public boolean BulbasaurMove(Player user, Bulbasaur bulbasaur, boolean firstTurn, boolean playerDamage, int damage, String status,
                                               Object[] userPokemon, String cpuType, int activePokemon){
@@ -63,7 +119,14 @@ public class PlayerMove {
                 setPlayerAttackStatus("Normal");
                 setPlayerAttackDamage(0);
                 return false; } }
+        if (!bulbasaur.isPlayable()){
+            return true; }
         Map<Integer, String> bulbasaurMove = bulbasaur.BulbasuarBattle(user, userPokemon, cpuType, activePokemon);
+        if (returnMove.MoveDamage(bulbasaurMove) < 0){
+            userItem(bulbasaurMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            return RevivePokemon(user, userPokemon, returnMove.MoveDamage(bulbasaurMove)); }
         if (returnMove.MoveDamage(bulbasaurMove) == 0){
             userItem(bulbasaurMove);
             setPlayerAttackDamage(0);
@@ -107,7 +170,14 @@ public class PlayerMove {
                 setPlayerAttackStatus("Normal");
                 setPlayerAttackDamage(0);
                 return false; } }
+        if (!charmander.isPlayable()){
+            return true; }
         Map<Integer, String> charmanderMove = charmander.CharmanderBattle(user, userPokemon, cpuType, activePokemon);
+        if (returnMove.MoveDamage(charmanderMove) < 0){
+            userItem(charmanderMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            return RevivePokemon(user, userPokemon, returnMove.MoveDamage(charmanderMove)); }
         if (returnMove.MoveDamage(charmanderMove) == 0){
             userItem(charmanderMove);
             setPlayerAttackDamage(0);
@@ -149,7 +219,14 @@ public class PlayerMove {
                 setPlayerAttackStatus("Normal");
                 setPlayerAttackDamage(0);
                 return false; } }
+        if (!gengar.isPlayable()){
+            return true; }
         Map<Integer, String> gengarMove = gengar.GengarBattle(user, userPokemon, cpuType, activePokemon);
+        if (returnMove.MoveDamage(gengarMove) < 0){
+            userItem(gengarMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            return RevivePokemon(user, userPokemon, returnMove.MoveDamage(gengarMove)); }
         if (returnMove.MoveDamage(gengarMove) == 0){
             userItem(gengarMove);
             setPlayerAttackDamage(0);
@@ -190,7 +267,14 @@ public class PlayerMove {
                 setPlayerAttackStatus("Normal");
                 setPlayerAttackDamage(0);
                 return false; } }
+        if (!onix.isPlayable()){
+            return true; }
         Map<Integer, String> onixMove = onix.OnixBattle(user, userPokemon, cpuType, activePokemon);
+        if (returnMove.MoveDamage(onixMove) < 0){
+            userItem(onixMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            return RevivePokemon(user, userPokemon, returnMove.MoveDamage(onixMove)); }
         if (returnMove.MoveDamage(onixMove) == 0){
             userItem(onixMove);
             setPlayerAttackDamage(0);
@@ -223,8 +307,7 @@ public class PlayerMove {
             if (pidgey.getStatus().equals("Normal")){
                 pidgey.setStatus(status); }}
         if (!pidgey.isPlayable()){
-            return true;
-        }
+            return true; }
         System.out.println("Player pokémon: " + pidgey.getName() + ". Health is " + pidgey.getHealth() + ". Status " +
                 "is " + pidgey.getStatus() + ".");
         if (!pidgey.getStatus().equals("Normal") && playerDamage){
@@ -232,7 +315,14 @@ public class PlayerMove {
                 setPlayerAttackStatus("Normal");
                 setPlayerAttackDamage(0);
                 return false; } }
+        if (!pidgey.isPlayable()){
+            return true; }
         Map<Integer, String> pidgeyMove = pidgey.PidgeyBattle(user, userPokemon, cpuType, activePokemon);
+        if (returnMove.MoveDamage(pidgeyMove) < 0){
+            userItem(pidgeyMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            return RevivePokemon(user, userPokemon, returnMove.MoveDamage(pidgeyMove)); }
         if (returnMove.MoveDamage(pidgeyMove) == 0){
             userItem(pidgeyMove);
             setPlayerAttackDamage(0);
@@ -273,7 +363,14 @@ public class PlayerMove {
                 setPlayerAttackStatus("Normal");
                 setPlayerAttackDamage(0);
                 return false; } }
+        if (!pikachu.isPlayable()){
+            return true; }
         Map<Integer, String> pikachuMove = pikachu.PikachuBattle(user, userPokemon, cpuType, activePokemon);
+        if (returnMove.MoveDamage(pikachuMove) < 0){
+            userItem(pikachuMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            return RevivePokemon(user, userPokemon, returnMove.MoveDamage(pikachuMove)); }
         if (returnMove.MoveDamage(pikachuMove) == 0){
             userItem(pikachuMove);
             setPlayerAttackDamage(0);
@@ -316,7 +413,14 @@ public class PlayerMove {
                 setPlayerAttackStatus("Normal");
                 setPlayerAttackDamage(0);
                 return false; } }
+        if (!squirtle.isPlayable()){
+            return true; }
         Map<Integer, String> squirtleMove = squirtle.SquirtleBattle(user, userPokemon, cpuType, activePokemon);
+        if (returnMove.MoveDamage(squirtleMove) < 0){
+            userItem(squirtleMove);
+            setPlayerAttackDamage(0);
+            setPlayerAttackStatus("Normal");
+            return RevivePokemon(user, userPokemon, returnMove.MoveDamage(squirtleMove)); }
         if (returnMove.MoveDamage(squirtleMove) == 0) {
             userItem(squirtleMove);
             setPlayerAttackDamage(0);
@@ -324,6 +428,7 @@ public class PlayerMove {
             System.out.println(squirtle.getName() + " health: " + squirtle.getHealth());
             return false; }
         else if (returnMove.MoveDamage(squirtleMove) <= 3){
+            // Makes this something that is called! 
             setPlayerAttackDamage(0);
             setPlayerAttackStatus("Normal");
             setActivePokemon(returnMove.MoveDamage(squirtleMove) - 1);

@@ -1,5 +1,6 @@
 package com.wilson;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -212,6 +213,13 @@ public class CeladonCityGym {
 
     public boolean SwitchPokemon(Player user, Object[] userPokemon){
         // usermove function with pokemon user chooses to change to.
+        boolean gameOver = true;
+        for (int x = 0; x<3; x++){
+            if (user.getFaintedPokemon()[x] == null){
+                gameOver = false;
+            }} if (gameOver){
+            return false;
+        }
         for(int x = 0; x < 3; x++){
             System.out.println(Integer.toString(x+1) + " " + userPokemon[x]);
         }
@@ -499,10 +507,6 @@ public class CeladonCityGym {
     public boolean Battle(LeaderErika leaderErika, Player user, Vileplume vileplume, Victreebel victreebel, Tangela tangela,
                        Object[] userPokemon) {
         while (isBattleOn()) {
-            if (user.allFainted()) {
-                setBattleOn(false);
-                this.playerWins = PlayerLoses(user);
-            } else {
             while (isPlayerTurn()) {
                 if (firstTurn) {
                     System.out.println("Player sent out " + userPokemon[0]);
@@ -514,6 +518,12 @@ public class CeladonCityGym {
                 } else {
                     setPlayerTurn(PlayerAttack(user, userPokemon, playerMove.getActivePokemon(), false, true));
                     setCpuTurn(!isPlayerTurn());
+                    if (user.allFainted()) {
+                        setBattleOn(false);
+                        setPlayerTurn(false);
+                        setCpuTurn(false);
+                        this.playerWins = PlayerLoses(user);
+                    }
                 }
             }
             while (isCpuTurn()) {
@@ -535,7 +545,6 @@ public class CeladonCityGym {
                     }
                 }
             }
-        }
         return this.playerWins;
     }
 
@@ -550,7 +559,7 @@ public class CeladonCityGym {
     public boolean PlayerLoses(Player user){
         System.out.println("You were defeated by Leader Erika!");
         System.out.println("Leader Erika: Looks like I am stronger than you! Please come back again. I enjoyed showing" +
-                "you the strength of the grass type");
+                " you the strength of the grass type");
         return false;
     }
 }

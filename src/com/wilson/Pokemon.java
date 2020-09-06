@@ -151,11 +151,9 @@ public class Pokemon {
         this.maxHealth += 10;
     }
 
-    public void revive(String item){
-        if (item.equals("Revive")){
-            this.health = this.maxHealth;
-            System.out.println(this.name + " was revived. May now be used again to battle.");
-        }
+    public void revive(){
+        this.health = this.maxHealth;
+        System.out.println(this.name + " was revived. May now be used again to battle.");
     }
 
     public boolean isPlayable() {
