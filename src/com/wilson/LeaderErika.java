@@ -99,6 +99,7 @@ class ErikaAI{
                 erikaAttack = victreebel.getRazorLeaf().attack(enemyType);
                 setOpponentStatus(moveStatus(erikaAttack,
                         ReturnKeys(erikaAttack)));
+                victreebel.setAttackName("Razor Leaf");
                 leaderErika.setStrength(victreebel.getRazorLeaf().getStrength());
                 return ReturnKeys(erikaAttack);
             case "Sleep":

@@ -14,6 +14,7 @@ public class Main {
         ErikaAI erikaAI = new ErikaAI(binaryTree);
         PokemonStatus pokemonStatus = new PokemonStatus();
         CeladonCityGym celadonCityGym = new CeladonCityGym(returnMove, playerMove, erikaAI, pokemonStatus, battlemenu);
+        VermillionCityGym vermillionCityGym = new VermillionCityGym(returnMove, playerMove, pokemonStatus, battlemenu);
         Bulbasaur bulbasaur = new Bulbasaur("Bulbasuar", "Grass",50, 115,115,
                 "Normal", new VineWhip(35, 5, 5), new SludgeBomb(20, 15,15),
                 new RazorLeaf(30, 5,5), new LeechSeed(20,20,20,20), battlemenu);
@@ -41,6 +42,7 @@ public class Main {
         Squirtle squirtle = new Squirtle("Squirtle", "Water", 50, 120, 120, "Normal",
                 new HydroPump(30, 5,5), new Tackle(10,25,25),
                 new Surf(25,10,10), new ShellAttack(15,20,20), battlemenu);
+
 
 
         Scanner scanner = new Scanner(System.in);
@@ -84,12 +86,18 @@ public class Main {
         System.out.println("Professor Oak: Okay good! You're all set! Remember you're able to visit the store after each battle \n" +
         "First stop is in Celadon City where you'll battle Erika, master of grass type pokémon. Goodluck in there " + name + "!");
         battlemenu.pressAnyKeyToContinue();
-        if (celadonCityGym.Welcome(player, pokemon)){
-            System.out.println("You Won");
-        } else {
-            System.out.println("You lost");
-        }
+        if (!celadonCityGym.Welcome(player, pokemon)){
+            System.out.println("Professor Oak: Looks like you were defeated. Maybe next time you should try different pokemon. Thanks " +
+                    "for stopping by " + name + " be sure to come by when you're ready to try again!");} else {
+        System.out.println("Professor Oak: Wonderful job " + name + "One down, three to go. Lets get you to the " +
+                "PokéStore before we send you on your way...");
+        Main.visitStore(store, player, scanner);
+        System.out.println("Professor Oak: Next stop is Vermillion City where you'll take on Lt. Surge, trainer of all " +
+                "things electric. I will say he packs quite the power! Good luck in there " + name +"!");
+        vermillionCityGym.Welcome(player, pokemon);}
+
     }
+
 
     public static void visitStore(Store store, Player player, Scanner scanner) {
         /*

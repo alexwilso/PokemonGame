@@ -192,15 +192,15 @@ public class CeladonCityGym {
     }
 
     public boolean Welcome(Player user, Object[] pokemon){
-        Vileplume vileplume = new Vileplume("Vileplume", "Grass", 50, 120,120,"Normal",
+        Vileplume vileplume = new Vileplume("Vileplume", "Grass", 50, 10,120,"Normal",
                 new Absorb(25,  10,10, 25), new StunSpore(15, 20,20, pokemonStatus),
                 new HyperBeam(30,5,5), new Sleep(10, 10,10, pokemonStatus));
 
-        Victreebel victreebel = new Victreebel("Victreebell", "Grass", 50, 120,120, "Normal",
+        Victreebel victreebel = new Victreebel("Victreebell", "Grass", 50, 10,120, "Normal",
                 new RazorLeaf(25, 10,10), new VineWhip(30,10,10),
                 new Sleep(10,10,10, pokemonStatus), new SpitUp(15,20,20));
 
-        Tangela tangela = new Tangela("Tangela", "Grass", 50,120,120, "Normal",
+        Tangela tangela = new Tangela("Tangela", "Grass", 50,10,120, "Normal",
                 new PoisionPowder(15,15,15, pokemonStatus), new Megadrain(20, 20,20,20),
                 new Slam(15,15,15), new Constrict(25,10,10));
         LeaderErika leaderErika = new LeaderErika(victreebel, vileplume, tangela);
@@ -448,8 +448,8 @@ public class CeladonCityGym {
 //               returnMove.MoveString(cpuMove, returnMove.MoveDamage(cpuMove))
         System.out.println("Erika's " + tangela.getName() + " used " + tangela.getAttackName() + ".");
         AttackStrength(leaderErika.getStrength());
-        if (victreebel.getAttackName().equals("Potion")){
-            System.out.println("Tangela's health: " + victreebel.getHealth());
+        if (tangela.getAttackName().equals("Potion")){
+            System.out.println("Tangela's health: " + tangela.getHealth());
         } else {
             System.out.println("Dealt " +  getCpuAttackDamage() + " damage to opponent.");
         }
@@ -556,7 +556,7 @@ public class CeladonCityGym {
         System.out.println("You defeated Leader Erika");
         battlemenu.pressAnyKeyToContinue();
         System.out.println("Leader Erika: Oh! I conceded defeat. You are remarkably strong. \n" +
-                "I must confer on you the RAINBOWBADGE. Player got 2900 for winning");
+                "I must confer on you the RAINBOWBADGE. Player got 2900 for winning.");
         user.setMoney(2900);
         return true;
     }
@@ -566,6 +566,7 @@ public class CeladonCityGym {
         battlemenu.pressAnyKeyToContinue();
         System.out.println("Leader Erika: Looks like I am stronger than you! Please come back again. I enjoyed showing" +
                 " you the strength of the grass type");
+        battlemenu.pressAnyKeyToContinue();
         return false;
     }
 }

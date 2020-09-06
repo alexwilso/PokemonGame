@@ -5,18 +5,26 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class LeaderSurge extends Leader {
+    private static final Hashtable<String, Integer> bag = new Hashtable<String, Integer>();
     private final Pikachu pikachu;
     private final Electabuzz electabuzz;
     private Voltorb voltorb;
+    private String strength;
 
-    public LeaderSurge(Hashtable<String, Integer> bag, Pikachu pikachu, Electabuzz electabuzz, Voltorb voltorb) {
+    public LeaderSurge(Pikachu pikachu, Electabuzz electabuzz, Voltorb voltorb) {
         super(bag);
         this.pikachu = pikachu;
         this.electabuzz = electabuzz;
         this.voltorb = voltorb;
         this.addItemToBag("Max Potion", 2);
+        this.addItemToBag("Antidote", 1);
     }
 
+    public String getStrength() {
+        return strength; }
+
+    public void setStrength(String strength) {
+        this.strength = strength; }
 
     public Pikachu getPikachu() {
         return pikachu;
@@ -65,27 +73,43 @@ class SurgeAI{
         / Sets pokemon status based on result of move.
          */
         String randomMove = "Random";
+        Map<Integer, String>  surgeAttack;
         switch (move) {
             case "Max Potion":
                 pikachu.use_item("Max Potion");
                 leaderSurge.useItem("Max Potion");
+                setOpponentStatus("Normal");
+                pikachu.setAttackName("Max Potion");
+                leaderSurge.setStrength("Normal");
                 break;
             case "Quick Attack":
-                setOpponentStatus(moveStatus(pikachu.getQuickAttack().attack(enemyType),
-                        ReturnKeys(pikachu.getQuickAttack().attack(enemyType))));
-                return ReturnKeys(pikachu.getQuickAttack().attack(enemyType));
+                surgeAttack = pikachu.getQuickAttack().attack(enemyType);
+                setOpponentStatus(moveStatus(surgeAttack,
+                        ReturnKeys(surgeAttack)));
+                pikachu.setAttackName("Quick Attack");
+                leaderSurge.setStrength(pikachu.getQuickAttack().getStrength());
+                return ReturnKeys(surgeAttack);
             case "Thunder Shock":
-                setOpponentStatus(moveStatus(pikachu.getThunderShock().attack(enemyType),
-                        ReturnKeys(pikachu.getThunderShock().attack(enemyType))));
-                return ReturnKeys(pikachu.getThunderShock().attack(enemyType));
+                surgeAttack = pikachu.getThunderShock().attack(enemyType);
+                setOpponentStatus(moveStatus(surgeAttack,
+                        ReturnKeys(surgeAttack)));
+                pikachu.setAttackName("Thunder Shock");
+                leaderSurge.setStrength(pikachu.getThunderShock().getStrength());
+                return ReturnKeys(surgeAttack);
             case "Thunder":
-                setOpponentStatus(moveStatus(pikachu.getThunder().attack(enemyType),
-                        ReturnKeys(pikachu.getThunder().attack(enemyType))));
-                return ReturnKeys(pikachu.getThunder().attack(enemyType));
+                surgeAttack = pikachu.getThunder().attack(enemyType);
+                setOpponentStatus(moveStatus(surgeAttack,
+                        ReturnKeys(surgeAttack)));
+                pikachu.setAttackName("Thunder");
+                leaderSurge.setStrength(pikachu.getThunder().getStrength());
+                return ReturnKeys(surgeAttack);
             case "Growl":
-                setOpponentStatus(moveStatus(pikachu.getGrowl().attack(enemyType),
-                        ReturnKeys(pikachu.getGrowl().attack(enemyType))));
-                return ReturnKeys(pikachu.getGrowl().attack(enemyType));
+                surgeAttack = pikachu.getGrowl().attack(enemyType);
+                setOpponentStatus(moveStatus(surgeAttack,
+                        ReturnKeys(surgeAttack)));
+                pikachu.setAttackName("Growl");
+                leaderSurge.setStrength(pikachu.getGrowl().getStrength());
+                return ReturnKeys(surgeAttack);
             case "Random":
                 int min = 1;
                 int max = 4;
@@ -93,38 +117,41 @@ class SurgeAI{
                 switch (random) {
                     case 1:
                         if (pikachu.getQuickAttack().getPp() > 0) {
+                            pikachu.setAttackName("Quick Attack");
                             randomMove = "Quick Attack";
                             break;} break;
                     case 2:
                         if (pikachu.getQuickAttack().getPp() > 0) {
+                            pikachu.setAttackName("Thunder Shock");
                             randomMove = "Thunder Shock";
                             break;} break;
                     case 3:
                         if (pikachu.getThunder().getPp() > 0) {
+                            pikachu.setAttackName("Thunder");
                             randomMove = "Thunder";
                             break;} break;
                     case 4:
                         if (pikachu.getGrowl().getPp() >0) {
+                            pikachu.setAttackName("Growl");
                             randomMove = "Growl";
                             break;} break;
                 }
+                return SurgeAttackPikachu(leaderSurge, pikachu, randomMove, enemyType); }
+            return 0; }
 
-                return SurgeAttackPikachu(leaderSurge, pikachu, randomMove, enemyType);
-        }
-        return 0;
-    }
-    public Map<String, Integer> CreateTreePikachu(LeaderSurge leaderSurge, Pikachu pikachu, int enemyHealth, String enemyType, String enemyStatus) {
+    public Map<Integer, String> CreateTreePikachu(LeaderSurge leaderSurge, Pikachu pikachu, int enemyHealth, String enemyType, String enemyStatus) {
          /*
         / Creates search tree based on input of pikachu status and status of enemy. Calls SurgeAttack to determine,
         / damage done with attack. Returns hashmap with string and damage as values.
          */
-        Map<String, Integer> move = new HashMap<>();
+        binaryTree.deleteTree();
+        Map<Integer, String> move = new HashMap<>();
         if (pikachu.getHealth() < 20) {
             if (leaderSurge.getBag().get("Max Potion") > 1) {
                 binaryTree.addNode(80, "Max Potion");
             } else {
                 binaryTree.addNode(0, "Max Potion");
-            }
+            }}
             if (enemyType.equals("Water")) {
                 if (pikachu.getThunder().getPp() > 0) {
                     binaryTree.addNode(70, "Thunder");
@@ -142,12 +169,97 @@ class SurgeAI{
                 binaryTree.addNode(100, "Growl");
             }
             if (enemyHealth <= 15 && pikachu.getGrowl().getPp() > 0) {
-                binaryTree.addNode(90, "Quick Attack");
-            }
+                binaryTree.addNode(90, "Quick Attack"); }
 
-            binaryTree.addNode(40, "Random");
-        }
-        move.put(binaryTree.maxValue(binaryTree.root), SurgeAttackPikachu(leaderSurge, pikachu, binaryTree.maxValue(binaryTree.root), enemyType));
+        binaryTree.addNode(40, "Random");
+        move.put(SurgeAttackPikachu(leaderSurge, pikachu, binaryTree.maxValue(binaryTree.root), enemyType),
+                binaryTree.maxValue(binaryTree.root));
+        return move; }
+
+    public int SurgeAttackVoltorb (LeaderSurge leaderSurge, Voltorb voltorb, String move, String enemyType){
+        String randomMove = "Random";
+        Map<Integer, String>  surgeAttack;
+        switch (move) {
+            case "Max Potion":
+                voltorb.use_item("Max Potion");
+                leaderSurge.useItem("Max Potion");
+                setOpponentStatus("Normal");
+                voltorb.setAttackName("Max Potion");
+                leaderSurge.setStrength("Normal");
+                break;
+            case "Spark":
+                surgeAttack = voltorb.getSpark().attack(enemyType);
+                setOpponentStatus(moveStatus(surgeAttack,
+                        ReturnKeys(surgeAttack)));
+                voltorb.setAttackName("Spark");
+                leaderSurge.setStrength(voltorb.getSpark().getStrength());
+                return ReturnKeys(surgeAttack);
+            case "Sonic Boom":
+                surgeAttack = voltorb.getSonicBoom().attack(enemyType);
+                setOpponentStatus(moveStatus(surgeAttack,
+                        ReturnKeys(surgeAttack)));
+                voltorb.setAttackName("Sonic Boom");
+                leaderSurge.setStrength(voltorb.getSonicBoom().getStrength());
+                return ReturnKeys(surgeAttack);
+            case "Tackle":
+                surgeAttack = voltorb.getTackle().attack(enemyType);
+                setOpponentStatus(moveStatus(surgeAttack,
+                        ReturnKeys(surgeAttack)));
+                voltorb.setAttackName("Tackle");
+                leaderSurge.setStrength(voltorb.getTackle().getStrength());
+                return ReturnKeys(surgeAttack);
+            case "Self Destruct":
+                surgeAttack = voltorb.getSelfDestruct().attack(enemyType);
+                setOpponentStatus(moveStatus(surgeAttack,
+                        ReturnKeys(surgeAttack)));
+                voltorb.setAttackName("Self Destruct");
+                leaderSurge.setStrength(voltorb.getSelfDestruct().getStrength());
+                return ReturnKeys(surgeAttack);
+            case "Random":
+                int min = 1;
+                int max = 4;
+                int random = (int) (Math.random() * (max - min + 1)) + min;
+                switch (random) {
+                    case 1:
+                        if (voltorb.getSonicBoom().getPp() > 0) {
+                            voltorb.setAttackName("Quick Attack");
+                            randomMove = "Quick Attack";
+                            break;} break;
+                    case 2:
+                        if (voltorb.getTackle().getPp() > 0) {
+                            voltorb.setAttackName("Thunder Shock");
+                            randomMove = "Thunder Shock";
+                            break;} break;
+                    case 3:
+                        if (voltorb.getSpark().getPp() > 0) {
+                            voltorb.setAttackName("Thunder");
+                            randomMove = "Thunder";
+                            break;} break; }
+
+                return SurgeAttackVoltorb(leaderSurge, voltorb, randomMove, enemyType); }
+            return 0; }
+
+    public Map<Integer, String> CreateTreeVoltorb(LeaderSurge leaderSurge, Voltorb voltorb, int enemyHealth, String enemyType,
+                                                  String enemyStatus){
+        binaryTree.deleteTree();
+        Map<Integer, String> move = new HashMap<>();
+        if(voltorb.getHealth() < 20){
+            if (leaderSurge.getBag().get("Max Potion") > 0){
+                binaryTree.addNode(80, "Max Potion"); }
+            if (leaderSurge.getBag().get("Max Potion") == 0){
+                binaryTree.addNode(80, "Self Destruct"); } }
+        if (enemyType.equals("Water")){
+            if(voltorb.getSpark().getPp() > 0){
+                binaryTree.addNode(80, "Spark"); }
+        } else if (enemyType.equals("Rock")){
+            binaryTree.addNode(10, "Spark"); }
+        if (enemyHealth <= 10 && voltorb.getTackle().getPp() > 0){
+            binaryTree.addNode(100, "Tackle"); }
+        if (enemyHealth <= 20 && voltorb.getSonicBoom().getPp() > 0){
+            binaryTree.addNode(90, "Sonic Boom"); }
+        binaryTree.addNode(40, "Random");
+        move.put(SurgeAttackVoltorb(leaderSurge, voltorb, binaryTree.maxValue(binaryTree.root), enemyType),
+                binaryTree.maxValue(binaryTree.root));
         return move;
     }
 }
