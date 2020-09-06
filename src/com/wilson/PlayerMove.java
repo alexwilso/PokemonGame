@@ -99,6 +99,11 @@ public class PlayerMove {
                 return false; }
         return true; }
 
+    public void NoDamageToEnemy(){
+        setPlayerAttackDamage(0);
+        setPlayerAttackStatus("Normal");
+    }
+
     public boolean BulbasaurMove(Player user, Bulbasaur bulbasaur, boolean firstTurn, boolean playerDamage, int damage, String status,
                                               Object[] userPokemon, String cpuType, int activePokemon){
         /*
@@ -116,26 +121,22 @@ public class PlayerMove {
                 "is " + bulbasaur.getStatus() + ".");
         if (!bulbasaur.getStatus().equals("Normal") && playerDamage){
             if (bulbasaur.BulbasaurStatus(bulbasaur)) {
-                setPlayerAttackStatus("Normal");
-                setPlayerAttackDamage(0);
+                NoDamageToEnemy();
                 return false; } }
         if (!bulbasaur.isPlayable()){
             return true; }
         Map<Integer, String> bulbasaurMove = bulbasaur.BulbasuarBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(bulbasaurMove) < 0){
             userItem(bulbasaurMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             return RevivePokemon(user, userPokemon, returnMove.MoveDamage(bulbasaurMove)); }
         if (returnMove.MoveDamage(bulbasaurMove) == 0){
             userItem(bulbasaurMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             System.out.println(bulbasaur.getName() + " health: " + bulbasaur.getHealth());
             return false; }
         else if (returnMove.MoveDamage(bulbasaurMove) <= 3){
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             setActivePokemon(returnMove.MoveDamage(bulbasaurMove) - 1);
             return false; }
         else if (returnMove.MoveDamage(bulbasaurMove) == 999){
@@ -174,19 +175,16 @@ public class PlayerMove {
             return true; }
         Map<Integer, String> charmanderMove = charmander.CharmanderBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(charmanderMove) < 0){
-            userItem(charmanderMove);
-            setPlayerAttackDamage(0);
+            NoDamageToEnemy();
             setPlayerAttackStatus("Normal");
             return RevivePokemon(user, userPokemon, returnMove.MoveDamage(charmanderMove)); }
         if (returnMove.MoveDamage(charmanderMove) == 0){
-            userItem(charmanderMove);
-            setPlayerAttackDamage(0);
+            NoDamageToEnemy();
             setPlayerAttackStatus("Normal");
             System.out.println(charmander.getName() + " health: " + charmander.getHealth());
             return false; }
         else if (returnMove.MoveDamage(charmanderMove) <= 3){
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             setActivePokemon(returnMove.MoveDamage(charmanderMove) - 1);
             return false; }
         else if (returnMove.MoveDamage(charmanderMove) == 999){
@@ -224,18 +222,15 @@ public class PlayerMove {
         Map<Integer, String> gengarMove = gengar.GengarBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(gengarMove) < 0){
             userItem(gengarMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             return RevivePokemon(user, userPokemon, returnMove.MoveDamage(gengarMove)); }
         if (returnMove.MoveDamage(gengarMove) == 0){
             userItem(gengarMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             System.out.println(gengar.getName() + " health: " + gengar.getHealth());
             return false; }
         else if (returnMove.MoveDamage(gengarMove) <= 3){
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             setActivePokemon(returnMove.MoveDamage(gengarMove) - 1);
             return false; }
         else if (returnMove.MoveDamage(gengarMove) == 999){
@@ -264,26 +259,22 @@ public class PlayerMove {
                 "is " + onix.getStatus() + ".");
         if (!onix.getStatus().equals("Normal") && playerDamage){
             if (onix.OnixStatus(onix)) {
-                setPlayerAttackStatus("Normal");
-                setPlayerAttackDamage(0);
+                NoDamageToEnemy();
                 return false; } }
         if (!onix.isPlayable()){
             return true; }
         Map<Integer, String> onixMove = onix.OnixBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(onixMove) < 0){
             userItem(onixMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             return RevivePokemon(user, userPokemon, returnMove.MoveDamage(onixMove)); }
         if (returnMove.MoveDamage(onixMove) == 0){
             userItem(onixMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             System.out.println(onix.getName() + " health: " + onix.getHealth());
             return false; }
         else if (returnMove.MoveDamage(onixMove) <= 3){
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             setActivePokemon(returnMove.MoveDamage(onixMove) - 1);
             return false; }
         else if (returnMove.MoveDamage(onixMove) == 999){
@@ -320,18 +311,15 @@ public class PlayerMove {
         Map<Integer, String> pidgeyMove = pidgey.PidgeyBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(pidgeyMove) < 0){
             userItem(pidgeyMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             return RevivePokemon(user, userPokemon, returnMove.MoveDamage(pidgeyMove)); }
         if (returnMove.MoveDamage(pidgeyMove) == 0){
             userItem(pidgeyMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             System.out.println(pidgey.getName() + " health: " + pidgey.getHealth());
             return false; }
         else if (returnMove.MoveDamage(pidgeyMove) <= 3){
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             setActivePokemon(returnMove.MoveDamage(pidgeyMove) - 1);
             return false; }
         else if (returnMove.MoveDamage(pidgeyMove) == 999){
@@ -360,26 +348,22 @@ public class PlayerMove {
                 "is " + pikachu.getStatus() + ".");
         if (!pikachu.getStatus().equals("Normal") && playerDamage){
             if (pikachu.PikachuStatus(pikachu)) {
-                setPlayerAttackStatus("Normal");
-                setPlayerAttackDamage(0);
+                NoDamageToEnemy();
                 return false; } }
         if (!pikachu.isPlayable()){
             return true; }
         Map<Integer, String> pikachuMove = pikachu.PikachuBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(pikachuMove) < 0){
             userItem(pikachuMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             return RevivePokemon(user, userPokemon, returnMove.MoveDamage(pikachuMove)); }
         if (returnMove.MoveDamage(pikachuMove) == 0){
             userItem(pikachuMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             System.out.println(pikachu.getName() + " health: " + pikachu.getHealth());
             return false; }
         else if (returnMove.MoveDamage(pikachuMove) <= 3){
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             setActivePokemon(returnMove.MoveDamage(pikachuMove) - 1);
             return false; }
         else if (returnMove.MoveDamage(pikachuMove) == 999){
@@ -410,27 +394,22 @@ public class PlayerMove {
                 "is " + squirtle.getStatus() + ".");
         if (!squirtle.getStatus().equals("Normal") && playerDamage){
             if (squirtle.SquirtleStatus(squirtle)) {
-                setPlayerAttackStatus("Normal");
-                setPlayerAttackDamage(0);
+                NoDamageToEnemy();
                 return false; } }
         if (!squirtle.isPlayable()){
             return true; }
         Map<Integer, String> squirtleMove = squirtle.SquirtleBattle(user, userPokemon, cpuType, activePokemon);
         if (returnMove.MoveDamage(squirtleMove) < 0){
             userItem(squirtleMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             return RevivePokemon(user, userPokemon, returnMove.MoveDamage(squirtleMove)); }
         if (returnMove.MoveDamage(squirtleMove) == 0) {
             userItem(squirtleMove);
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             System.out.println(squirtle.getName() + " health: " + squirtle.getHealth());
             return false; }
         else if (returnMove.MoveDamage(squirtleMove) <= 3){
-            // Makes this something that is called! 
-            setPlayerAttackDamage(0);
-            setPlayerAttackStatus("Normal");
+            NoDamageToEnemy();
             setActivePokemon(returnMove.MoveDamage(squirtleMove) - 1);
             return false; }
         else if (returnMove.MoveDamage(squirtleMove) == 999){
@@ -443,4 +422,3 @@ public class PlayerMove {
         return false;
     }
 }
-

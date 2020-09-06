@@ -24,14 +24,17 @@ public class CeladonCityGym {
     ErikaAI erikaAI;
     ReturnMove returnMove;
     PlayerMove playerMove;
+    Battlemenu battlemenu;
     Scanner scanner = new Scanner(System.in);
 
 
-    public CeladonCityGym(ReturnMove returnMove, PlayerMove playerMove, ErikaAI erikaAI, PokemonStatus pokemonStatus) {
+    public CeladonCityGym(ReturnMove returnMove, PlayerMove playerMove, ErikaAI erikaAI, PokemonStatus pokemonStatus,
+                          Battlemenu battlemenu) {
         this.returnMove = returnMove;
         this.playerMove = playerMove;
         this.erikaAI = erikaAI;
         this.pokemonStatus = pokemonStatus;
+        this.battlemenu = battlemenu;
         this.playerTurn = true;
         this.cpuTurn = false;
         this.firstTurn = true;
@@ -204,10 +207,11 @@ public class CeladonCityGym {
         System.out.println("Leader Erica: Hello... Lovely weather, isn't it? It's so pleasant.\n...Oh, dear...\nI must" +
                 " have dozed off... Welcome! My name is Erika. I am the leader of Celadon Gym.\nI am a student of the art" +
                 " of flower arranging. My pokémon are solely of the grass type.\n... Oh, I'm sorry, I had no idea that you" +
-                " wished to challenge me. Very well, but I shall not lose.\nLeader Erika sent out Victreebell\nErika's pokemon: " +
+                " wished to challenge me. Very well, but I shall not lose.");
+        battlemenu.pressAnyKeyToContinue();
+        System.out.println("Leader Erika sent out Victreebell\nErika's pokemon: " +
                 victreebel.getName() + ". Health is " + victreebel.getHealth() + ". Status is " + victreebel.getStatus());
 //        setPokemon(user.getPokemon()[0], user.getPokemon()[1], user.getPokemon()[2], pokemon);
-
         return Battle(leaderErika, user, vileplume, victreebel, tangela, pokemon);
     }
 
@@ -550,6 +554,7 @@ public class CeladonCityGym {
 
     public boolean PlayerWins(Player user){
         System.out.println("You defeated Leader Erika");
+        battlemenu.pressAnyKeyToContinue();
         System.out.println("Leader Erika: Oh! I conceded defeat. You are remarkably strong. \n" +
                 "I must confer on you the RAINBOWBADGE. Player got 2900 for winning");
         user.setMoney(2900);
@@ -558,11 +563,9 @@ public class CeladonCityGym {
 
     public boolean PlayerLoses(Player user){
         System.out.println("You were defeated by Leader Erika!");
+        battlemenu.pressAnyKeyToContinue();
         System.out.println("Leader Erika: Looks like I am stronger than you! Please come back again. I enjoyed showing" +
                 " you the strength of the grass type");
         return false;
     }
 }
-
-
-

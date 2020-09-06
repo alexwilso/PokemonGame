@@ -13,12 +13,12 @@ public class Main {
         BinaryTree binaryTree = new BinaryTree();
         ErikaAI erikaAI = new ErikaAI(binaryTree);
         PokemonStatus pokemonStatus = new PokemonStatus();
-        CeladonCityGym celadonCityGym = new CeladonCityGym(returnMove, playerMove, erikaAI, pokemonStatus);
-        Bulbasaur bulbasaur = new Bulbasaur("Bulbasuar", "Grass",50, 10,115,
+        CeladonCityGym celadonCityGym = new CeladonCityGym(returnMove, playerMove, erikaAI, pokemonStatus, battlemenu);
+        Bulbasaur bulbasaur = new Bulbasaur("Bulbasuar", "Grass",50, 115,115,
                 "Normal", new VineWhip(35, 5, 5), new SludgeBomb(20, 15,15),
                 new RazorLeaf(30, 5,5), new LeechSeed(20,20,20,20), battlemenu);
 
-        Charmander charmander = new Charmander("Charmander", "Fire", 50, 10, 120, "Normal",
+        Charmander charmander = new Charmander("Charmander", "Fire", 50, 120, 120, "Normal",
                 new Scratch(15, 25, 25), new Ember(20, 10,10, pokemonStatus),
                 new Flamethrower(30, 5, 5, pokemonStatus), new Tailwhip(15,25,25), battlemenu);
 
@@ -82,8 +82,8 @@ public class Main {
                 "items from the store to help your pokemon in battle! \nLets check it out before we send you on your way...\n" );
         Main.visitStore(store, player, scanner);
         System.out.println("Professor Oak: Okay good! You're all set! Remember you're able to visit the store after each battle \n" +
-        "First stop is in Celadon City where you'll battle Erika, master of grass type pokémon. Goodluck in there " + name + "!\n");
-        pikachu.getThunder().attack("Grass");
+        "First stop is in Celadon City where you'll battle Erika, master of grass type pokémon. Goodluck in there " + name + "!");
+        battlemenu.pressAnyKeyToContinue();
         if (celadonCityGym.Welcome(player, pokemon)){
             System.out.println("You Won");
         } else {
