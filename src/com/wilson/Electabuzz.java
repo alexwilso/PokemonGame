@@ -32,6 +32,39 @@ public class Electabuzz extends Pokemon {
     public LowKick getLowKick() {
         return lowKick;
     }
+
+    public boolean ElectabuzzStatus(Electabuzz electabuzz){
+        // If pokemon status anything other than normal, function is called. Returns true if electabuzz cannot make move
+        // and true if able to
+        if (electabuzz.getStatus().equals("Asleep")){
+            if (electabuzz.WakeUp()){
+                electabuzz.setStatus("Normal");
+                System.out.println(electabuzz.getName() + " woke up");
+            } else {
+                System.out.println(electabuzz.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (electabuzz.getStatus().equals("Burned")){
+            System.out.println(electabuzz.getName() + " is burned. Lost 10 health.");
+            electabuzz.Burn();
+        } else if (electabuzz.getStatus().equals("Poisoned")){
+            System.out.println(electabuzz.getName() + " is poisoned. Lost 10 health.");
+            electabuzz.Poisioned();
+        } else  if (electabuzz.getStatus().equals("Paralyzed")){
+            if (electabuzz.Paralyzed()){
+                System.out.println(electabuzz.getName() + " is paralyzed and cannot move");
+                return true;
+            }
+        } else if (electabuzz.getStatus().equals("Confused")){
+            if (electabuzz.Confusion()){
+                System.out.println(electabuzz.getName() + " is confused. Electabuzz hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println(electabuzz.getName() + " snapped out of confusion");
+                electabuzz.setStatus("Normal");
+            }
+        }
+        return false;
+    }
 }
 
 class ThunderPunch extends Attack{

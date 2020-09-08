@@ -33,6 +33,38 @@ public class Voltorb extends Pokemon{
         this.setHealth(0);
         return selfDestruct;
     }
+    public boolean VoltorbStatus(Voltorb voltorb){
+        // If pokemon status anything other than normal, function is called. Returns true if voltorb cannot make move
+        // and true if able to
+        if (voltorb.getStatus().equals("Asleep")){
+            if (voltorb.WakeUp()){
+                voltorb.setStatus("Normal");
+                System.out.println(voltorb.getName() + " woke up");
+            } else {
+                System.out.println(voltorb.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (voltorb.getStatus().equals("Burned")){
+            System.out.println(voltorb.getName() + " is burned. Lost 10 health.");
+            voltorb.Burn();
+        } else if (voltorb.getStatus().equals("Poisoned")){
+            System.out.println(voltorb.getName() + " is poisoned. Lost 10 health.");
+            voltorb.Poisioned();
+        } else  if (voltorb.getStatus().equals("Paralyzed")){
+            if (voltorb.Paralyzed()){
+                System.out.println(voltorb.getName() + " is paralyzed and cannot move");
+                return true;
+            }
+        } else if (voltorb.getStatus().equals("Confused")){
+            if (voltorb.Confusion()){
+                System.out.println(voltorb.getName() + " is confused. Voltorb hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println(voltorb.getName() + " snapped out of confusion");
+                voltorb.setStatus("Normal");
+            }
+        }
+        return false;
+    }
 }
 
 class Spark extends Attack{

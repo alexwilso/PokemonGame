@@ -242,4 +242,4 @@ public class Pokemon {
     }}
 
 
-// Satus: Burn
+

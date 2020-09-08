@@ -32,6 +32,39 @@ public class Rhyhorn extends Pokemon{
     public EarthQuake getEarthQuake() {
         return earthQuake;
     }
+
+    public boolean RhyhornStatus(Rhyhorn rhyhorn){
+        // If pokemon status anything other than normal, function is called. Returns true if rhyhorn cannot make move
+        // and true if able to
+        if (rhyhorn.getStatus().equals("Asleep")){
+            if (rhyhorn.WakeUp()){
+                rhyhorn.setStatus("Normal");
+                System.out.println(rhyhorn.getName() + " woke up");
+            } else {
+                System.out.println(rhyhorn.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (rhyhorn.getStatus().equals("Burned")){
+            System.out.println("Rhyhorn is burned. Lost 10 health.");
+            rhyhorn.Burn();
+        } else if (rhyhorn.getStatus().equals("Poisoned")){
+            System.out.println("Rhyhorn is poisoned. Lost 10 health.");
+            rhyhorn.Poisioned();
+        } else  if (rhyhorn.getStatus().equals("Paralyzed")){
+            if (rhyhorn.Paralyzed()){
+                System.out.println("Rhyhorn is paralyzed and cannot move");
+                return true;
+            }
+        } else if (rhyhorn.getStatus().equals("Confused")){
+            if (rhyhorn.Confusion()){
+                System.out.println("Rhyhorn is confused. Rhyhorn hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println("Rhyhorn snapped out of confusion");
+                rhyhorn.setStatus("Normal");
+            }
+        }
+        return false;
+    }
 }
 
 class HornAttack extends Attack{

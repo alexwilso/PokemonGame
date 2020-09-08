@@ -44,6 +44,40 @@ public class Pikachu extends Pokemon {
                 "Quick Attack damage: " + pikachu.getQuickAttack().getDamage() + " PP: " + pikachu.getQuickAttack().getPp(),
                 "Thunder damage: " + pikachu.getThunder().getDamage() + " PP: " + pikachu.getThunder().getPp(),
                 "Thunder Shock Throw: " + pikachu.getThunderShock().getDamage() + " PP: " + pikachu.getThunderShock().getPp()};
+
+    }
+
+    public boolean TangelaStatus(Tangela tangela){
+        // If pokemon status anything other than normal, function is called. Returns true if tangela cannot make move
+        // and true if able to
+        if (tangela.getStatus().equals("Asleep")){
+            if (tangela.WakeUp()){
+                tangela.setStatus("Normal");
+                System.out.println(tangela.getName() + " woke up");
+            } else {
+                System.out.println(tangela.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (tangela.getStatus().equals("Burned")){
+            System.out.println("Tangela is burned. Lost 10 health.");
+            tangela.Burn();
+        } else if (tangela.getStatus().equals("Poisoned")){
+            System.out.println("Tangela is poisoned. Lost 10 health.");
+            tangela.Poisioned();
+        } else  if (tangela.getStatus().equals("Paralyzed")){
+            if (tangela.Paralyzed()){
+                System.out.println("Tangela is paralyzed and cannot move");
+                return true;
+            }
+        } else if (tangela.getStatus().equals("Confused")){
+            if (tangela.Confusion()){
+                System.out.println("Tangela is confused. Tangela hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println("Tangela snapped out of confusion");
+                tangela.setStatus("Normal");
+            }
+        }
+        return false;
     }
 
     public Map<Integer, String> PikachuBattle(Player user, Object[] userPokemon, String cpuType, int activePokemon){
@@ -152,7 +186,6 @@ public class Pikachu extends Pokemon {
                 System.out.println(pikachu.getName() + " woke up");
             } else {
                 System.out.println(pikachu.getName() + " is asleep. Cannot make a move");
-                battlemenu.pressAnyKeyToContinue();
                 return true;
             }} else if (pikachu.getStatus().equals("Burned")){
             System.out.println("Pikachu is burned. Lost 10 health.");
@@ -163,13 +196,11 @@ public class Pikachu extends Pokemon {
         } else  if (pikachu.getStatus().equals("Paralyzed")){
             if (pikachu.Paralyzed()){
                 System.out.println("Pikachu is paralyzed and cannot move");
-                battlemenu.pressAnyKeyToContinue();
                 return true;
             }
         } else if (pikachu.getStatus().equals("Confused")){
             if (pikachu.Confusion()){
                 System.out.println("Pikachu is confused. Pikachu hurt itself and cannot make a move. Lost 10 health");
-                battlemenu.pressAnyKeyToContinue();
                 return true;
             } else {
                 System.out.println("Pikachu snapped out of confusion");

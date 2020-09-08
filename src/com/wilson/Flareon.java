@@ -16,6 +16,55 @@ public class Flareon extends Pokemon {
         this.toxic = toxic;
         this.firePunch = firePunch;
     }
+
+    public FlameCharge getFlameCharge() {
+        return flameCharge;
+    }
+
+    public SuperPower getSuperPower() {
+        return superPower;
+    }
+
+    public Toxic getToxic() {
+        return toxic;
+    }
+
+    public FirePunch getFirePunch() {
+        return firePunch;
+    }
+
+    public boolean FlareonStatus(Flareon flareon){
+        // If pokemon status anything other than normal, function is called. Returns true if flareon cannot make move
+        // and true if able to
+        if (flareon.getStatus().equals("Asleep")){
+            if (flareon.WakeUp()){
+                flareon.setStatus("Normal");
+                System.out.println(flareon.getName() + " woke up");
+            } else {
+                System.out.println(flareon.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (flareon.getStatus().equals("Burned")){
+            System.out.println(flareon.getName() + " is burned. Lost 10 health.");
+            flareon.Burn();
+        } else if (flareon.getStatus().equals("Poisoned")){
+            System.out.println(flareon.getName() + " is poisoned. Lost 10 health.");
+            flareon.Poisioned();
+        } else  if (flareon.getStatus().equals("Paralyzed")){
+            if (flareon.Paralyzed()){
+                System.out.println(flareon.getName() + " is paralyzed and cannot move");
+                return true;
+            }
+        } else if (flareon.getStatus().equals("Confused")){
+            if (flareon.Confusion()){
+                System.out.println(flareon.getName() + " is confused. Flareon hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println("Flareon snapped out of confusion");
+                flareon.setStatus("Normal");
+            }
+        }
+        return false;
+    }
 }
 
 class FlameCharge extends Attack {

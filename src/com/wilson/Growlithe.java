@@ -33,6 +33,40 @@ public class Growlithe extends Pokemon {
     public FlareBlitz getFlareBlitz() {
         return flareBlitz;
     }
+
+    public boolean GrowlitheStatus(Growlithe growlithe){
+        // If pokemon status anything other than normal, function is called. Returns true if growlithe cannot make move
+        // and true if able to
+        if (growlithe.getStatus().equals("Asleep")){
+            if (growlithe.WakeUp()){
+                growlithe.setStatus("Normal");
+                System.out.println(growlithe.getName() + " woke up");
+            } else {
+                System.out.println(growlithe.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (growlithe.getStatus().equals("Burned")){
+            System.out.println("Growlithe is burned. Lost 10 health.");
+            growlithe.Burn();
+        } else if (growlithe.getStatus().equals("Poisoned")){
+            System.out.println("Growlithe is poisoned. Lost 10 health.");
+            growlithe.Poisioned();
+        } else  if (growlithe.getStatus().equals("Paralyzed")){
+            if (growlithe.Paralyzed()){
+                System.out.println("Growlithe is paralyzed and cannot move");
+                return true;
+            }
+        } else if (growlithe.getStatus().equals("Confused")){
+            if (growlithe.Confusion()){
+                System.out.println("Growlithe is confused. Growlithe hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println("Growlithe snapped out of confusion");
+                growlithe.setStatus("Normal");
+            }
+        }
+        return false;
+    }
+
 }
 
 class FireFang extends Attack{

@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Gym {
     private boolean playerTurn;
     private boolean cpuTurn;
-    boolean firstTurn;
+    private boolean firstTurn;
     private boolean cpuDamage;
     private String pokemonTypePLayer;
     private Integer pokemonHealthPlayer;
@@ -16,7 +16,7 @@ public class Gym {
     private int playerAttackDamage;
     private String playerAttackStatus;
     private int activePokemon;
-    boolean playerWins;
+    private boolean playerWins;
     private boolean battleOn;
     PokemonStatus pokemonStatus;
     ReturnMove returnMove;
@@ -36,9 +36,8 @@ public class Gym {
         this.cpuDamage = true;
         this.playerWins = true;
         this.battleOn = true;
-        this.cpuAttackStatus = "Normal";
-        this.playerAttackStatus = "Normal";
-    }
+        this.cpuAttackStatus = "Normal"; }
+
     public boolean isBattleOn() {
         return battleOn;
     }
@@ -143,47 +142,69 @@ public class Gym {
         return pokemonStatusPlayer;
     }
 
-    private void SetActiveBulbasaur(Bulbasaur bulbasaur){
+    public boolean isFirstTurn() {
+        return firstTurn;
+    }
+
+    public void setFirstTurn(boolean firstTurn) {
+        this.firstTurn = firstTurn;
+    }
+
+    public boolean isPlayerWins() {
+        return playerWins;
+    }
+
+    public void setPlayerWins(boolean playerWins) {
+        this.playerWins = playerWins;
+    }
+
+    public void AttackStrength(String strength){
+        // Prints strength if
+        if(!strength.equals("Normal")){
+            System.out.println(strength); } }
+
+    public void SetActiveBulbasaur(Bulbasaur bulbasaur){
         setPokemonHealthPlayer(bulbasaur.getHealth());
         setPokemonTypePLayer(bulbasaur.getType());
         setPokemonStatusPlayer(bulbasaur.getStatus());
     }
 
-    private void SetActiveCharmander(Charmander charmander){
+    public void SetActiveCharmander(Charmander charmander){
         setPokemonHealthPlayer(charmander.getHealth());
         setPokemonTypePLayer(charmander.getType());
         setPokemonStatusPlayer(charmander.getStatus());
     }
 
-    private void SetActiveGengar(Gengar gengar){
+    public void SetActiveGengar(Gengar gengar){
         setPokemonHealthPlayer(gengar.getHealth());
         setPokemonTypePLayer(gengar.getType());
         setPokemonStatusPlayer(gengar.getStatus());
     }
 
-    private void SetActiveOnix(Onix onix){
+    public void SetActiveOnix(Onix onix){
         setPokemonHealthPlayer(onix.getHealth());
         setPokemonTypePLayer(onix.getType());
         setPokemonStatusPlayer(onix.getStatus());
     }
 
-    private void SetActivePidgey(Pidgey pidgey){
+    public void SetActivePidgey(Pidgey pidgey){
         setPokemonHealthPlayer(pidgey.getHealth());
         setPokemonTypePLayer(pidgey.getType());
         setPokemonStatusPlayer(pidgey.getStatus());
     }
 
-    private void SetActivePikachu(Pikachu pikachu){
+    public void SetActivePikachu(Pikachu pikachu){
         setPokemonHealthPlayer(pikachu.getHealth());
         setPokemonTypePLayer(pikachu.getType());
         setPokemonStatusPlayer(pikachu.getStatus());
     }
 
-    private void SetActiveSquirtle(Squirtle squirtle){
+    public void SetActiveSquirtle(Squirtle squirtle){
         setPokemonHealthPlayer(squirtle.getHealth());
         setPokemonTypePLayer(squirtle.getType());
         setPokemonStatusPlayer(squirtle.getStatus());
     }
+
     public boolean SwitchPokemon(Player user, Object[] userPokemon){
         // usermove function with pokemon user chooses to change to.
         boolean gameOver = true;

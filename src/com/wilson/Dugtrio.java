@@ -19,6 +19,39 @@ public class Dugtrio extends Pokemon{
         this.visibility = visibility;
     }
 
+    public boolean DugtrioStatus(Dugtrio dugtrio){
+        // If pokemon status anything other than normal, function is called. Returns true if dugtrio cannot make move
+        // and true if able to
+        if (dugtrio.getStatus().equals("Asleep")){
+            if (dugtrio.WakeUp()){
+                dugtrio.setStatus("Normal");
+                System.out.println(dugtrio.getName() + " woke up");
+            } else {
+                System.out.println(dugtrio.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (dugtrio.getStatus().equals("Burned")){
+            System.out.println("Dugtrio is burned. Lost 10 health.");
+            dugtrio.Burn();
+        } else if (dugtrio.getStatus().equals("Poisoned")){
+            System.out.println("Dugtrio is poisoned. Lost 10 health.");
+            dugtrio.Poisioned();
+        } else  if (dugtrio.getStatus().equals("Paralyzed")){
+            if (dugtrio.Paralyzed()){
+                System.out.println("Dugtrio is paralyzed and cannot move");
+                return true;
+            }
+        } else if (dugtrio.getStatus().equals("Confused")){
+            if (dugtrio.Confusion()){
+                System.out.println("Dugtrio is confused. Dugtrio hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println("Dugtrio snapped out of confusion");
+                dugtrio.setStatus("Normal");
+            }
+        }
+        return false;
+    }
+
     public void setVisibility(String visibility) {
         this.visibility = visibility;
     }

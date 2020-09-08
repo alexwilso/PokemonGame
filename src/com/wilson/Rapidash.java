@@ -32,6 +32,39 @@ public class Rapidash extends Pokemon {
     public Bounce getBounce() {
         return bounce;
     }
+
+    public boolean RapidashStatus(Rapidash rapidash){
+        // If pokemon status anything other than normal, function is called. Returns true if rapidash cannot make move
+        // and true if able to
+        if (rapidash.getStatus().equals("Asleep")){
+            if (rapidash.WakeUp()){
+                rapidash.setStatus("Normal");
+                System.out.println(rapidash.getName() + " woke up");
+            } else {
+                System.out.println(rapidash.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (rapidash.getStatus().equals("Burned")){
+            System.out.println(rapidash.getName() + " is burned. Lost 10 health.");
+            rapidash.Burn();
+        } else if (rapidash.getStatus().equals("Poisoned")){
+            System.out.println(rapidash.getName() + " is poisoned. Lost 10 health.");
+            rapidash.Poisioned();
+        } else  if (rapidash.getStatus().equals("Paralyzed")){
+            if (rapidash.Paralyzed()){
+                System.out.println(rapidash.getName() + " is paralyzed and cannot move");
+                return true;
+            }
+        } else if (rapidash.getStatus().equals("Confused")){
+            if (rapidash.Confusion()){
+                System.out.println(rapidash.getName() + " is confused. Rapidash hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println("Rapidash snapped out of confusion");
+                rapidash.setStatus("Normal");
+            }
+        }
+        return false;
+    }
 }
 
 class Stomp extends Attack{

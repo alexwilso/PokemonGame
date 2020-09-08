@@ -16,16 +16,13 @@ public class LeaderErika extends Leader {
         this.vileplume = vileplume;
         this.tangela = tangela;
         this.addItemToBag("Potion", 2);
-        this.addItemToBag("Max Potion", 1);
-    }
+        this.addItemToBag("Max Potion", 1); }
 
     public String getStrength() {
-        return strength;
-    }
+        return strength; }
 
     public void setStrength(String strength) {
-        this.strength = strength;
-    }
+        this.strength = strength; }
 
     public Victreebel getVictreebel() {
         return victreebel;
@@ -38,7 +35,6 @@ public class LeaderErika extends Leader {
     public Tangela getTangela() {
         return tangela;
     }
-
 }
 
 class ErikaAI{
@@ -199,7 +195,7 @@ class ErikaAI{
                 setOpponentStatus("Normal");
                 vileplume.setAttackName("Potion");
                 leaderErika.setStrength("Normal");
-                break;
+                return 0;
             case "Absorb":
                 erikaAttack = vileplume.getAbsorb(true).attack(enemyType);
                 setOpponentStatus(moveStatus(erikaAttack,
@@ -270,7 +266,6 @@ class ErikaAI{
         if (vileplume.getHealth() < 20) {
             if (leaderErika.getBag().get("Potion") > 0) {
                 binaryTree.addNode(70, "Potion"); }
-
             else if(vileplume.getAbsorb(false).getPp() > 0) {
                     binaryTree.addNode(70, "Absorb"); }}
 
@@ -314,29 +309,34 @@ class ErikaAI{
                 setOpponentStatus("Normal");
                 tangela.setAttackName("Potion");
                 leaderErika.setStrength("Normal");
+                return 0;
             case "Mega Drain":
                 erikaAttack = tangela.getMegadrain(true).attack(enemyType);
                 setOpponentStatus(moveStatus(erikaAttack,
                         ReturnKeys(erikaAttack)));
                 tangela.setAttackName("Mega Drain");
+                leaderErika.setStrength(tangela.getMegadrain(false).getStrength());
                 return ReturnKeys(erikaAttack);
             case "Constrict":
                 erikaAttack = tangela.getConstrict().attack(enemyType);
                 setOpponentStatus(moveStatus(erikaAttack,
                         ReturnKeys(erikaAttack)));
                 tangela.setAttackName("Constrict");
+                leaderErika.setStrength((tangela.getConstrict().getStrength()));
                 return ReturnKeys(erikaAttack);
             case "Poison Powder":
                 erikaAttack = tangela.getPoisionPowder().attack(enemyType);
                 setOpponentStatus(moveStatus(erikaAttack,
                         ReturnKeys(erikaAttack)));
                 tangela.setAttackName("Poison powder");
+                leaderErika.setStrength(tangela.getPoisionPowder().getStrength());
                 return ReturnKeys(erikaAttack);
             case "Slam":
                 erikaAttack = tangela.getSlam().attack(enemyType);
                 setOpponentStatus(moveStatus(erikaAttack,
                         ReturnKeys(erikaAttack)));
                 tangela.setAttackName("Slam");
+                leaderErika.setStrength(tangela.getSlam().getStrength());
                 return ReturnKeys(erikaAttack);
             case "Random":
                 int min = 1;
@@ -377,6 +377,7 @@ class ErikaAI{
         / damage done with attack. Returns hashmap with string and damage as values.
          */
         Map<Integer, String> move = new HashMap<>();
+        binaryTree.deleteTree();
         if (tangela.getHealth() < 20) {
             if (leaderErika.getBag().get("Potion") > 1) {
                 binaryTree.addNode(70, "Potion");

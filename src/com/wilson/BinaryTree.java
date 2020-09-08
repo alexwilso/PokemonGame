@@ -22,12 +22,7 @@ public class BinaryTree{
                     currentNode = currentNode.rightChild;
                     if (currentNode == null){
                         parent.rightChild = newNode;
-                        return;
-                    }
-                }
-            }
-        }
-    }
+                        return; } } } } }
 
     public void inOrderTraverseTree(Node node){
         if (node != null){

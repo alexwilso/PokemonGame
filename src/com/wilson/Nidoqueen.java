@@ -32,6 +32,39 @@ public class Nidoqueen extends Pokemon {
     public FocusPunch getFocusPunch() {
         return focusPunch;
     }
+
+    public boolean NidoqueenStatus(Nidoqueen nidoqueen){
+        // If pokemon status anything other than normal, function is called. Returns true if nidoqueen cannot make move
+        // and true if able to
+        if (nidoqueen.getStatus().equals("Asleep")){
+            if (nidoqueen.WakeUp()){
+                nidoqueen.setStatus("Normal");
+                System.out.println(nidoqueen.getName() + " woke up");
+            } else {
+                System.out.println(nidoqueen.getName() + " is asleep. Cannot make a move");
+                return true;
+            }} else if (nidoqueen.getStatus().equals("Burned")){
+            System.out.println("Nidoqueen is burned. Lost 10 health.");
+            nidoqueen.Burn();
+        } else if (nidoqueen.getStatus().equals("Poisoned")){
+            System.out.println("Nidoqueen is poisoned. Lost 10 health.");
+            nidoqueen.Poisioned();
+        } else  if (nidoqueen.getStatus().equals("Paralyzed")){
+            if (nidoqueen.Paralyzed()){
+                System.out.println("Nidoqueen is paralyzed and cannot move");
+                return true;
+            }
+        } else if (nidoqueen.getStatus().equals("Confused")){
+            if (nidoqueen.Confusion()){
+                System.out.println("Nidoqueen is confused. Nidoqueen hurt itself and cannot make a move. Lost 10 health");
+                return true;
+            } else {
+                System.out.println("Nidoqueen snapped out of confusion");
+                nidoqueen.setStatus("Normal");
+            }
+        }
+        return false;
+    }
 }
 
 class DoubleKick extends Attack{

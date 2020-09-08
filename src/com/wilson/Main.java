@@ -12,18 +12,19 @@ public class Main {
         ReturnMove returnMove = new ReturnMove();
         BinaryTree binaryTree = new BinaryTree();
         ErikaAI erikaAI = new ErikaAI(binaryTree);
+        SurgeAI surgeAI = new SurgeAI(binaryTree);
         PokemonStatus pokemonStatus = new PokemonStatus();
-        CeladonCityGym celadonCityGym = new CeladonCityGym(returnMove, playerMove, erikaAI, pokemonStatus, battlemenu);
-        VermillionCityGym vermillionCityGym = new VermillionCityGym(returnMove, playerMove, pokemonStatus, battlemenu);
-        Bulbasaur bulbasaur = new Bulbasaur("Bulbasuar", "Grass",50, 115,115,
+        CeladonCityGym celadonCityGym = new CeladonCityGym(returnMove, playerMove, pokemonStatus, battlemenu, erikaAI);
+        VermillionCityGym vermillionCityGym = new VermillionCityGym(returnMove, playerMove, pokemonStatus, battlemenu, surgeAI);
+        Bulbasaur bulbasaur = new Bulbasaur("Bulbasuar", "Grass",50, 1,115,
                 "Normal", new VineWhip(35, 5, 5), new SludgeBomb(20, 15,15),
                 new RazorLeaf(30, 5,5), new LeechSeed(20,20,20,20), battlemenu);
 
-        Charmander charmander = new Charmander("Charmander", "Fire", 50, 120, 120, "Normal",
+        Charmander charmander = new Charmander("Charmander", "Fire", 50, 1, 120, "Normal",
                 new Scratch(15, 25, 25), new Ember(20, 10,10, pokemonStatus),
                 new Flamethrower(30, 5, 5, pokemonStatus), new Tailwhip(15,25,25), battlemenu);
 
-        Gengar gengar = new Gengar("Gengar", "Ghost", 50, 120, 120, "Normal",
+        Gengar gengar = new Gengar("Gengar", "Ghost", 50, 1, 120, "Normal",
                 new PoisonJab(30, 5,5, pokemonStatus), new ConfusionRay(20,20,20, pokemonStatus),
                 new Lick(10,20,20), new ShadowBall(30, 5,5), battlemenu);
 
