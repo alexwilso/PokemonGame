@@ -14,63 +14,53 @@ public class Vileplume extends Pokemon {
         this.absorb = absorb;
         this.stunSpore = stunSpore;
         this.hyperBeam = hyperBeam;
-        this.sleep = sleep;
-    }
+        this.sleep = sleep; }
 
     public Absorb getAbsorb(boolean heal) {
         if (heal){
-            restoreHealth();
-        }
-        return absorb;
-    }
+            restoreHealth(); }
+        return absorb; }
 
     public StunSpore getStunSpore() {
-        return stunSpore;
-    }
+        return stunSpore; }
 
     public HyperBeam getHyperBeam() {
-        return hyperBeam;
-    }
+        return hyperBeam; }
 
     public Sleep getSleep() {
-        return sleep;
-    }
+        return sleep; }
 
     public void restoreHealth(){
-        this.gainHealth(absorb.getHeal());
-    }
+        this.gainHealth(absorb.getHeal()); }
+
     public boolean VileplumeStatus(Vileplume vileplume){
-        // If pokemon status anything other than normal, function is called. Returns true if vileplume cannot make move
-        // and true if able to
+        /* If pokemon status anything other than normal, function is called. Returns true if Vileplume cannot make move
+        and true if able to */
         if (vileplume.getStatus().equals("Asleep")){
             if (vileplume.WakeUp()){
                 vileplume.setStatus("Normal");
-                System.out.println(vileplume.getName() + " woke up");
-            } else {
+                System.out.println(vileplume.getName() + " woke up"); }
+            else {
                 System.out.println(vileplume.getName() + " is asleep. Cannot make a move");
-                return true;
-            }} else if (vileplume.getStatus().equals("Burned")){
+                return true; }}
+        else if (vileplume.getStatus().equals("Burned")){
             System.out.println("Vileplume is burned. Lost 10 health.");
-            vileplume.Burn();
-        } else if (vileplume.getStatus().equals("Poisoned")){
+            vileplume.Burn(); }
+        else if (vileplume.getStatus().equals("Poisoned")){
             System.out.println("Vileplume is poisoned. Lost 10 health.");
-            vileplume.Poisioned();
-        } else  if (vileplume.getStatus().equals("Paralyzed")){
+            vileplume.Poisioned(); }
+        else  if (vileplume.getStatus().equals("Paralyzed")){
             if (vileplume.Paralyzed()){
                 System.out.println("Vileplume is paralyzed and cannot move");
-                return true;
-            }
-        } else if (vileplume.getStatus().equals("Confused")){
+                return true; } }
+        else if (vileplume.getStatus().equals("Confused")){
             if (vileplume.Confusion()){
                 System.out.println("Vileplume is confused. Vileplume hurt itself and cannot make a move. Lost 10 health");
-                return true;
-            } else {
+                return true; }
+            else {
                 System.out.println("Vileplume snapped out of confusion");
-                vileplume.setStatus("Normal");
-            }
-        }
-        return false;
-    }
+                vileplume.setStatus("Normal"); } }
+        return false; }
 }
 
 class Absorb extends Attack {
@@ -78,8 +68,7 @@ class Absorb extends Attack {
     private int heal;
     public Absorb(int damage, int remaining, int maxRemains, int heal) {
         super(damage, remaining, maxRemains);
-        this.heal = heal;
-    }
+        this.heal = heal; }
 
     public void setHeal(int heal) {
         this.heal = heal;
@@ -96,16 +85,13 @@ class Absorb extends Attack {
         Map<Integer, String> moveResult = new HashMap<>();
         if (this.getPp() == 0) {
             System.out.println("No attack remaining");
-            moveResult.put(0, "Normal");
-        } else {
+            moveResult.put(0, "Normal"); }
+        else {
             this.setPp(this.getPp() - 1);
             this.setHeal(this.getDamage());
             setStrength("Normal");
-            moveResult.put(this.getDamage(), "Normal");
-        }
-        return moveResult;
-
-    }
+            moveResult.put(this.getDamage(), "Normal"); }
+        return moveResult; }
 }
 
 class StunSpore extends Attack{

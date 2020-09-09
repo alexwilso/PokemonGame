@@ -1,6 +1,5 @@
 package com.wilson;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -13,18 +12,22 @@ public class Main {
         BinaryTree binaryTree = new BinaryTree();
         ErikaAI erikaAI = new ErikaAI(binaryTree);
         SurgeAI surgeAI = new SurgeAI(binaryTree);
+        BlaineAI blaineAI = new BlaineAI(binaryTree);
+        GiovanniAI giovanniAI = new GiovanniAI(binaryTree);
         PokemonStatus pokemonStatus = new PokemonStatus();
+        ViridianCityGym viridianCityGym = new ViridianCityGym(returnMove, playerMove, pokemonStatus, battlemenu, giovanniAI);
         CeladonCityGym celadonCityGym = new CeladonCityGym(returnMove, playerMove, pokemonStatus, battlemenu, erikaAI);
-        VermillionCityGym vermillionCityGym = new VermillionCityGym(returnMove, playerMove, pokemonStatus, battlemenu, surgeAI);
-        Bulbasaur bulbasaur = new Bulbasaur("Bulbasuar", "Grass",50, 1,115,
+        VermilionCityGym vermilionCityGym = new VermilionCityGym(returnMove, playerMove, pokemonStatus, battlemenu, surgeAI);
+        CinnabarIsland cinnabarIsland = new CinnabarIsland(returnMove, playerMove, pokemonStatus, battlemenu, blaineAI);
+        Bulbasaur bulbasaur = new Bulbasaur("Bulbasuar", "Grass",50, 115,115,
                 "Normal", new VineWhip(35, 5, 5), new SludgeBomb(20, 15,15),
                 new RazorLeaf(30, 5,5), new LeechSeed(20,20,20,20), battlemenu);
 
-        Charmander charmander = new Charmander("Charmander", "Fire", 50, 1, 120, "Normal",
+        Charmander charmander = new Charmander("Charmander", "Fire", 50, 120, 120, "Normal",
                 new Scratch(15, 25, 25), new Ember(20, 10,10, pokemonStatus),
                 new Flamethrower(30, 5, 5, pokemonStatus), new Tailwhip(15,25,25), battlemenu);
 
-        Gengar gengar = new Gengar("Gengar", "Ghost", 50, 1, 120, "Normal",
+        Gengar gengar = new Gengar("Gengar", "Ghost", 50, 120, 120, "Normal",
                 new PoisonJab(30, 5,5, pokemonStatus), new ConfusionRay(20,20,20, pokemonStatus),
                 new Lick(10,20,20), new ShadowBall(30, 5,5), battlemenu);
 
@@ -87,16 +90,49 @@ public class Main {
         System.out.println("Professor Oak: Okay good! You're all set! Remember you're able to visit the store after each battle \n" +
         "First stop is in Celadon City where you'll battle Erika, master of grass type pokémon. Goodluck in there " + name + "!");
         battlemenu.pressAnyKeyToContinue();
-        if (!celadonCityGym.Welcome(player, pokemon)){
-            System.out.println("Professor Oak: Looks like you were defeated. Maybe next time you should try different pokemon. Thanks " +
-                    "for stopping by " + name + " be sure to come by when you're ready to try again!");} else {
-        System.out.println("Professor Oak: Wonderful job " + name + "One down, three to go. Lets get you to the " +
-                "PokéStore before we send you on your way...");
-        Main.visitStore(store, player, scanner);
-        System.out.println("Professor Oak: Next stop is Vermillion City where you'll take on Lt. Surge, trainer of all " +
-                "things electric. I will say he packs quite the power! Good luck in there " + name +"!");
-        vermillionCityGym.Welcome(player, pokemon);}
 
+//        if (!celadonCityGym.Welcome(player, pokemon)){
+//            System.out.println("Professor Oak: Looks like you were defeated. Maybe next time you should try different pokemon. Thanks " +
+//                    "for stopping by " + name + ", be sure to come by when you're ready to try again!");
+//            System.exit(0);}
+//
+//        System.out.println("Professor Oak: Wonderful job " + name + "One down, three to go. Lets get you to the " +
+//                "PokéStore before we send you on your way...");
+//        Main.visitStore(store, player, scanner);
+//        System.out.println("Professor Oak: Next stop is Vermilion City where you'll take on Lt. Surge, trainer of all " +
+//                "things electric. I will say he packs quite the power! Good luck in there " + name +"!");
+//        battlemenu.pressAnyKeyToContinue();
+
+//        if (!vermilionCityGym.Welcome(player, pokemon)){
+//                System.out.println("Professor Oak: Looks like you were defeated. Maybe next time you should try different pokemon. Thanks " +
+//                        "for stopping by " + name + ", be sure to come by when you're ready to try again!");
+//                System.exit(0);}
+//
+//        System.out.println("Professor Oak: Wonderful job " + name + " Two down, Two to go! Lets get you to the " +
+//                "PokéStore before we send you on your way...");
+//        Main.visitStore(store, player, scanner);
+//        System.out.println("Professor Oak: Next stop is Cinnabar Island where you'll take on Leader Blain!\nI have a " +
+//                "feeling things are really going to start to heat up now! Goodluck " + name);
+//        battlemenu.pressAnyKeyToContinue();
+
+//         if (!cinnabarIsland.Welcome(player, pokemon)){
+//                System.out.println("Professor Oak: Looks like you were defeated. Maybe next time you should try different pokemon. Thanks " +
+//                        "for stopping by " + name + ", be sure to come by when you're ready to try again!");
+//                System.exit(0);}
+//        System.out.println("Professor Oak: Wonderful job " + name + " Three down, One to go! Lets get you to the " +
+//                "PokéStore before we send you on your way...");
+//        Main.visitStore(store, player, scanner);
+        System.out.println("Professor Oak: Next stop is Viridian City to take on the all mighty Giovanni.\nRumor has it he's " +
+                "never lost! This is it " + name + ", defeat Giovanni and you'll be the best of the best! Goodluck!");
+        battlemenu.pressAnyKeyToContinue();
+        if (!viridianCityGym.Welcome(player, pokemon)){
+            System.out.println("Professor Oak: Looks like you were defeated. Maybe next time you should try different pokemon. Thanks " +
+                    "for stopping by " + name + ", be sure to come by when you're ready to try again!");
+            System.exit(0);}
+        System.out.println("Professor Oak: Wow very impressive! " + name + " Looks like you're the best of the best...");
+        battlemenu.pressAnyKeyToContinue();
+        System.out.println(rivalName + ": Hey, I heard that! Gramps, whats with favoring " + name + " over me all the time?\n" +
+                "My pokémon are faster, stronger, and way better than him and I'll show you!");
     }
 
 
