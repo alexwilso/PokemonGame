@@ -15,11 +15,11 @@ public class ChoosePokemon {
                 gengar.DisplayGengar(gengar), onix.DisplayOnix(onix), pidgey.DisplayPidgey(pidgey), pikachu.DisplayPikachu(pikachu),
                 squirtle.DisplaySquirtle(squirtle)};
 
-        System.out.println("Professor Oak: First things first we need to get you some pokemon. Lets see what we've got" +
-                " here. Ah yes, the pokemon I have for you to choose are... \n");
+        System.out.println("Professor Oak: First things first we need to get you some pokémon. Lets see what we've got" +
+                " here. Ah yes, the pokémon I have for you to choose are... \n");
 
         for (int i = 0; i < 7; i++){
-            System.out.println(Integer.toString(i + 1) +". " + pokemon[i] + Arrays.toString(pokemonInfo[i]) + "\n");
+            System.out.println((i + 1) +". " + pokemon[i] + Arrays.toString(pokemonInfo[i]) + "\n");
         }
     }
 
@@ -106,7 +106,7 @@ public class ChoosePokemon {
         int x = 3;
         int[] chosen = new int[6];
         while (x > 0){
-            System.out.println("Professor Oak: You can choose " + Integer.toString(x) + " more pokémon. Which will it be?");
+            System.out.println("Professor Oak: You can choose " + x + " more pokémon. Which will it be?");
             int pokemonChoice = Integer.parseInt(scanner.nextLine());
             boolean toChoose = true;
             // If user has already selected pokemon, toChoose is set to false to prevent user from selecting same pokemon twice
@@ -159,7 +159,7 @@ public class ChoosePokemon {
                             Pikachu pikachu, Squirtle squirtle, Object[] choice, int[] chosen, Player player, Rival rival){
 
         Random random = new Random();
-        int rand = 0;
+        int rand;
         int y = 6;
         while (y > 3){
             boolean toChoose = true;

@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class Rival extends Leader{
-    private static final Hashtable<String, Integer> bag = new Hashtable<String, Integer>();
+    private static final Hashtable<String, Integer> bag = new Hashtable<>();
     private final Object[] pokeballs = new Object[3];
     private String name;
     private String strength;
@@ -13,6 +13,8 @@ public class Rival extends Leader{
     public Rival(String name) {
         super(bag);
         this.name = name;
+        this.addItemToBag("Potion", 0);
+        this.addItemToBag("Max Potion", 0);
     }
 
     public Hashtable<String, Integer> getBag() {
@@ -27,36 +29,15 @@ public class Rival extends Leader{
         return pokeballs;
     }
 
-
-//    public void checkBag() {
-//        /*
-//         * Prints out items in bag with quantities
-//         */
-//        for (String key : this.bag.keySet()) {
-//            System.out.println((key + " : " + this.bag.get(key)));
-//        }
-//    }
-//
-//    public String addItemToBag(String item, int quantity) {
-//        /*
-//         * Updates quantity of item in bag
-//         */
-//        this.bag.merge(item, quantity, Integer::sum);
-//        return (item + " was successfully added to your bag");
-//    }
-//
-//    public void useItem(String item) {
-//        /*
-//         * If user uses item, quantity is decreased by 1
-//         */
-//        this.bag.put(item, this.bag.get(item) - 1);
-//    }
-
     public String getStrength() {
         return strength; }
 
     public void setStrength(String strength) {
         this.strength = strength; }
+
+    public String getName() {
+        return name;
+    }
 }
 
 class RivalAI{

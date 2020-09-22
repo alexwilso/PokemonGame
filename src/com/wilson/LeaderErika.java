@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class LeaderErika extends Leader {
-    private static final Hashtable<String, Integer> bag = new Hashtable<String, Integer>();
+    private static final Hashtable<String, Integer> bag = new Hashtable<>();
     private final Victreebel victreebel;
     private final Vileplume vileplume;
     private final Tangela tangela;
@@ -133,7 +133,8 @@ class ErikaAI{
                             victreebel.setAttackName("Sleep");
                             randomMove = "Sleep";
                             break;} break; }
-                return ErikaAttackVictreebel(leaderErika, victreebel, randomMove, enemyType); }
+                return ErikaAttackVictreebel(leaderErika, victreebel, randomMove, enemyType);
+        }
         return 0; }
 
 
@@ -241,8 +242,10 @@ class ErikaAI{
                         vileplume.setAttackName("Sleep");
                         randomMove = "Sleep";
                         break;} break; }
-                return ErikaAttackVileplume(leaderErika, vileplume, randomMove, enemyType); }
-        return 0; }
+                return ErikaAttackVileplume(leaderErika, vileplume, randomMove, enemyType);
+        }
+            return 0;
+    }
 
     public Map<Integer, String> CreateTreeVileplume(LeaderErika leaderErika, Vileplume vileplume, int enemyHealth, String enemyType, String enemyStatus) {
         /* Creates search tree based on input of Vileplume's health and status of enemy. Calls VileplumeAttack to determine,
@@ -250,7 +253,6 @@ class ErikaAI{
 
         Map<Integer, String> move = new HashMap<>();
         binaryTree.deleteTree();
-
         if (vileplume.getHealth() < 20) {
             if (leaderErika.getBag().get("Potion") > 0) {
                 binaryTree.addNode(70, "Potion"); }

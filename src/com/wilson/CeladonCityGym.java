@@ -206,7 +206,6 @@ public class CeladonCityGym extends Gym {
         setPlayerTurn(true);
     }
 
-
     public boolean Battle(LeaderErika leaderErika, Player user, Vileplume vileplume, Victreebel victreebel, Tangela tangela,
                        Object[] userPokemon) {
         /*While user and computer have pokemon available, battle will continue. Alternates between player and computer
